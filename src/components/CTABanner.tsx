@@ -13,7 +13,7 @@ export default function CTABanner({
   subtitle = 'Join us in cultivating change across Sri Lanka. Let’s engineer your sustainable agricultural future.'
 }: CTABannerProps) {
   return (
-    <section className="bg-emerald-50 rounded-3xl p-10 md:p-16 w-full mx-auto my-16 relative overflow-hidden">
+    <section className="glass-green rounded-3xl p-10 md:p-16 w-full mx-auto my-16 relative overflow-hidden shadow-lg shadow-emerald-900/5">
       {/* Background organic leaf decoration */}
       <div className="absolute -right-12 -bottom-12 w-64 h-64 text-emerald-100/40 pointer-events-none select-none">
         <Leaf className="w-full h-full rotate-12" />
@@ -52,7 +52,7 @@ export default function CTABanner({
               onNavigate('products');
               window.scrollTo({ top: 0, behavior: 'smooth' });
             }}
-            className="w-full sm:w-auto px-7 py-3.5 bg-white text-emerald-700 border border-emerald-200 hover:border-emerald-300 font-medium rounded-xl text-sm transition-all hover:bg-emerald-50/50 flex items-center justify-center gap-2"
+            className="w-full sm:w-auto px-7 py-3.5 glass text-emerald-700 hover:border-emerald-300 font-medium rounded-xl text-sm transition-all hover:bg-white/80 flex items-center justify-center gap-2"
           >
             Explore Our Products
           </button>

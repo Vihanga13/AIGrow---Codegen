@@ -204,12 +204,12 @@ export default function App() {
   };
 
   return (
-    <div className="flex flex-col min-h-screen bg-white">
+    <div className="flex flex-col min-h-screen bg-transparent">
       {/* Shared Navigation Header */}
       <Navbar currentPage={currentPage} onNavigate={handleNavigate} />
 
       {/* Main Active Page Stage with animated page-shifts */}
-      <main className={`grow ${currentPage !== 'home' ? 'pt-[120px]' : ''}`}>
+      <main className={`grow ${currentPage !== 'home' ? '' : ''}`}>
         <AnimatePresence mode="wait">
           <motion.div
             key={currentPage}

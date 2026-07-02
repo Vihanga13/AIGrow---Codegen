@@ -110,7 +110,7 @@ export default function ShopView({
   };
 
   return (
-    <div className="bg-[#FAFDFB]/10 min-h-screen text-[#1F2321] py-12 px-6 relative">
+    <div className="bg-[#FAFDFB]/10 min-h-screen py-12 px-6 relative">
       <div className="w-full mx-auto">
         
         {/* SHOP HEADER */}
@@ -149,7 +149,7 @@ export default function ShopView({
             <CheckCircle className="w-5 h-5 text-emerald-400 shrink-0" />
             <div className="text-xs">
               <span className="font-bold">Added to Cart:</span>
-              <p className="text-gray-300 mt-0.5 truncate max-w-[200px]">{showAddedToast}</p>
+              <p className="text-gray-300 mt-0.5 truncate ">{showAddedToast}</p>
             </div>
             <button 
               onClick={() => setIsCartOpen(true)}
@@ -285,7 +285,7 @@ export default function ShopView({
                   </div>
                   <div>
                     <h3 className="font-sans text-sm font-semibold text-gray-800">Your Cart is Empty</h3>
-                    <p className="font-sans text-xs text-gray-400 mt-1 font-light max-w-[240px]">
+                    <p className="font-sans text-xs text-gray-400 mt-1 font-light">
                       Add some smart controllers, testing meters, or dripper packs from our supply hub!
                     </p>
                   </div>

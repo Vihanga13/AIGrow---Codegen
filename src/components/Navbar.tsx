@@ -1,10 +1,10 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, ReactElement } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { 
-  Leaf, 
-  Menu, 
-  X, 
-  ArrowRight, 
+import {
+  Leaf,
+  Menu,
+  X,
+  ArrowRight,
   ChevronDown,
   Building2,
   Layers,
@@ -16,7 +16,6 @@ import {
   ShieldCheck,
   Newspaper,
   Sprout,
-  Sun,
   Thermometer,
   RefreshCw,
   Gauge
@@ -79,7 +78,7 @@ const AGRI_ZONES: AgriZone[] = [
 export default function Navbar({ currentPage, onNavigate }: NavbarProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [openDropdown, setOpenDropdown] = useState<'services' | 'products' | 'about' | null>(null);
-  
+
   // Mobile accordion state
   const [mobileExpanded, setMobileExpanded] = useState<'services' | 'products' | 'about' | 'telemetry' | null>(null);
 
@@ -155,11 +154,6 @@ export default function Navbar({ currentPage, onNavigate }: NavbarProps) {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  const toggleDropdown = (type: 'services' | 'products' | 'about') => {
-    setOpenDropdown(openDropdown === type ? null : type);
-    setIsTelemetryOpen(false);
-  };
-
   const handleMouseEnter = (type: 'services' | 'products' | 'about') => {
     setOpenDropdown(type);
     setIsTelemetryOpen(false);
@@ -178,287 +172,204 @@ export default function Navbar({ currentPage, onNavigate }: NavbarProps) {
 
   const isDarkTheme = currentPage === 'home' && !isScrolled;
 
+  // ---- Floating "island" styling helpers -------------------------------------
+  const islandShell = `backdrop-blur-xl border rounded-2xl transition-all duration-300 ${
+    isDarkTheme
+      ? 'bg-white/10 border-white/15 shadow-lg shadow-black/10'
+      : 'bg-white/85 border-gray-200/70 shadow-lg shadow-gray-300/30'
+  }`;
+
   const getLinkClass = (isActive: boolean) => {
     if (isActive) {
-      return isDarkTheme 
-        ? 'text-emerald-400 font-bold' 
-        : 'text-emerald-600 font-bold';
+      return isDarkTheme ? 'text-emerald-300 font-bold' : 'text-emerald-600 font-bold';
     }
-    return isDarkTheme 
-      ? 'text-white/85 hover:text-white font-medium' 
+    return isDarkTheme
+      ? 'text-white/85 hover:text-white font-medium'
       : 'text-gray-600 hover:text-gray-900 font-medium';
   };
 
-  return (
-    <div 
-      className={`z-50 w-full flex flex-col transition-all duration-300 ${
-        isScrolled 
-          ? 'fixed top-0 left-0 right-0 shadow-lg shadow-gray-100/10' 
-          : 'absolute top-0 left-0 right-0'
-      }`} 
-      ref={dropdownRef}
-    >
-      {/* 1. UPPER AGRICULTURAL STATUS RIBBON */}
-      <div className={`bg-emerald-950 text-emerald-100/95 text-[10px] md:text-[11px] font-sans border-b border-emerald-900/60 px-6 transition-all duration-300 overflow-hidden ${
-        isScrolled ? 'h-0 py-0 opacity-0 border-none' : 'py-2 opacity-100'
-      }`}>
-        <div className="w-full mx-auto flex flex-col sm:flex-row justify-between items-center gap-1.5 md:gap-2">
-          <div className="flex items-center gap-2 text-center sm:text-left">
-            <span className="relative flex h-1.5 w-1.5">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-emerald-400"></span>
-            </span>
-            <span className="font-semibold text-emerald-300 tracking-wider uppercase text-[9px]">Active Cycle:</span>
-            <span className="opacity-90 font-light text-emerald-200/90">Yala irrigation optimization active across Sri Lankan greenhouse hubs.</span>
-          </div>
-          <div className="flex items-center gap-3 divide-x divide-emerald-800/80 text-[10px]">
-            <div className="flex items-center gap-1 pl-3 font-medium">
-              <span className="text-emerald-400">🌱</span> Avg Yield: <span className="font-bold text-white">+14.6%</span>
-            </div>
-            <div className="flex items-center gap-1 pl-3 font-medium">
-              <span className="text-emerald-400">💧</span> Water Saved: <span className="font-bold text-white">38,420L</span>
-            </div>
-            <div className="flex items-center gap-1 pl-3 font-medium">
-              <span className="text-emerald-400">⚡</span> Efficiency: <span className="font-bold text-emerald-300">98.2%</span>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* 2. MAIN FLOATING/STICKY NAVIGATION BAR */}
-      <nav 
-        className={`w-full transition-all duration-300 ${
-          isScrolled 
-            ? 'py-3 bg-white/90 backdrop-blur-md border-b border-gray-150/70 shadow-md shadow-gray-100/50' 
-            : isDarkTheme 
-              ? 'py-5 bg-transparent border-b border-transparent' 
-              : 'py-5 bg-white/50 backdrop-blur-md border-b border-gray-100/50'
-        }`}
-      >
-        <div className="w-full mx-auto px-6 flex items-center justify-between h-12">
-        {/* Logo and Subsidiary Info */}
-        <div 
-          onClick={() => handleNavClick('home')} 
-          className="flex items-center gap-3 cursor-pointer group select-none"
-          id="nav-logo-container"
+  // Shared dropdown panel renderer (kept identical across the three menus)
+  const renderDropdownPanel = (
+    items: { id: PageId; label: string; desc: string; icon: ReactElement }[],
+    overviewId: PageId,
+    overviewLabel: string
+  ) => (
+    <div className="absolute top-full left-1/2 -translate-x-1/2 w-80 bg-white border border-gray-100 rounded-2xl shadow-2xl p-4 flex flex-col gap-2 animate-slide-in z-50 mt-3 before:absolute before:-top-3 before:left-0 before:right-0 before:h-3 before:content-['']">
+      {items.map((sub) => (
+        <button
+          key={sub.id}
+          onClick={() => handleNavClick(sub.id)}
+          className="flex gap-3 items-start p-2.5 rounded-xl text-left hover:bg-emerald-50/50 transition-colors group"
         >
-          <div className={`w-10 h-10 rounded-xl flex items-center justify-center transition-colors ${
-            isDarkTheme 
-              ? 'bg-white/10 text-emerald-400 group-hover:bg-white/20' 
-              : 'bg-emerald-50 text-emerald-600 group-hover:bg-emerald-100'
-          }`}>
-            <Leaf className="w-5.5 h-5.5" />
+          <div className="mt-1 p-1 bg-emerald-50 group-hover:bg-emerald-100 text-emerald-600 rounded-lg transition-colors">
+            {sub.icon}
           </div>
           <div>
+            <div className="font-sans text-xs font-bold text-gray-950">{sub.label}</div>
+            <div className="font-sans text-[10px] text-gray-400 mt-0.5 font-light">{sub.desc}</div>
+          </div>
+        </button>
+      ))}
+      <div className="border-t border-gray-100 mt-2 pt-2">
+        <button
+          onClick={() => handleNavClick(overviewId)}
+          className="w-full text-center py-2 text-xs font-bold text-emerald-600 hover:text-emerald-700 bg-emerald-50/30 hover:bg-emerald-50/70 rounded-lg transition-all"
+        >
+          {overviewLabel}
+        </button>
+      </div>
+    </div>
+  );
+
+  return (
+    <div
+      className="fixed top-0 left-0 right-0 z-50 flex flex-col"
+      ref={dropdownRef}
+    >
+      {/* FLOATING ISLANDS ROW */}
+      <div className={`w-full px-4 sm:px-6 flex items-start justify-between gap-3 transition-all duration-300 ${isScrolled ? 'pt-2.5' : 'pt-4 lg:pt-5'}`}>
+
+        {/* ISLAND 1 — LOGO */}
+        <div
+          onClick={() => handleNavClick('home')}
+          id="nav-logo-container"
+          className={`${islandShell} flex items-center gap-3 cursor-pointer group select-none px-4 py-2.5`}
+        >
+          <div className={`w-9 h-9 rounded-xl flex items-center justify-center transition-colors ${
+            isDarkTheme
+              ? 'bg-white/10 text-emerald-300 group-hover:bg-white/20'
+              : 'bg-emerald-50 text-emerald-600 group-hover:bg-emerald-100'
+          }`}>
+            <Leaf className="w-5 h-5" />
+          </div>
+          <div className="pr-1">
             <div className="flex items-baseline gap-1">
-              <span className={`font-sans text-xl font-bold tracking-tight transition-colors ${isDarkTheme ? 'text-white' : 'text-gray-900'}`}>AiGROW</span>
+              <span className={`font-sans text-lg font-bold tracking-tight leading-none transition-colors ${isDarkTheme ? 'text-white' : 'text-gray-900'}`}>AiGROW</span>
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
             </div>
-            <p className={`font-mono text-[9px] tracking-wider uppercase leading-none mt-0.5 transition-colors ${isDarkTheme ? 'text-gray-300' : 'text-gray-400'}`}>
+            <p className={`font-mono text-[8px] tracking-[0.2em] uppercase leading-none mt-1 transition-colors ${isDarkTheme ? 'text-gray-300' : 'text-gray-400'}`}>
               CodeGen International
             </p>
           </div>
         </div>
 
-        {/* Desktop Navigation Links */}
-        <div className="hidden md:flex items-center gap-6">
+        {/* ISLAND 2 — CENTER NAVIGATION (desktop) */}
+        <div className={`${islandShell} hidden md:flex items-center gap-1 px-2.5 py-2`}>
           {/* Home */}
           <button
             id="nav-item-home"
             onClick={() => handleNavClick('home')}
-            className={`font-sans text-sm tracking-wide transition-all relative py-2 ${getLinkClass(currentPage === 'home')}`}
+            className={`font-sans text-sm tracking-wide transition-all px-3 py-2 rounded-xl ${getLinkClass(currentPage === 'home')} ${
+              currentPage === 'home' ? (isDarkTheme ? 'bg-white/10' : 'bg-emerald-50/70') : 'hover:bg-black/5'
+            }`}
           >
             Home
-            {currentPage === 'home' && (
-              <span className={`absolute bottom-0 left-0 right-0 h-0.5 rounded-full ${isDarkTheme ? 'bg-emerald-400' : 'bg-emerald-500'}`} />
-            )}
           </button>
 
           {/* Services Dropdown Trigger */}
-          <div 
-            className="relative py-2"
+          <div
+            className="relative"
             onMouseEnter={() => handleMouseEnter('services')}
             onMouseLeave={handleMouseLeave}
           >
             <button
               id="nav-item-services-trigger"
               onClick={() => handleNavClick('services')}
-              className={`flex items-center gap-1 font-sans text-sm tracking-wide transition-all ${getLinkClass(isServicesActive)}`}
+              className={`flex items-center gap-1 font-sans text-sm tracking-wide transition-all px-3 py-2 rounded-xl ${getLinkClass(isServicesActive)} ${
+                isServicesActive ? (isDarkTheme ? 'bg-white/10' : 'bg-emerald-50/70') : 'hover:bg-black/5'
+              }`}
             >
               Services
               <ChevronDown className={`w-3.5 h-3.5 transition-transform ${openDropdown === 'services' ? 'rotate-180' : ''}`} />
             </button>
-
-            {/* Services Dropdown Panel */}
-            {openDropdown === 'services' && (
-              <div className="absolute top-full left-1/2 -translate-x-1/2 w-80 bg-white border border-gray-100 rounded-2xl shadow-xl p-4 flex flex-col gap-2 animate-slide-in z-50 mt-1 before:absolute before:-top-3 before:left-0 before:right-0 before:h-3 before:content-['']">
-                {servicesDropdown.map((sub) => (
-                  <button
-                    key={sub.id}
-                    onClick={() => handleNavClick(sub.id)}
-                    className="flex gap-3 items-start p-2.5 rounded-xl text-left hover:bg-emerald-50/50 transition-colors group"
-                  >
-                    <div className="mt-1 p-1 bg-emerald-50 group-hover:bg-emerald-100 text-emerald-600 rounded-lg transition-colors">
-                      {sub.icon}
-                    </div>
-                    <div>
-                      <div className="font-sans text-xs font-bold text-gray-950">{sub.label}</div>
-                      <div className="font-sans text-[10px] text-gray-400 mt-0.5 font-light">{sub.desc}</div>
-                    </div>
-                  </button>
-                ))}
-                <div className="border-t border-gray-100 mt-2 pt-2">
-                  <button
-                    onClick={() => handleNavClick('services')}
-                    className="w-full text-center py-2 text-xs font-bold text-emerald-600 hover:text-emerald-700 bg-emerald-50/30 hover:bg-emerald-50/70 rounded-lg transition-all"
-                  >
-                    View Services Overview
-                  </button>
-                </div>
-              </div>
-            )}
+            {openDropdown === 'services' && renderDropdownPanel(servicesDropdown, 'services', 'View Services Overview')}
           </div>
 
           {/* Products Dropdown Trigger */}
-          <div 
-            className="relative py-2"
+          <div
+            className="relative"
             onMouseEnter={() => handleMouseEnter('products')}
             onMouseLeave={handleMouseLeave}
           >
             <button
               id="nav-item-products-trigger"
               onClick={() => handleNavClick('products')}
-              className={`flex items-center gap-1 font-sans text-sm tracking-wide transition-all ${getLinkClass(isProductsActive)}`}
+              className={`flex items-center gap-1 font-sans text-sm tracking-wide transition-all px-3 py-2 rounded-xl ${getLinkClass(isProductsActive)} ${
+                isProductsActive ? (isDarkTheme ? 'bg-white/10' : 'bg-emerald-50/70') : 'hover:bg-black/5'
+              }`}
             >
               Products
               <ChevronDown className={`w-3.5 h-3.5 transition-transform ${openDropdown === 'products' ? 'rotate-180' : ''}`} />
             </button>
-
-            {/* Products Dropdown Panel */}
-            {openDropdown === 'products' && (
-              <div className="absolute top-full left-1/2 -translate-x-1/2 w-80 bg-white border border-gray-100 rounded-2xl shadow-xl p-4 flex flex-col gap-2 animate-slide-in z-50 mt-1 before:absolute before:-top-3 before:left-0 before:right-0 before:h-3 before:content-['']">
-                {productsDropdown.map((sub) => (
-                  <button
-                    key={sub.id}
-                    onClick={() => handleNavClick(sub.id)}
-                    className="flex gap-3 items-start p-2.5 rounded-xl text-left hover:bg-emerald-50/50 transition-colors group"
-                  >
-                    <div className="mt-1 p-1 bg-emerald-50 group-hover:bg-emerald-100 text-emerald-600 rounded-lg transition-colors">
-                      {sub.icon}
-                    </div>
-                    <div>
-                      <div className="font-sans text-xs font-bold text-gray-950">{sub.label}</div>
-                      <div className="font-sans text-[10px] text-gray-400 mt-0.5 font-light">{sub.desc}</div>
-                    </div>
-                  </button>
-                ))}
-                <div className="border-t border-gray-100 mt-2 pt-2">
-                  <button
-                    onClick={() => handleNavClick('products')}
-                    className="w-full text-center py-2 text-xs font-bold text-emerald-600 hover:text-emerald-700 bg-emerald-50/30 hover:bg-emerald-50/70 rounded-lg transition-all"
-                  >
-                    View Products Catalog
-                  </button>
-                </div>
-              </div>
-            )}
+            {openDropdown === 'products' && renderDropdownPanel(productsDropdown, 'products', 'View Products Catalog')}
           </div>
 
           {/* About Us Dropdown Trigger */}
-          <div 
-            className="relative py-2"
+          <div
+            className="relative"
             onMouseEnter={() => handleMouseEnter('about')}
             onMouseLeave={handleMouseLeave}
           >
             <button
               id="nav-item-about-trigger"
               onClick={() => handleNavClick('about')}
-              className={`flex items-center gap-1 font-sans text-sm tracking-wide transition-all ${getLinkClass(isAboutActive)}`}
+              className={`flex items-center gap-1 font-sans text-sm tracking-wide transition-all px-3 py-2 rounded-xl ${getLinkClass(isAboutActive)} ${
+                isAboutActive ? (isDarkTheme ? 'bg-white/10' : 'bg-emerald-50/70') : 'hover:bg-black/5'
+              }`}
             >
-              About Us
+              About
               <ChevronDown className={`w-3.5 h-3.5 transition-transform ${openDropdown === 'about' ? 'rotate-180' : ''}`} />
             </button>
-
-            {/* About Dropdown Panel */}
-            {openDropdown === 'about' && (
-              <div className="absolute top-full left-1/2 -translate-x-1/2 w-80 bg-white border border-gray-100 rounded-2xl shadow-xl p-4 flex flex-col gap-2 animate-slide-in z-50 mt-1 before:absolute before:-top-3 before:left-0 before:right-0 before:h-3 before:content-['']">
-                {aboutDropdown.map((sub) => (
-                  <button
-                    key={sub.id}
-                    onClick={() => handleNavClick(sub.id)}
-                    className="flex gap-3 items-start p-2.5 rounded-xl text-left hover:bg-emerald-50/50 transition-colors group"
-                  >
-                    <div className="mt-1 p-1 bg-emerald-50 group-hover:bg-emerald-100 text-emerald-600 rounded-lg transition-colors">
-                      {sub.icon}
-                    </div>
-                    <div>
-                      <div className="font-sans text-xs font-bold text-gray-950">{sub.label}</div>
-                      <div className="font-sans text-[10px] text-gray-400 mt-0.5 font-light">{sub.desc}</div>
-                    </div>
-                  </button>
-                ))}
-                <div className="border-t border-gray-100 mt-2 pt-2">
-                  <button
-                    onClick={() => handleNavClick('about')}
-                    className="w-full text-center py-2 text-xs font-bold text-emerald-600 hover:text-emerald-700 bg-emerald-50/30 hover:bg-emerald-50/70 rounded-lg transition-all"
-                  >
-                    View About Us Overview
-                  </button>
-                </div>
-              </div>
-            )}
+            {openDropdown === 'about' && renderDropdownPanel(aboutDropdown, 'about', 'View About Us Overview')}
           </div>
 
           {/* Projects */}
           <button
             id="nav-item-projects"
             onClick={() => handleNavClick('projects')}
-            className={`font-sans text-sm tracking-wide transition-all relative py-2 ${getLinkClass(currentPage === 'projects')}`}
+            className={`font-sans text-sm tracking-wide transition-all px-3 py-2 rounded-xl ${getLinkClass(currentPage === 'projects')} ${
+              currentPage === 'projects' ? (isDarkTheme ? 'bg-white/10' : 'bg-emerald-50/70') : 'hover:bg-black/5'
+            }`}
           >
             Projects
-            {currentPage === 'projects' && (
-              <span className={`absolute bottom-0 left-0 right-0 h-0.5 rounded-full ${isDarkTheme ? 'bg-emerald-400' : 'bg-emerald-500'}`} />
-            )}
           </button>
 
           {/* Shop */}
           <button
             id="nav-item-shop"
             onClick={() => handleNavClick('shop')}
-            className={`font-sans text-sm tracking-wide transition-all relative py-2 ${getLinkClass(currentPage === 'shop')}`}
+            className={`font-sans text-sm tracking-wide transition-all px-3 py-2 rounded-xl ${getLinkClass(currentPage === 'shop')} ${
+              currentPage === 'shop' ? (isDarkTheme ? 'bg-white/10' : 'bg-emerald-50/70') : 'hover:bg-black/5'
+            }`}
           >
             Shop
-            {currentPage === 'shop' && (
-              <span className={`absolute bottom-0 left-0 right-0 h-0.5 rounded-full ${isDarkTheme ? 'bg-emerald-400' : 'bg-emerald-500'}`} />
-            )}
           </button>
 
           {/* Contact */}
           <button
             id="nav-item-contact"
             onClick={() => handleNavClick('contact')}
-            className={`font-sans text-sm tracking-wide transition-all relative py-2 ${getLinkClass(currentPage === 'contact')}`}
+            className={`font-sans text-sm tracking-wide transition-all px-3 py-2 rounded-xl ${getLinkClass(currentPage === 'contact')} ${
+              currentPage === 'contact' ? (isDarkTheme ? 'bg-white/10' : 'bg-emerald-50/70') : 'hover:bg-black/5'
+            }`}
           >
             Contact
-            {currentPage === 'contact' && (
-              <span className={`absolute bottom-0 left-0 right-0 h-0.5 rounded-full ${isDarkTheme ? 'bg-emerald-400' : 'bg-emerald-500'}`} />
-            )}
           </button>
         </div>
 
-        {/* Action Button & Agri-Monitor Widget */}
-        <div className="hidden md:flex items-center gap-4">
-          
-          {/* Agri-Monitor Widget Dropdown Trigger */}
+        {/* ISLAND 3 — ACTIONS (desktop) */}
+        <div className={`${islandShell} hidden md:flex items-center gap-2 px-2.5 py-2`}>
+
+          {/* Live Farm Monitor */}
           <div className="relative">
             <button
               onClick={() => {
                 setIsTelemetryOpen(!isTelemetryOpen);
                 setOpenDropdown(null);
               }}
-              className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold tracking-wide transition-all duration-300 relative border ${
-                isTelemetryOpen 
-                  ? 'bg-emerald-600 text-white border-emerald-600 shadow-lg shadow-emerald-600/10' 
+              className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold tracking-wide transition-all duration-300 border ${
+                isTelemetryOpen
+                  ? 'bg-emerald-600 text-white border-emerald-600 shadow-md shadow-emerald-600/20'
                   : isDarkTheme
                     ? 'bg-white/10 text-white border-white/15 hover:bg-white/20'
                     : 'bg-emerald-50 text-emerald-800 border-emerald-100 hover:bg-emerald-100/70'
@@ -473,14 +384,14 @@ export default function Navbar({ currentPage, onNavigate }: NavbarProps) {
                 }`}></span>
               </span>
               <Sprout className="w-3.5 h-3.5" />
-              <span>Live Farm Monitor</span>
+              <span className="hidden lg:inline">Live Farm Monitor</span>
               <ChevronDown className={`w-3 h-3 transition-transform ${isTelemetryOpen ? 'rotate-180' : ''}`} />
             </button>
 
             {/* Telemetry Dropdown */}
             <AnimatePresence>
               {isTelemetryOpen && (
-                <motion.div 
+                <motion.div
                   initial={{ opacity: 0, y: 15, scale: 0.95 }}
                   animate={{ opacity: 1, y: 0, scale: 1 }}
                   exit={{ opacity: 0, y: 10, scale: 0.95 }}
@@ -495,7 +406,7 @@ export default function Navbar({ currentPage, onNavigate }: NavbarProps) {
                       </h4>
                       <p className="font-sans text-[10px] text-gray-400 mt-0.5">Real-time Sri Lankan microclimates</p>
                     </div>
-                    
+
                     <button
                       onClick={handleRefresh}
                       disabled={isRefreshing}
@@ -513,8 +424,8 @@ export default function Navbar({ currentPage, onNavigate }: NavbarProps) {
                         key={zone.id}
                         onClick={() => setSelectedZone(zone.id)}
                         className={`py-1.5 text-[10px] font-bold rounded-lg transition-all ${
-                          selectedZone === zone.id 
-                            ? 'bg-white text-emerald-700 shadow-sm border border-emerald-100/30' 
+                          selectedZone === zone.id
+                            ? 'bg-white text-emerald-700 shadow-sm border border-emerald-100/30'
                             : 'text-gray-500 hover:text-gray-900'
                         }`}
                       >
@@ -532,8 +443,8 @@ export default function Navbar({ currentPage, onNavigate }: NavbarProps) {
                           <span className="font-mono text-[9px] text-gray-400 block mt-0.5">{currentActiveZone.elevation}</span>
                         </div>
                         <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wider ${
-                          currentActiveZone.status === 'optimal' 
-                            ? 'bg-emerald-50 text-emerald-800 border border-emerald-100' 
+                          currentActiveZone.status === 'optimal'
+                            ? 'bg-emerald-50 text-emerald-800 border border-emerald-100'
                             : 'bg-amber-50 text-amber-800 border border-amber-100 animate-pulse'
                         }`}>
                           <span className={`w-1.5 h-1.5 rounded-full ${currentActiveZone.status === 'optimal' ? 'bg-emerald-500' : 'bg-amber-500'}`}></span>
@@ -597,34 +508,41 @@ export default function Navbar({ currentPage, onNavigate }: NavbarProps) {
               )}
             </AnimatePresence>
           </div>
-          
+
           <button
             id="nav-btn-start-project"
             onClick={() => handleNavClick('contact')}
-            className="flex items-center gap-2 px-5 py-2.5 bg-emerald-600 text-white rounded-xl text-sm font-medium transition-all duration-300 hover:bg-emerald-700 hover:shadow-lg hover:shadow-emerald-600/10 active:scale-98 animate-pulse-once"
+            className="flex items-center gap-2 px-4 py-2.5 bg-emerald-600 text-white rounded-xl text-sm font-medium transition-all duration-300 hover:bg-emerald-700 hover:shadow-lg hover:shadow-emerald-600/20"
           >
             Start Your Project
             <ArrowRight className="w-4 h-4" />
           </button>
         </div>
 
-        {/* Mobile Hamburger Button */}
+        {/* MOBILE HAMBURGER ISLAND */}
         <button
           id="nav-mobile-toggle"
           onClick={() => setIsOpen(!isOpen)}
-          className={`md:hidden p-2 transition-colors ${
-            isDarkTheme ? 'text-white hover:text-emerald-300' : 'text-gray-600 hover:text-gray-900'
-          } focus:outline-none`}
+          className={`${islandShell} md:hidden flex items-center justify-center w-12 h-12 transition-colors ${
+            isDarkTheme ? 'text-white' : 'text-gray-700'
+          }`}
           aria-label="Toggle Menu"
         >
           {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
         </button>
       </div>
 
-      {/* Mobile Menu Drawer with Expandable Accordions */}
-      {isOpen && (
-        <div className="md:hidden absolute top-full left-0 w-full bg-white border-b border-gray-100 shadow-xl transition-all duration-300 z-50 overflow-y-auto max-h-[calc(100vh-80px)]">
-          <div className="flex flex-col p-6 gap-3">
+      {/* MOBILE MENU DRAWER (floating card) */}
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            transition={{ duration: 0.2 }}
+            className="md:hidden mx-4 mt-3 bg-white border border-gray-100 rounded-3xl shadow-2xl z-50 overflow-y-auto max-h-[calc(100vh-120px)]"
+          >
+          <div className="flex flex-col p-5 gap-3">
             {/* Home */}
             <button
               onClick={() => handleNavClick('home')}
@@ -832,9 +750,9 @@ export default function Navbar({ currentPage, onNavigate }: NavbarProps) {
               <ArrowRight className="w-4 h-4" />
             </button>
           </div>
-        </div>
-      )}
-      </nav>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

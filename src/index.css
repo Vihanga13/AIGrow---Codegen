@@ -1,9 +1,12 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap');
 @import "tailwindcss";
 
 @theme {
-  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
-  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+  /* San Francisco (SF Pro) — Apple system stack. Renders SF Pro on Apple
+     devices; falls back to the platform UI font elsewhere. To force SF Pro on
+     every OS, self-host the licensed font files and add an @font-face below. */
+  --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "SF Pro", "Helvetica Neue", "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "SF Mono", ui-monospace, "JetBrains Mono", SFMono-Regular, Menlo, monospace;
 
   /* Sleek Interface brand green remapping */
   --color-emerald-50: #E8EEE9;
@@ -25,9 +28,68 @@
 
 /* Base custom defaults */
 body {
-  background-color: #FAFAFA;
   color: #1F2321;
   font-family: var(--font-sans);
+  /* Soft, brand-green tinted canvas so glass surfaces read across every page */
+  background-color: #EFF5F0;
+  background-image:
+    radial-gradient(1100px 600px at 100% -8%, rgba(76, 154, 91, 0.14), transparent 60%),
+    radial-gradient(900px 500px at -10% 18%, rgba(76, 154, 91, 0.10), transparent 55%),
+    linear-gradient(180deg, #F3F8F3 0%, #E9F1EB 100%);
+  background-attachment: fixed;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Brand-green custom scrollbar */
+* {
+  scrollbar-color: rgba(76, 154, 91, 0.5) transparent;
+  scrollbar-width: thin;
+}
+*::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+*::-webkit-scrollbar-thumb {
+  background-color: rgba(76, 154, 91, 0.45);
+  border-radius: 999px;
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+*::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(76, 154, 91, 0.7);
+}
+
+/* Green text selection everywhere */
+::selection {
+  background-color: rgba(76, 154, 91, 0.22);
+  color: #1E3A23;
+}
+
+/* ------------------------------------------------------------------ */
+/* Reusable frosted-glass surfaces (apply on any card / panel)        */
+/* ------------------------------------------------------------------ */
+.glass {
+  background-color: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(18px) saturate(150%);
+  -webkit-backdrop-filter: blur(18px) saturate(150%);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+}
+
+/* Green-tinted frosted glass for a stronger brand feel */
+.glass-green {
+  background-color: rgba(76, 154, 91, 0.08);
+  backdrop-filter: blur(18px) saturate(160%);
+  -webkit-backdrop-filter: blur(18px) saturate(160%);
+  border: 1px solid rgba(76, 154, 91, 0.18);
+}
+
+/* Dark glass for use over imagery / dark sections */
+.glass-dark {
+  background-color: rgba(15, 30, 18, 0.45);
+  backdrop-filter: blur(18px) saturate(150%);
+  -webkit-backdrop-filter: blur(18px) saturate(150%);
+  border: 1px solid rgba(255, 255, 255, 0.12);
 }
 
 /* Micro-interaction animation utilities */

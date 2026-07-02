@@ -87,7 +87,7 @@ export default function ProjectsView({
   };
 
   return (
-    <div className="bg-[#FAFDFB]/10 min-h-screen text-[#1F2321] py-12 px-6">
+    <div className="bg-[#FAFDFB]/10 min-h-screen py-12 px-6">
       <div className="w-full mx-auto">
         
         {activeProject ? (

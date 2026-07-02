@@ -216,10 +216,10 @@ export default function HomeView({
   ];
 
   return (
-    <div className="bg-[#FAFDFB]/30 min-h-screen text-[#1F2321] selection:bg-emerald-100 selection:text-emerald-900 overflow-x-hidden">
+    <div className="bg-[#FAFDFB]/30 min-h-screen selection:bg-emerald-100 selection:text-emerald-900 overflow-x-hidden">
       
       {/* 1. HERO SECTION (CINEMATIC SPLIT-SCREEN RESONSIVE UNIQUE LAYOUT BASED ON USER SPECIFICATION) */}
-      <section id="hero-split-showcase" className="relative h-screen min-h-[680px] lg:min-h-[820px] flex items-center bg-gray-950 text-white overflow-hidden border-b border-white/5 select-none">
+      <section id="hero-split-showcase" className="relative h-screen flex items-center bg-gray-950 text-white overflow-hidden border-b border-white/5 select-none">
 
         {/* Full Screen Cinematic Background Videos (Cross-fading with Framer Motion) */}
         <div className="absolute inset-0 z-0 overflow-hidden">
@@ -244,14 +244,14 @@ export default function HomeView({
           ))}
 
           {/* Subtle Ambient Vignettes & Radial Gradients (kept light so the footage stays visible) */}
-          <div className="absolute inset-0 bg-gradient-to-r from-gray-950/80 via-gray-950/40 to-transparent z-[1]"></div>
-          <div className="absolute inset-0 bg-gradient-to-t from-gray-950/70 via-transparent to-gray-950/30 z-[1]"></div>
+          <div className="absolute inset-0 from-gray-950/80 via-gray-950/40 to-transparent"></div>
+          <div className="absolute inset-0 from-gray-950/70 via-transparent to-gray-950/30"></div>
         </div>
 
         {/* Dynamic Architectural Split Background Cover Pane (Desktop Only: Covers precisely 45% of width) */}
-        <div className="absolute inset-y-0 left-0 w-full lg:w-[45%] bg-gradient-to-b from-[#081510]/80 via-[#030e0a]/70 to-[#020a07]/85 backdrop-blur-md border-r border-white/[0.06] z-10 hidden lg:block">
+        <div className="absolute inset-y-0 left-0 w-full lg:w-[45%] from-[#081510]/80 via-[#030e0a]/70 to-[#020a07]/85 backdrop-blur-md border-r z-10 hidden lg:block">
           {/* Subtle vertical aesthetic line matching the architectural theme */}
-          <div className="absolute right-0 inset-y-0 w-[1px] bg-gradient-to-b from-transparent via-emerald-500/10 to-transparent"></div>
+          <div className="absolute right-0 inset-y-0 from-transparent via-emerald-500/10 to-transparent"></div>
         </div>
 
         {/* Decorative Floating Hanging Botanical Branches (Direct match to the uploaded visual layout!) */}
@@ -513,7 +513,7 @@ export default function HomeView({
               <img
                 src="https://images.unsplash.com/photo-1516253593875-bd7ba052fbc5?auto=format&fit=crop&q=80&w=1000"
                 alt="High-tech farming research"
-                className="w-full h-80 md:h-[420px] object-cover img-zoom"
+                className="w-full h-80 object-cover img-zoom"
                 referrerPolicy="no-referrer"
               />
               <div className="absolute inset-0 bg-emerald-950/10 mix-blend-multiply"></div>
@@ -631,10 +631,10 @@ export default function HomeView({
               <img
                 src="https://images.unsplash.com/photo-1535090486071-4157038d9885?auto=format&fit=crop&q=80&w=1000"
                 alt="Resilient crops and sun"
-                className="w-full h-80 md:h-[450px] object-cover img-zoom"
+                className="w-full h-80 object-cover img-zoom"
                 referrerPolicy="no-referrer"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-emerald-950/20 to-transparent"></div>
+              <div className="absolute inset-0 from-emerald-950/20 to-transparent"></div>
             </div>
           </motion.div>
 
@@ -758,7 +758,7 @@ export default function HomeView({
             transition={{ duration: 0.7, ease: [0.215, 0.610, 0.355, 1.000] }}
             className="bg-white rounded-3xl border border-gray-100 shadow-xl shadow-gray-100/50 overflow-hidden grid grid-cols-1 lg:grid-cols-12"
           >
-            <div className="lg:col-span-5 h-64 sm:h-80 lg:h-auto min-h-[320px] relative img-zoom-wrap">
+            <div className="lg:col-span-5 h-64 sm:h-80 lg:h-auto relative img-zoom-wrap">
               <img
                 src={activeProject.image}
                 alt={activeProject.title}
@@ -1009,7 +1009,7 @@ export default function HomeView({
             </div>
 
             {/* Price Estimate Live Invoice (Right 5 Columns) */}
-            <div className="lg:col-span-5 bg-white border border-gray-100 rounded-3xl p-6 shadow-md relative overflow-hidden flex flex-col justify-between h-full min-h-[480px]">
+            <div className="lg:col-span-5 bg-white border border-gray-100 rounded-3xl p-6 shadow-md relative overflow-hidden flex flex-col justify-between h-full">
               {/* Carbon Invoice Header */}
               <div>
                 <div className="flex justify-between items-start mb-6 border-b border-gray-100 pb-4">
