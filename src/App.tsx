@@ -23,7 +23,18 @@ import TermsView from './components/TermsView';
 // New Subpage Views
 import ServiceDetailPage from './components/ServiceDetailPage';
 import ProductCategoryPage from './components/ProductCategoryPage';
-import ProductDetailPage from './components/ProductDetailPage';
+
+// Individual product pages (one dedicated file/route per product)
+import SmartClimatePage from './components/products/SmartClimatePage';
+import GrowLightPage from './components/products/GrowLightPage';
+import HumidifierPage from './components/products/HumidifierPage';
+import SoilMoistureSensorPage from './components/products/SoilMoistureSensorPage';
+import EcPhMeterPage from './components/products/EcPhMeterPage';
+import EnergyMeterPage from './components/products/EnergyMeterPage';
+import WaterMeterPage from './components/products/WaterMeterPage';
+import FertigationSystemPage from './components/products/FertigationSystemPage';
+import PlantFeederPage from './components/products/PlantFeederPage';
+import SmartDripperPage from './components/products/SmartDripperPage';
 import AboutStoryPage from './components/AboutStoryPage';
 import AboutCommitmentPage from './components/AboutCommitmentPage';
 import AboutNewsPage from './components/AboutNewsPage';
@@ -61,18 +72,6 @@ export default function App() {
   };
 
   const renderActivePage = () => {
-    // Dedicated single-product pages: routes look like "product-<id>"
-    // (note: category pages are "products-*" plural, so they won't match here).
-    if (currentPage.startsWith('product-')) {
-      return (
-        <ProductDetailPage
-          productId={currentPage.replace('product-', '')}
-          onNavigate={handleNavigate}
-          onSelectProductForEnquiry={handleSelectProductForEnquiry}
-        />
-      );
-    }
-
     switch (currentPage) {
       case 'home':
         return (
@@ -148,12 +147,35 @@ export default function App() {
         );
       case 'products-irrigation':
         return (
-          <ProductCategoryPage 
+          <ProductCategoryPage
             category="irrigation"
             onNavigate={handleNavigate}
             onSelectProductForEnquiry={handleSelectProductForEnquiry}
           />
         );
+
+      // ---- Individual product pages (one dedicated route each) ----
+      case 'product-smart-climate':
+        return <SmartClimatePage onNavigate={handleNavigate} onSelectProductForEnquiry={handleSelectProductForEnquiry} />;
+      case 'product-grow-light':
+        return <GrowLightPage onNavigate={handleNavigate} onSelectProductForEnquiry={handleSelectProductForEnquiry} />;
+      case 'product-humidifier':
+        return <HumidifierPage onNavigate={handleNavigate} onSelectProductForEnquiry={handleSelectProductForEnquiry} />;
+      case 'product-soil-moisture':
+        return <SoilMoistureSensorPage onNavigate={handleNavigate} onSelectProductForEnquiry={handleSelectProductForEnquiry} />;
+      case 'product-ec-ph-meter':
+        return <EcPhMeterPage onNavigate={handleNavigate} onSelectProductForEnquiry={handleSelectProductForEnquiry} />;
+      case 'product-energy-meter':
+        return <EnergyMeterPage onNavigate={handleNavigate} onSelectProductForEnquiry={handleSelectProductForEnquiry} />;
+      case 'product-water-meter':
+        return <WaterMeterPage onNavigate={handleNavigate} onSelectProductForEnquiry={handleSelectProductForEnquiry} />;
+      case 'product-fertigation-system':
+        return <FertigationSystemPage onNavigate={handleNavigate} onSelectProductForEnquiry={handleSelectProductForEnquiry} />;
+      case 'product-plant-feeder':
+        return <PlantFeederPage onNavigate={handleNavigate} onSelectProductForEnquiry={handleSelectProductForEnquiry} />;
+      case 'product-smart-dripper':
+        return <SmartDripperPage onNavigate={handleNavigate} onSelectProductForEnquiry={handleSelectProductForEnquiry} />;
+
       case 'about':
         return (
           <AboutView 

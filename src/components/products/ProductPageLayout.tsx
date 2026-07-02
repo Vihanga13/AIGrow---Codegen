@@ -11,17 +11,17 @@ import {
   ShoppingBag,
   Info
 } from 'lucide-react';
-import { PageId, Product } from '../types';
-import { PRODUCTS_DATA } from '../data';
+import { PageId, Product } from '../../types';
+import { PRODUCTS_DATA } from '../../data';
 
-interface ProductDetailPageProps {
-  /** The product's data.ts id, e.g. "smart-climate". */
-  productId: string;
+interface ProductPageLayoutProps {
+  /** The product this page represents. Each product page passes its own. */
+  product: Product;
   onNavigate: (pageId: PageId) => void;
   onSelectProductForEnquiry: (productName: string) => void;
 }
 
-// Category → route + presentation metadata (kept in one place for clarity)
+// Category → route + presentation metadata (shared visual template only)
 const CATEGORY_META: Record<
   Product['category'],
   { label: string; route: PageId; icon: typeof Cpu }
@@ -31,33 +31,20 @@ const CATEGORY_META: Record<
   irrigation: { label: 'Irrigation Optimisation', route: 'products-irrigation', icon: Droplet }
 };
 
-export default function ProductDetailPage({
-  productId,
+/**
+ * Presentational template shared by the individual product pages.
+ * It renders whatever `product` the page hands it — the pages themselves are
+ * the separate, named entry points (see ./SmartClimatePage.tsx, etc.).
+ */
+export default function ProductPageLayout({
+  product,
   onNavigate,
   onSelectProductForEnquiry
-}: ProductDetailPageProps) {
-  const product = PRODUCTS_DATA.find((p) => p.id === productId);
-
+}: ProductPageLayoutProps) {
   const go = (pageId: PageId) => {
     onNavigate(pageId);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
-
-  // Graceful fallback if an unknown product id is routed to
-  if (!product) {
-    return (
-      <div className="min-h-screen px-6 py-24 text-center text-[#1F2321]">
-        <h1 className="font-sans text-2xl font-bold text-gray-900">Product not found</h1>
-        <button
-          onClick={() => go('products')}
-          className="mt-6 inline-flex items-center gap-2 rounded-xl bg-emerald-600 px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-emerald-700"
-        >
-          <ArrowLeft className="h-4 w-4" />
-          Back to Products
-        </button>
-      </div>
-    );
-  }
 
   const meta = CATEGORY_META[product.category];
   const CategoryIcon = meta.icon;
@@ -95,7 +82,6 @@ export default function ProductDetailPage({
 
         {/* Detail card */}
         <motion.div
-          key={product.id}
           initial={{ opacity: 0, y: 15 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
