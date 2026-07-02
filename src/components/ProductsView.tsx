@@ -1,16 +1,8 @@
 import { useState } from 'react';
 import { motion } from 'motion/react';
-import { 
-  Cpu, 
-  Activity, 
-  Droplet, 
-  Settings, 
-  CheckCircle, 
-  ChevronRight, 
-  ArrowLeft, 
-  ArrowRight, 
-  Info,
-  ShieldAlert
+import {
+  ChevronRight,
+  ArrowRight
 } from 'lucide-react';
 import { PageId, Product } from '../types';
 import { PRODUCTS_DATA } from '../data';
@@ -25,7 +17,6 @@ export default function ProductsView({
   onSelectProductForEnquiry
 }: ProductsViewProps) {
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
-  const [activeProduct, setActiveProduct] = useState<Product | null>(null);
 
   const categories = [
     { id: 'all', label: 'All Hardware' },
@@ -34,136 +25,26 @@ export default function ProductsView({
     { id: 'irrigation', label: 'Irrigation Optimisation' }
   ];
 
-  const filteredProducts = selectedCategory === 'all' 
-    ? PRODUCTS_DATA 
+  const filteredProducts = selectedCategory === 'all'
+    ? PRODUCTS_DATA
     : PRODUCTS_DATA.filter(p => p.category === selectedCategory);
 
-  const handleEnquire = (product: Product) => {
-    onSelectProductForEnquiry(product.name);
-    onNavigate('contact');
+  const go = (pageId: PageId) => {
+    onNavigate(pageId);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
+  const handleEnquire = (product: Product) => {
+    onSelectProductForEnquiry(product.name);
+    go('contact');
+  };
+
   return (
-    <div className="bg-[#FAFDFB]/10 min-h-screen text-[#1F2321] py-12 px-6">
+    <div className="min-h-screen text-[#1F2321] py-12 px-6">
       <div className="w-full mx-auto">
-        
-        {/* Detail Screen (If activeProduct is set, show detailed product sub-page layout!) */}
-        {activeProduct ? (
-          <motion.div 
-            key={activeProduct.id}
-            initial={{ opacity: 0, y: 15 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            className="flex flex-col gap-8"
-          >
-            {/* Back button */}
-            <button
-              onClick={() => {
-                setActiveProduct(null);
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-              }}
-              className="w-fit flex items-center gap-2 text-sm text-gray-500 hover:text-emerald-600 transition-colors font-semibold"
-            >
-              <ArrowLeft className="w-4 h-4" />
-              Back to Products Catalog
-            </button>
 
-            {/* Product detail block */}
-            <div className="bg-white rounded-3xl border border-gray-100 p-8 md:p-12 shadow-xl shadow-gray-100/50 grid grid-cols-1 lg:grid-cols-12 gap-12">
-              
-              {/* Product Info Column */}
-              <div className="lg:col-span-7 flex flex-col gap-6">
-                <div>
-                  <span className="font-mono text-xs text-emerald-600 uppercase tracking-widest font-semibold block mb-2">
-                    {activeProduct.categoryLabel}
-                  </span>
-                  <h1 className="font-sans text-3xl md:text-4xl font-extrabold text-gray-950 tracking-tight leading-none mb-3">
-                    {activeProduct.name}
-                  </h1>
-                  <p className="font-sans text-emerald-800 text-lg italic font-medium">
-                    "{activeProduct.catchphrase}"
-                  </p>
-                </div>
-
-                <p className="font-sans text-gray-600 leading-relaxed font-light text-sm md:text-base border-t border-gray-50 pt-4">
-                  {activeProduct.description}
-                </p>
-
-                {/* Features */}
-                <div className="flex flex-col gap-4">
-                  <h3 className="font-sans text-sm font-bold text-gray-900">Key Core Capabilities</h3>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    {activeProduct.features.map((feat, idx) => (
-                      <div key={idx} className="flex gap-2.5 items-start text-xs text-gray-700 leading-relaxed">
-                        <CheckCircle className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />
-                        <span className="font-sans font-light">{feat}</span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Price (if exists) and Action buttons */}
-                <div className="flex flex-wrap items-center gap-6 mt-6 pt-6 border-t border-gray-100">
-                  {activeProduct.price && (
-                    <div className="flex flex-col">
-                      <span className="font-sans text-xs text-gray-400 font-semibold uppercase tracking-wider">Est. Unit Price</span>
-                      <span className="font-mono text-2xl font-bold text-gray-900 mt-0.5">{activeProduct.price}</span>
-                    </div>
-                  )}
-
-                  <div className="flex gap-4 grow sm:grow-0">
-                    <button
-                      id="product-detail-enquire"
-                      onClick={() => handleEnquire(activeProduct)}
-                      className="grow sm:grow-0 px-7 py-3.5 bg-emerald-600 hover:bg-emerald-700 text-white font-medium rounded-xl text-sm transition-all shadow-md shadow-emerald-600/10 flex items-center justify-center gap-2"
-                    >
-                      Enquire about Product
-                      <ArrowRight className="w-4 h-4" />
-                    </button>
-                    
-                    <button
-                      onClick={() => {
-                        onNavigate('shop');
-                        window.scrollTo({ top: 0, behavior: 'smooth' });
-                      }}
-                      className="hidden sm:flex px-7 py-3.5 bg-gray-50 text-gray-700 hover:bg-gray-100 font-medium rounded-xl text-sm transition-all border border-gray-100 items-center gap-2"
-                    >
-                      View in Shop
-                    </button>
-                  </div>
-                </div>
-
-              </div>
-
-              {/* Specs Column */}
-              <div className="lg:col-span-5 bg-gray-50/70 rounded-2xl p-6 md:p-8 border border-gray-100">
-                <div className="flex items-center gap-2 mb-6 border-b border-gray-200 pb-3">
-                  <Settings className="w-5 h-5 text-emerald-600" />
-                  <h3 className="font-sans text-sm font-bold text-gray-900 uppercase tracking-wider">Technical Specifications</h3>
-                </div>
-
-                {/* Specs List */}
-                <div className="flex flex-col gap-4">
-                  {activeProduct.specs.map((spec, sIdx) => (
-                    <div key={sIdx} className="flex flex-col border-b border-gray-200/50 pb-2">
-                      <span className="font-sans text-[11px] text-gray-400 font-bold uppercase tracking-wide">{spec.label}</span>
-                      <span className="font-mono text-xs font-medium text-gray-800 mt-1">{spec.value}</span>
-                    </div>
-                  ))}
-                </div>
-
-                <div className="mt-8 flex gap-2 items-start bg-emerald-50/50 border border-emerald-100/50 p-4 rounded-xl text-xs text-emerald-800 leading-relaxed font-light">
-                  <Info className="w-4.5 h-4.5 text-emerald-600 shrink-0 mt-0.5" />
-                  <p>All hardware includes a 2-year warranty, CodeGen software integrations, and Colombo-based technical field support.</p>
-                </div>
-              </div>
-
-            </div>
-          </motion.div>
-        ) : (
-          /* Main Catalog Grid View */
-          <div className="flex flex-col gap-10">
+        {/* Main Catalog Grid View */}
+        <div className="flex flex-col gap-10">
             {/* Title block */}
             <motion.div 
               initial={{ opacity: 0, y: 15 }}
@@ -237,14 +118,14 @@ export default function ProductsView({
                   initial={{ opacity: 0, y: 15 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.4, delay: index * 0.04 }}
-                  className="bg-white rounded-2xl border border-gray-100 p-6 flex flex-col justify-between transition-all duration-300 hover:shadow-xl hover:shadow-gray-100 hover:-translate-y-1"
+                  className="glass rounded-2xl p-6 flex flex-col justify-between transition-all duration-300 hover:shadow-xl hover:shadow-emerald-900/5 hover:-translate-y-1"
                 >
                   <div className="flex flex-col gap-4">
                     <div className="flex items-center justify-between">
                       <span className="text-[10px] font-mono font-bold text-gray-400 uppercase tracking-widest bg-gray-50 px-2.5 py-1 rounded">
                         {product.categoryLabel.split(' ')[0]}
                       </span>
-                      
+
                       {product.price && (
                         <span className="font-mono text-xs font-semibold text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded">
                           {product.price}
@@ -253,7 +134,7 @@ export default function ProductsView({
                     </div>
 
                     <div>
-                      <h3 className="font-sans text-base font-bold text-gray-950 hover:text-emerald-600 cursor-pointer transition-colors" onClick={() => setActiveProduct(product)}>
+                      <h3 className="font-sans text-base font-bold text-gray-950 hover:text-emerald-600 cursor-pointer transition-colors" onClick={() => go(`product-${product.id}` as PageId)}>
                         {product.name}
                       </h3>
                       <p className="font-sans text-xs text-emerald-800 italic font-medium mt-1">
@@ -279,13 +160,10 @@ export default function ProductsView({
                   <div className="flex items-center justify-between mt-6 pt-4 border-t border-gray-50 gap-2">
                     <button
                       id={`product-btn-view-spec-${product.id}`}
-                      onClick={() => {
-                        setActiveProduct(product);
-                        window.scrollTo({ top: 0, behavior: 'smooth' });
-                      }}
+                      onClick={() => go(`product-${product.id}` as PageId)}
                       className="text-xs text-gray-600 font-semibold hover:text-emerald-600 flex items-center gap-1 group"
                     >
-                      Specifications
+                      View Product
                       <ChevronRight className="w-3.5 h-3.5 transition-transform group-hover:translate-x-0.5" />
                     </button>
 
@@ -300,8 +178,7 @@ export default function ProductsView({
                 </motion.div>
               ))}
             </motion.div>
-          </div>
-        )}
+        </div>
 
       </div>
     </div>

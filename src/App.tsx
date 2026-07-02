@@ -23,6 +23,7 @@ import TermsView from './components/TermsView';
 // New Subpage Views
 import ServiceDetailPage from './components/ServiceDetailPage';
 import ProductCategoryPage from './components/ProductCategoryPage';
+import ProductDetailPage from './components/ProductDetailPage';
 import AboutStoryPage from './components/AboutStoryPage';
 import AboutCommitmentPage from './components/AboutCommitmentPage';
 import AboutNewsPage from './components/AboutNewsPage';
@@ -60,6 +61,18 @@ export default function App() {
   };
 
   const renderActivePage = () => {
+    // Dedicated single-product pages: routes look like "product-<id>"
+    // (note: category pages are "products-*" plural, so they won't match here).
+    if (currentPage.startsWith('product-')) {
+      return (
+        <ProductDetailPage
+          productId={currentPage.replace('product-', '')}
+          onNavigate={handleNavigate}
+          onSelectProductForEnquiry={handleSelectProductForEnquiry}
+        />
+      );
+    }
+
     switch (currentPage) {
       case 'home':
         return (
