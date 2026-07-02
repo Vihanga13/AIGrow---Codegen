@@ -215,47 +215,41 @@ export default function HomeView({
     }
   ];
 
-  // Computed values for greenhouse simulator
-  const currentTemp = 28.4 - (simFans ? 3.2 : 0) - (simShade ? 1.8 : 0);
-  const currentHumidity = 82 - (simFans ? 8 : 0) + (simWater ? 6 : 0);
-  const currentCO2 = 650 - (simFans ? 120 : 0);
-  const currentMoisture = 42 + (simWater ? 28 : 0);
-
   return (
     <div className="bg-[#FAFDFB]/30 min-h-screen text-[#1F2321] selection:bg-emerald-100 selection:text-emerald-900 overflow-x-hidden">
       
       {/* 1. HERO SECTION (CINEMATIC SPLIT-SCREEN RESONSIVE UNIQUE LAYOUT BASED ON USER SPECIFICATION) */}
       <section id="hero-split-showcase" className="relative h-screen min-h-[680px] lg:min-h-[820px] flex items-center bg-gray-950 text-white overflow-hidden border-b border-white/5 select-none">
-        
+
         {/* Full Screen Cinematic Background Videos (Cross-fading with Framer Motion) */}
         <div className="absolute inset-0 z-0 overflow-hidden">
           {HERO_SLIDES.map((slide, idx) => (
             <motion.div
               key={idx}
               initial={{ opacity: 0 }}
-              animate={{ opacity: currentSlideIdx === idx ? 0.35 : 0 }}
+              animate={{ opacity: currentSlideIdx === idx ? 1 : 0 }}
               transition={{ duration: 1.2, ease: "easeInOut" }}
               className="absolute inset-0 w-full h-full"
             >
-              <video 
-                autoPlay 
-                loop 
-                muted 
-                playsInline 
+              <video
+                autoPlay
+                loop
+                muted
+                playsInline
                 className="absolute inset-0 w-full h-full object-cover scale-105"
               >
                 <source src={slide.video} type="video/mp4" />
               </video>
             </motion.div>
           ))}
-          
-          {/* Subtle Ambient Vignettes & Radial Gradients */}
-          <div className="absolute inset-0 bg-gradient-to-r from-gray-950 via-gray-950/70 to-transparent z-[1]"></div>
-          <div className="absolute inset-0 bg-gradient-to-t from-gray-950 via-transparent to-gray-950/40 z-[1]"></div>
+
+          {/* Subtle Ambient Vignettes & Radial Gradients (kept light so the footage stays visible) */}
+          <div className="absolute inset-0 bg-gradient-to-r from-gray-950/80 via-gray-950/40 to-transparent z-[1]"></div>
+          <div className="absolute inset-0 bg-gradient-to-t from-gray-950/70 via-transparent to-gray-950/30 z-[1]"></div>
         </div>
 
         {/* Dynamic Architectural Split Background Cover Pane (Desktop Only: Covers precisely 45% of width) */}
-        <div className="absolute inset-y-0 left-0 w-full lg:w-[45%] bg-gradient-to-b from-[#081510]/95 via-[#030e0a]/92 to-[#020a07]/98 backdrop-blur-2xl border-r border-white/[0.06] z-10 hidden lg:block">
+        <div className="absolute inset-y-0 left-0 w-full lg:w-[45%] bg-gradient-to-b from-[#081510]/80 via-[#030e0a]/70 to-[#020a07]/85 backdrop-blur-md border-r border-white/[0.06] z-10 hidden lg:block">
           {/* Subtle vertical aesthetic line matching the architectural theme */}
           <div className="absolute right-0 inset-y-0 w-[1px] bg-gradient-to-b from-transparent via-emerald-500/10 to-transparent"></div>
         </div>
@@ -263,32 +257,32 @@ export default function HomeView({
         {/* Decorative Floating Hanging Botanical Branches (Direct match to the uploaded visual layout!) */}
         <div className="absolute top-0 left-[35%] lg:left-[43%] -translate-x-1/2 w-56 h-56 opacity-80 pointer-events-none z-30 hidden sm:block">
           <svg viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-full text-emerald-400/90 drop-shadow-[0_8px_24px_rgba(16,185,129,0.15)]">
-            <path 
-              d="M15 15 C 65 45, 95 85, 105 125" 
-              stroke="currentColor" 
-              strokeWidth="2.5" 
+            <path
+              d="M15 15 C 65 45, 95 85, 105 125"
+              stroke="currentColor"
+              strokeWidth="2.5"
               strokeLinecap="round"
               className="opacity-40 text-emerald-500"
             />
             {/* Elegant botanical leafy outlines & solids */}
-            <path 
-              d="M52 42 C 37 27, 22 42, 52 72 C 82 42, 67 27, 52 42 Z" 
-              fill="currentColor" 
+            <path
+              d="M52 42 C 37 27, 22 42, 52 72 C 82 42, 67 27, 52 42 Z"
+              fill="currentColor"
               className="text-emerald-500 fill-current opacity-90"
             />
-            <path 
-              d="M92 82 C 77 67, 62 82, 92 112 C 122 82, 107 67, 92 82 Z" 
-              fill="currentColor" 
+            <path
+              d="M92 82 C 77 67, 62 82, 92 112 C 122 82, 107 67, 92 82 Z"
+              fill="currentColor"
               className="text-emerald-400 fill-current opacity-85"
             />
-            <path 
-              d="M78 118 C 65 108, 53 118, 78 143 C 103 118, 91 108, 78 118 Z" 
-              fill="currentColor" 
+            <path
+              d="M78 118 C 65 108, 53 118, 78 143 C 103 118, 91 108, 78 118 Z"
+              fill="currentColor"
               className="text-emerald-600 fill-current opacity-70"
             />
-            <path 
-              d="M112 148 C 102 141, 94 148, 112 165 C 130 148, 122 141, 112 148 Z" 
-              fill="currentColor" 
+            <path
+              d="M112 148 C 102 141, 94 148, 112 165 C 130 148, 122 141, 112 148 Z"
+              fill="currentColor"
               className="text-teal-400 fill-current opacity-90"
             />
           </svg>
@@ -296,13 +290,13 @@ export default function HomeView({
 
         {/* Main Content Layout Container */}
         <div className="relative z-20 w-full h-full px-6 sm:px-12 flex flex-col justify-between py-12 lg:py-16 pointer-events-none">
-          
+
           {/* Top Brand & Navbar Menu Links (Aligned beautifully as shown in visual layout) */}
-         
+
 
           {/* Center Showcase Panel with Exact Split-Typography Alignment */}
           <div className="w-full h-full flex flex-col lg:flex-row items-center justify-center my-auto">
-            
+
             {/* LEFT PANE COLUMN: Subtitle, Left Word, Desc, CTA Button */}
             <div className="w-full lg:w-[45%] flex flex-col justify-center text-left lg:pr-10 pointer-events-auto mt-8 lg:mt-0">
               <div className="max-w-md w-full lg:ml-auto">
@@ -396,7 +390,7 @@ export default function HomeView({
 
           {/* Bottom Interactive Pagination & Slide Controls */}
           <div className="w-full flex items-center justify-between z-30 pointer-events-auto">
-            
+
             {/* Standard quick details info badge */}
             <div className="hidden md:flex items-center gap-4 text-[10px] font-mono text-gray-400">
               <span className="text-emerald-400 font-bold">GRID SYNCED</span>
@@ -408,7 +402,7 @@ export default function HomeView({
 
             {/* Pagination Controls */}
             <div className="flex items-center justify-between w-full md:w-auto gap-8">
-              
+
               {/* Dynamic Slide Dots indicators (Diamond format inspired by visual layout) */}
               <div className="flex items-center gap-4">
                 {HERO_SLIDES.map((_, idx) => (
@@ -419,8 +413,8 @@ export default function HomeView({
                     title={`Go to Slide ${idx + 1}`}
                   >
                     <div className={`w-2.5 h-2.5 rotate-45 transition-all duration-300 ${
-                      currentSlideIdx === idx 
-                        ? 'bg-emerald-400 scale-125 shadow-lg shadow-emerald-400/50 border border-emerald-400' 
+                      currentSlideIdx === idx
+                        ? 'bg-emerald-400 scale-125 shadow-lg shadow-emerald-400/50 border border-emerald-400'
                         : 'bg-transparent border border-white/30 group-hover:border-white/70'
                     }`} />
                   </button>
