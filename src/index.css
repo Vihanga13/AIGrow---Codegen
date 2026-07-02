@@ -58,3 +58,26 @@ body {
 .animate-slide-left {
   animation: slideLeft 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
+
+/* Image zoom-on-hover: put .img-zoom-wrap on the overflow-hidden container
+   and .img-zoom on the <img> inside it. */
+.img-zoom-wrap {
+  overflow: hidden;
+}
+.img-zoom {
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform;
+}
+.img-zoom-wrap:hover .img-zoom {
+  transform: scale(1.06);
+}
+
+/* Respect users who prefer reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .img-zoom,
+  .animate-slide-in,
+  .animate-slide-left {
+    transition: none;
+    animation: none;
+  }
+}

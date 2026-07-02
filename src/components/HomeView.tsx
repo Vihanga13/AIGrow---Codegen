@@ -515,11 +515,11 @@ export default function HomeView({
             transition={{ duration: 0.7, ease: [0.215, 0.610, 0.355, 1.000] }}
             className="lg:col-span-6 order-1 lg:order-2"
           >
-            <div className="relative rounded-2xl overflow-hidden shadow-xl shadow-gray-100">
-              <img 
-                src="https://images.unsplash.com/photo-1516253593875-bd7ba052fbc5?auto=format&fit=crop&q=80&w=1000" 
+            <div className="relative rounded-2xl overflow-hidden shadow-xl shadow-gray-100 img-zoom-wrap">
+              <img
+                src="https://images.unsplash.com/photo-1516253593875-bd7ba052fbc5?auto=format&fit=crop&q=80&w=1000"
                 alt="High-tech farming research"
-                className="w-full h-80 md:h-[420px] object-cover"
+                className="w-full h-80 md:h-[420px] object-cover img-zoom"
                 referrerPolicy="no-referrer"
               />
               <div className="absolute inset-0 bg-emerald-950/10 mix-blend-multiply"></div>
@@ -633,11 +633,11 @@ export default function HomeView({
             transition={{ duration: 0.7, ease: [0.215, 0.610, 0.355, 1.000] }}
             className="lg:col-span-6"
           >
-            <div className="relative rounded-2xl overflow-hidden shadow-lg">
-              <img 
-                src="https://images.unsplash.com/photo-1535090486071-4157038d9885?auto=format&fit=crop&q=80&w=1000" 
+            <div className="relative rounded-2xl overflow-hidden shadow-lg img-zoom-wrap">
+              <img
+                src="https://images.unsplash.com/photo-1535090486071-4157038d9885?auto=format&fit=crop&q=80&w=1000"
                 alt="Resilient crops and sun"
-                className="w-full h-80 md:h-[450px] object-cover"
+                className="w-full h-80 md:h-[450px] object-cover img-zoom"
                 referrerPolicy="no-referrer"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-emerald-950/20 to-transparent"></div>
@@ -764,11 +764,11 @@ export default function HomeView({
             transition={{ duration: 0.7, ease: [0.215, 0.610, 0.355, 1.000] }}
             className="bg-white rounded-3xl border border-gray-100 shadow-xl shadow-gray-100/50 overflow-hidden grid grid-cols-1 lg:grid-cols-12"
           >
-            <div className="lg:col-span-5 h-64 sm:h-80 lg:h-auto min-h-[320px] relative">
+            <div className="lg:col-span-5 h-64 sm:h-80 lg:h-auto min-h-[320px] relative img-zoom-wrap">
               <img
                 src={activeProject.image}
                 alt={activeProject.title}
-                className="absolute inset-0 w-full h-full object-cover"
+                className="absolute inset-0 w-full h-full object-cover img-zoom"
                 referrerPolicy="no-referrer"
               />
               <div className="absolute top-4 left-4 px-3 py-1.5 bg-emerald-600 text-white rounded-lg text-xs font-semibold uppercase tracking-wider">

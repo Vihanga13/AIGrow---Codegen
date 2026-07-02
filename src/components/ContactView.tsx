@@ -11,6 +11,7 @@ import {
   HelpCircle as QuestionIcon
 } from 'lucide-react';
 import { PageId } from '../types';
+import Reveal from './Reveal';
 
 interface ContactViewProps {
   onNavigate: (pageId: PageId) => void;
@@ -95,7 +96,7 @@ export default function ContactView({
       <div className="w-full mx-auto">
         
         {/* Hero title */}
-        <div className="text-center max-w-3xl mx-auto mb-16">
+        <Reveal className="text-center max-w-3xl mx-auto mb-16">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-50 text-emerald-800 text-xs font-semibold uppercase tracking-wider mb-4">
             Connect With Us
           </div>
@@ -105,13 +106,13 @@ export default function ContactView({
           <p className="font-sans text-gray-500 font-light text-base md:text-lg">
             Have a project in mind, need smart equipment quotes, or want to partner on export crops? Get in touch with CodeGen's agritech team.
           </p>
-        </div>
+        </Reveal>
 
         {/* Main Grid: Form Left, FAQ Categories Right */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
-          
+
           {/* Form Side */}
-          <div className="lg:col-span-7 bg-white rounded-3xl p-8 md:p-10 border border-gray-100 shadow-xl shadow-gray-100/30">
+          <Reveal direction="right" className="lg:col-span-7 bg-white rounded-3xl p-8 md:p-10 border border-gray-100 shadow-xl shadow-gray-100/30">
             {isSubmitted ? (
               <div className="flex flex-col items-center justify-center py-10 text-center gap-6">
                 <div className="w-16 h-16 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-600 animate-bounce">
@@ -269,10 +270,10 @@ export default function ContactView({
 
               </form>
             )}
-          </div>
+          </Reveal>
 
           {/* Consultation Categories Side */}
-          <div className="lg:col-span-5 flex flex-col gap-8">
+          <Reveal direction="left" delay={0.1} className="lg:col-span-5 flex flex-col gap-8">
             <div className="bg-gray-50/70 rounded-3xl p-6 md:p-8 border border-gray-100">
               <div className="flex items-center gap-2 mb-6 border-b border-gray-200 pb-3">
                 <HelpCircle className="w-5 h-5 text-emerald-600" />
@@ -317,7 +318,7 @@ export default function ContactView({
                 </div>
               </div>
             </div>
-          </div>
+          </Reveal>
 
         </div>
 

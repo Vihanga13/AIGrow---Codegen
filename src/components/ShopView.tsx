@@ -12,6 +12,7 @@ import {
 } from 'lucide-react';
 import { PageId, Product } from '../types';
 import { PRODUCTS_DATA } from '../data';
+import Reveal from './Reveal';
 
 interface ShopViewProps {
   onNavigate: (pageId: PageId) => void;
@@ -113,7 +114,7 @@ export default function ShopView({
       <div className="w-full mx-auto">
         
         {/* SHOP HEADER */}
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6 mb-12">
+        <Reveal className="flex flex-col md:flex-row md:items-center md:justify-between gap-6 mb-12">
           <div>
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-50 text-emerald-800 text-xs font-semibold uppercase tracking-wider mb-4">
               AiGROW Supply Hub
@@ -140,7 +141,7 @@ export default function ShopView({
               </span>
             )}
           </button>
-        </div>
+        </Reveal>
 
         {/* NOTIFICATION FLOATER */}
         {showAddedToast && (
@@ -178,12 +179,13 @@ export default function ShopView({
 
         {/* PRODUCTS SHOP GRID */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" id="shop-products-grid">
-          {filteredProducts.map((prod) => (
-            <div
+          {filteredProducts.map((prod, idx) => (
+            <Reveal
               key={prod.id}
-              id={`shop-item-card-${prod.id}`}
-              className="bg-white rounded-2xl border border-gray-100 overflow-hidden flex flex-col justify-between transition-all duration-300 hover:shadow-xl hover:shadow-gray-100/30"
+              delay={(idx % 3) * 0.08}
+              className="bg-white rounded-2xl border border-gray-100 overflow-hidden flex flex-col justify-between transition-all duration-300 hover:shadow-xl hover:shadow-gray-100/30 hover:-translate-y-1"
             >
+              <div id={`shop-item-card-${prod.id}`} className="contents">
               <div className="p-6 flex flex-col gap-4">
                 <div className="flex items-center justify-between">
                   <span className="font-mono text-[9px] text-gray-400 font-bold uppercase tracking-widest bg-gray-50 px-2.5 py-1 rounded">
@@ -231,7 +233,8 @@ export default function ShopView({
                   Quote
                 </button>
               </div>
-            </div>
+              </div>
+            </Reveal>
           ))}
         </div>
 

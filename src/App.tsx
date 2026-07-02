@@ -17,6 +17,8 @@ import AboutView from './components/AboutView';
 import ProjectsView from './components/ProjectsView';
 import ContactView from './components/ContactView';
 import ShopView from './components/ShopView';
+import PrivacyView from './components/PrivacyView';
+import TermsView from './components/TermsView';
 
 // New Subpage Views
 import ServiceDetailPage from './components/ServiceDetailPage';
@@ -180,12 +182,16 @@ export default function App() {
         );
       case 'contact':
         return (
-          <ContactView 
+          <ContactView
             onNavigate={handleNavigate}
             selectedProductName={selectedProductName}
             onClearSelectedProductName={handleClearSelectedProduct}
           />
         );
+      case 'privacy':
+        return <PrivacyView onNavigate={handleNavigate} />;
+      case 'terms':
+        return <TermsView onNavigate={handleNavigate} />;
       default:
         return (
           <HomeView 

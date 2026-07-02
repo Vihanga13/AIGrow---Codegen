@@ -21,6 +21,7 @@ import {
 } from 'lucide-react';
 import { PageId, Project } from '../types';
 import { PROJECTS_DATA } from '../data';
+import Reveal from './Reveal';
 
 interface ProjectsViewProps {
   onNavigate: (pageId: PageId) => void;
@@ -106,11 +107,11 @@ export default function ProjectsView({
               
               {/* Left Column: Image and quick stats */}
               <div className="lg:col-span-6 flex flex-col gap-6">
-                <div className="relative rounded-2xl overflow-hidden shadow-md aspect-video">
+                <div className="relative rounded-2xl overflow-hidden shadow-md aspect-video img-zoom-wrap">
                   <img
                     src={activeProject.image}
                     alt={activeProject.title}
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-cover img-zoom"
                     referrerPolicy="no-referrer"
                   />
                   <div className="absolute top-4 left-4 px-3 py-1.5 bg-emerald-600 text-white rounded-lg text-xs font-semibold uppercase tracking-wider">
@@ -193,7 +194,7 @@ export default function ProjectsView({
           /* PROJECTS GALLERY GRID VIEW */
           <div className="flex flex-col gap-10">
             {/* Gallery title */}
-            <div className="text-center max-w-3xl mx-auto">
+            <Reveal className="text-center max-w-3xl mx-auto">
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-50 text-emerald-800 text-xs font-semibold uppercase tracking-wider mb-4">
                 Our Showcased Deploys
               </div>
@@ -203,22 +204,22 @@ export default function ProjectsView({
               <p className="font-sans text-gray-500 font-light text-base md:text-lg">
                 Explore our commercial greenhouse structures, community farms, and automated mushroom factories across Sri Lanka.
               </p>
-            </div>
+            </Reveal>
 
             {/* Gallery Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" id="projects-masonry-grid">
-              {PROJECTS_DATA.map((proj) => (
-                <div
+              {PROJECTS_DATA.map((proj, idx) => (
+                <Reveal
                   key={proj.id}
-                  id={`project-card-gallery-${proj.id}`}
+                  delay={(idx % 3) * 0.1}
                   className="bg-white rounded-2xl border border-gray-100 overflow-hidden flex flex-col justify-between transition-all duration-300 hover:shadow-xl hover:shadow-gray-100/40 hover:-translate-y-1"
                 >
-                  <div>
-                    <div className="h-56 relative overflow-hidden">
+                  <div id={`project-card-gallery-${proj.id}`}>
+                    <div className="h-56 relative overflow-hidden img-zoom-wrap">
                       <img
                         src={proj.image}
                         alt={proj.title}
-                        className="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
+                        className="w-full h-full object-cover img-zoom"
                         referrerPolicy="no-referrer"
                       />
                       <div className="absolute top-3 left-3 px-2.5 py-1 bg-white/95 backdrop-blur-sm rounded-lg text-[9px] font-mono font-bold text-emerald-800 uppercase tracking-wide">
@@ -251,7 +252,7 @@ export default function ProjectsView({
                       <ArrowRight className="w-3.5 h-3.5 transition-transform group-hover:translate-x-0.5" />
                     </button>
                   </div>
-                </div>
+                </Reveal>
               ))}
             </div>
           </div>

@@ -13,9 +13,11 @@ export type PageId =
   | 'about-story' 
   | 'about-commitment' 
   | 'about-news' 
-  | 'projects' 
-  | 'contact' 
-  | 'shop';
+  | 'projects'
+  | 'contact'
+  | 'shop'
+  | 'privacy'
+  | 'terms';
 
 export interface Service {
   id: string;

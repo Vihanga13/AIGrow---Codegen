@@ -122,8 +122,8 @@ export default function Footer({ onNavigate }: FooterProps) {
             <p>A subsidiary of <span className="text-gray-600">CodeGen International</span></p>
           </div>
           <div className="flex gap-5">
-            <a href="#" className="transition-colors hover:text-emerald-600">Privacy</a>
-            <a href="#" className="transition-colors hover:text-emerald-600">Terms</a>
+            <button onClick={() => handleLinkClick('privacy')} className="transition-colors hover:text-emerald-600">Privacy</button>
+            <button onClick={() => handleLinkClick('terms')} className="transition-colors hover:text-emerald-600">Terms</button>
           </div>
         </div>
       </div>
