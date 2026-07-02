@@ -1,0 +1,60 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+
+  /* Sleek Interface brand green remapping */
+  --color-emerald-50: #E8EEE9;
+  --color-emerald-100: #D3E2D5;
+  --color-emerald-200: #ABC6B0;
+  --color-emerald-300: #81A888;
+  --color-emerald-400: #5C8C63;
+  --color-emerald-500: #4C9A5B;
+  --color-emerald-600: #4C9A5B;
+  --color-emerald-700: #3D7A48;
+  --color-emerald-800: #2D5834;
+  --color-emerald-900: #1E3A23;
+  --color-emerald-950: #0F1E12;
+
+  /* High contrast charcoal text and dark mode values */
+  --color-gray-900: #1F2321;
+  --color-gray-950: #141716;
+}
+
+/* Base custom defaults */
+body {
+  background-color: #FAFAFA;
+  color: #1F2321;
+  font-family: var(--font-sans);
+}
+
+/* Micro-interaction animation utilities */
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideLeft {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+.animate-slide-in {
+  animation: slideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-slide-left {
+  animation: slideLeft 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}

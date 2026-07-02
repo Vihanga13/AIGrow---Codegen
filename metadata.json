@@ -1,0 +1,6 @@
+{
+  "name": "AiGROW",
+  "description": "Sustainable agri-tech solutions in Sri Lanka. A subsidiary of CodeGen International.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
