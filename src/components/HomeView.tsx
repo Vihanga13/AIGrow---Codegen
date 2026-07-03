@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { motion, AnimatePresence } from 'motion/react';
+import { useState, useEffect } from 'react';
+import { motion } from 'motion/react';
 import { 
   ArrowRight, 
   Leaf, 
@@ -23,7 +23,11 @@ import {
   Wind,
   Droplets,
   Sun,
-  Activity
+  Activity,
+  Trophy,
+  Medal,
+  Star,
+  Users
 } from 'lucide-react';
 import { PageId } from '../types';
 import { SERVICES_DATA, PROJECTS_DATA } from '../data';
@@ -54,6 +58,14 @@ const HERO_SLIDES = [
   }
 ];
 
+// Background imagery for the expanding Services panels (keyed by service id)
+const SERVICE_IMAGES: Record<string, string> = {
+  'greenhouse': 'https://images.unsplash.com/photo-1585320806297-9794b3e4eeae?auto=format&fit=crop&q=80&w=1200',
+  'indoor-farming': 'https://images.unsplash.com/photo-1516253593875-bd7ba052fbc5?auto=format&fit=crop&q=80&w=1200',
+  'home-gardening': 'https://images.unsplash.com/photo-1466692476868-aef1dfb1e735?auto=format&fit=crop&q=80&w=1200',
+  'fresh-produce': 'https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&q=80&w=1200'
+};
+
 interface HomeViewProps {
   onNavigate: (pageId: PageId) => void;
   onSelectService: (serviceId: string) => void;
@@ -70,6 +82,11 @@ export default function HomeView({
   const [currentSlideIdx, setCurrentSlideIdx] = useState(0);
   const [currentProjectIdx, setCurrentProjectIdx] = useState(0);
   const [activeServiceIdx, setActiveServiceIdx] = useState(0);
+  const [activeTechIdx, setActiveTechIdx] = useState(0);
+  const [activeEdgeIdx, setActiveEdgeIdx] = useState(0);
+  const [projPaused, setProjPaused] = useState(false);
+  const [activeAwardIdx, setActiveAwardIdx] = useState(1);
+  const [activeMissionIdx, setActiveMissionIdx] = useState(0);
   const [isVideoPlaying, setIsVideoPlaying] = useState(false);
 
   // Interactive Simulation states for the live Hero dashboard widget
@@ -170,15 +187,16 @@ export default function HomeView({
     }
   };
 
-  const prevProject = () => {
-    setCurrentProjectIdx((prev) => (prev === 0 ? PROJECTS_DATA.length - 1 : prev - 1));
-  };
-
-  const nextProject = () => {
-    setCurrentProjectIdx((prev) => (prev === PROJECTS_DATA.length - 1 ? 0 : prev + 1));
-  };
-
   const activeProject = PROJECTS_DATA[currentProjectIdx];
+
+  // Auto-advance the projects showcase (pauses on hover)
+  useEffect(() => {
+    if (projPaused) return;
+    const id = setInterval(() => {
+      setCurrentProjectIdx((p) => (p + 1) % PROJECTS_DATA.length);
+    }, 5000);
+    return () => clearInterval(id);
+  }, [projPaused]);
 
   const getServiceIcon = (id: string) => {
     switch (id) {
@@ -192,11 +210,11 @@ export default function HomeView({
 
   // Advantages values list perfectly integrated with PDF text
   const advantages = [
-    { title: 'Higher yields with lower resource use', desc: 'Accelerated growth cycles deliver up to 3x yield compared to open-field systems.', icon: TrendingUp },
-    { title: 'Water- and energy-efficient systems', desc: 'Precision sensor feedback loops save over 85% water and 40% energy.', icon: Zap },
-    { title: 'Designed for circular economy principles', desc: 'Integrating upcycled local coconut husk substrates (coco-peat) and energy recovery loops.', icon: RefreshCw },
-    { title: 'Data-driven decision making', desc: 'No guesswork. Continuous sensor logs feed automated adjustments and predictive feeding curves.', icon: LineChart },
-    { title: 'Climate-resilient and scalable', desc: 'Solid protective structures shield crops from severe regional weather shifts.', icon: ShieldCheck },
+    { title: 'Higher yields with lower resource use', desc: 'Accelerated growth cycles deliver up to 3x yield compared to open-field systems.', icon: TrendingUp, stat: '3×', statLabel: 'Yield vs. open field' },
+    { title: 'Water- and energy-efficient systems', desc: 'Precision sensor feedback loops save over 85% water and 40% energy.', icon: Zap, stat: '85%', statLabel: 'Less water used' },
+    { title: 'Designed for circular economy principles', desc: 'Integrating upcycled local coconut husk substrates (coco-peat) and energy recovery loops.', icon: RefreshCw, stat: '100%', statLabel: 'Circular coco-peat media' },
+    { title: 'Data-driven decision making', desc: 'No guesswork. Continuous sensor logs feed automated adjustments and predictive feeding curves.', icon: LineChart, stat: '24/7', statLabel: 'Live sensor decisions' },
+    { title: 'Climate-resilient and scalable', desc: 'Solid protective structures shield crops from severe regional weather shifts.', icon: ShieldCheck, stat: '365d', statLabel: 'Year-round harvests' },
   ];
 
   const technologies = [
@@ -451,78 +469,229 @@ export default function HomeView({
 
       </section>
 
-      {/* 2. INTRODUCTION */}
-      <section className="py-20 px-6 w-full mx-auto border-b border-gray-100">
-        <motion.div 
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-120px" }}
-          transition={{ duration: 0.6, ease: [0.215, 0.610, 0.355, 1.000] }}
-          className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center"
-        >
-          <div className="lg:col-span-5">
-            <div className="text-emerald-600 font-mono text-xs uppercase tracking-wider font-semibold mb-3">
+      {/* 2. INTRODUCTION — editorial split + animated figures + capability marquee */}
+      <section className="py-20 px-6 w-full mx-auto border-b border-gray-100 overflow-hidden">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-center">
+          {/* Statement */}
+          <motion.div
+            initial={{ opacity: 0, x: -24 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true, margin: '-120px' }}
+            transition={{ duration: 0.6, ease: [0.215, 0.610, 0.355, 1.000] }}
+            className="lg:col-span-7"
+          >
+            <div className="text-emerald-600 font-mono text-xs uppercase tracking-wider font-semibold mb-4">
               Corporate Overview
             </div>
-            <h2 className="font-sans text-3xl md:text-4xl font-bold tracking-tight text-gray-950 mb-6">
-              Where Innovation Meets Sustainability
+            <h2 className="font-sans text-3xl md:text-5xl font-bold tracking-tight text-gray-950 leading-[1.1]">
+              Where Innovation Meets{' '}
+              <span className="relative inline-block text-emerald-600">
+                Sustainability
+                <motion.span
+                  initial={{ scaleX: 0 }}
+                  whileInView={{ scaleX: 1 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.7, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
+                  className="absolute left-0 -bottom-1 h-1 w-full origin-left rounded-full bg-emerald-400/60"
+                />
+              </span>
             </h2>
-          </div>
-          <div className="lg:col-span-7 font-sans text-base md:text-lg text-gray-600 leading-relaxed font-light">
-            <p className="mb-4">
+            <p className="mt-6 font-sans text-base md:text-lg text-gray-600 leading-relaxed font-light max-w-2xl">
               AiGROW is a sustainable agri-tech company dedicated to transforming how Sri Lanka grows its food. Backed by deep technological expertise and a strong commitment to environmental responsibility, we design innovative, scalable, and eco-friendly agricultural solutions that empower farmers, businesses, and communities across the island.
             </p>
-            <p className="text-gray-900 font-normal">
+            <p className="mt-4 font-sans text-lg text-gray-900 font-semibold">
               We don't just grow crops, we grow resilient ecosystems.
             </p>
-          </div>
-        </motion.div>
+          </motion.div>
+
+          {/* Animated key-figure tiles */}
+          <motion.div
+            initial={{ opacity: 0, y: 24 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: '-100px' }}
+            transition={{ duration: 0.6, delay: 0.1 }}
+            className="lg:col-span-5 grid grid-cols-2 gap-3"
+          >
+            {[
+              { icon: Award, target: 8, suffix: '+', label: 'Years of experience', sub: 'Since 2018' },
+              { icon: Users, target: 220, suffix: '+', label: 'Customers served' },
+              { icon: Building2, target: 10, suffix: '+', label: 'Projects delivered' },
+              { icon: Leaf, text: 'CodeGen', label: 'A proud subsidiary' }
+            ].map((f, i) => (
+              <div
+                key={i}
+                className="glass rounded-2xl p-5 flex flex-col gap-2 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-emerald-900/5"
+              >
+                <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600">
+                  <f.icon className="h-5 w-5" />
+                </span>
+                {'target' in f && typeof f.target === 'number' ? (
+                  <div className="[&>div]:text-3xl [&>div]:md:text-4xl">
+                    <StatsCounter target={f.target} suffix={f.suffix} />
+                  </div>
+                ) : (
+                  <div className="font-mono text-2xl md:text-3xl font-semibold text-emerald-600 tracking-tight">{f.text}</div>
+                )}
+                <span className="font-sans text-[11px] text-gray-500 font-medium leading-tight">
+                  {f.label}
+                  {f.sub && <span className="block text-gray-400 font-light">{f.sub}</span>}
+                </span>
+              </div>
+            ))}
+          </motion.div>
+        </div>
+
+        {/* Capability marquee */}
+        <div className="relative mt-14 border-y border-emerald-100/60 py-4">
+          <div className="pointer-events-none absolute left-0 top-0 bottom-0 w-24 z-10 bg-gradient-to-r from-[#eef5f0] to-transparent" />
+          <div className="pointer-events-none absolute right-0 top-0 bottom-0 w-24 z-10 bg-gradient-to-l from-[#eef5f0] to-transparent" />
+          <motion.div
+            animate={{ x: ['0%', '-50%'] }}
+            transition={{ repeat: Infinity, duration: 24, ease: 'linear' }}
+            className="flex w-max items-center gap-3"
+          >
+            {[...Array(2)].flatMap((_, dup) =>
+              ['IoT-Enabled Systems', 'Climate-Smart', 'Circular Economy', '100% Pesticide-Free', 'Data-Driven', 'Rooted in Sri Lanka', 'Precision Fertigation', 'Built for Tomorrow'].map((k, i) => (
+                <span
+                  key={`${dup}-${i}`}
+                  className="inline-flex items-center gap-2 rounded-full glass px-4 py-2 font-sans text-sm font-semibold text-gray-700 whitespace-nowrap"
+                >
+                  <Leaf className="h-3.5 w-3.5 text-emerald-500" />
+                  {k}
+                </span>
+              ))
+            )}
+          </motion.div>
+        </div>
       </section>
 
-      {/* 3. OUR MISSION */}
+      {/* 3. OUR MISSION — interactive "True North" compass */}
       <section className="py-20 px-6 w-full mx-auto border-b border-gray-100">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
-          
-          <motion.div 
-            initial={{ opacity: 0, x: -30 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true, margin: "-120px" }}
-            transition={{ duration: 0.7, ease: [0.215, 0.610, 0.355, 1.000] }}
-            className="lg:col-span-6 flex flex-col gap-6 order-2 lg:order-1"
-          >
-            <div className="text-emerald-600 font-mono text-xs uppercase tracking-wider font-semibold">
-              Our True North
-            </div>
-            <h3 className="font-sans text-3xl font-bold tracking-tight text-gray-950">
-              Transforming Sri Lankan Food Security
-            </h3>
-            <blockquote className="border-l-4 border-emerald-500 pl-4 font-sans text-lg italic text-emerald-800 font-medium bg-emerald-50/40 py-2.5 pr-2 rounded-r-lg">
-              "To strengthen Sri Lanka's food systems through smart, sustainable, and circular agricultural innovations that improve productivity, protect the environment, and uplift local livelihoods."
-            </blockquote>
-            <p className="font-sans text-gray-600 leading-relaxed font-light">
-              Through strategic automation and circular practices, we are designing food systems that secure predictable local harvests, reduce reliance on chemical imports, and build a climate-resilient Sri Lanka.
-            </p>
-          </motion.div>
+        {(() => {
+          const pillars = [
+            { label: 'Improve Productivity', short: 'Productivity', icon: TrendingUp, deg: 0, pos: { x: 50, y: 11 }, desc: 'Smart, data-driven systems that lift yields per acre while cutting waste and guesswork.' },
+            { label: 'Protect the Environment', short: 'Environment', icon: Leaf, deg: 135, pos: { x: 82, y: 71 }, desc: 'Circular, low-input methods that conserve water, reduce chemicals, and restore soil health.' },
+            { label: 'Uplift Livelihoods', short: 'Livelihoods', icon: Users, deg: -135, pos: { x: 18, y: 71 }, desc: 'Technology and training that grow farmer incomes and strengthen rural communities.' }
+          ];
+          const active = pillars[activeMissionIdx];
+          const ActiveIcon = active.icon;
+          return (
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-8 items-center">
+              {/* Left: statement + active pillar detail */}
+              <motion.div
+                initial={{ opacity: 0, x: -24 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true, margin: '-120px' }}
+                transition={{ duration: 0.6 }}
+                className="lg:col-span-6 order-2 lg:order-1 flex flex-col gap-6"
+              >
+                <div className="text-emerald-600 font-mono text-xs uppercase tracking-wider font-semibold">
+                  Our True North
+                </div>
+                <h2 className="font-sans text-3xl md:text-4xl font-bold tracking-tight text-gray-950">
+                  Transforming Sri Lankan Food Security
+                </h2>
+                <blockquote className="border-l-4 border-emerald-500 pl-4 font-sans text-lg italic text-emerald-800 font-medium bg-emerald-50/40 py-2.5 pr-2 rounded-r-lg">
+                  "To strengthen Sri Lanka's food systems through smart, sustainable, and circular agricultural innovations that improve productivity, protect the environment, and uplift local livelihoods."
+                </blockquote>
 
-          <motion.div 
-            initial={{ opacity: 0, x: 30 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true, margin: "-120px" }}
-            transition={{ duration: 0.7, ease: [0.215, 0.610, 0.355, 1.000] }}
-            className="lg:col-span-6 order-1 lg:order-2"
-          >
-            <div className="relative rounded-2xl overflow-hidden shadow-xl shadow-gray-100 img-zoom-wrap">
-              <img
-                src="https://images.unsplash.com/photo-1516253593875-bd7ba052fbc5?auto=format&fit=crop&q=80&w=1000"
-                alt="High-tech farming research"
-                className="w-full h-80 object-cover img-zoom"
-                referrerPolicy="no-referrer"
-              />
-              <div className="absolute inset-0 bg-emerald-950/10 mix-blend-multiply"></div>
-            </div>
-          </motion.div>
+                {/* Active pillar detail */}
+                <motion.div
+                  key={activeMissionIdx}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+                  className="glass-green rounded-2xl p-5 flex items-start gap-4"
+                >
+                  <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-emerald-500 text-white shadow-lg shadow-emerald-600/20">
+                    <ActiveIcon className="h-5 w-5" />
+                  </span>
+                  <div>
+                    <h4 className="font-sans text-sm font-bold text-gray-900">{active.label}</h4>
+                    <p className="font-sans text-xs text-gray-600 mt-1 leading-relaxed font-light">{active.desc}</p>
+                  </div>
+                </motion.div>
+              </motion.div>
 
-        </div>
+              {/* Right: interactive compass */}
+              <motion.div
+                initial={{ opacity: 0, scale: 0.92 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: true, margin: '-100px' }}
+                transition={{ duration: 0.6 }}
+                className="lg:col-span-6 order-1 lg:order-2"
+              >
+                <div className="relative mx-auto w-full max-w-sm aspect-square">
+                  {/* Compass dial + ticks */}
+                  <svg viewBox="0 0 200 200" className="absolute inset-0 w-full h-full">
+                    <circle cx="100" cy="100" r="94" fill="none" stroke="rgba(76,154,91,0.25)" strokeWidth="1.5" />
+                    <circle cx="100" cy="100" r="72" fill="none" stroke="rgba(76,154,91,0.15)" strokeWidth="1" />
+                    {Array.from({ length: 36 }).map((_, i) => {
+                      const ang = (i / 36) * 2 * Math.PI;
+                      const major = i % 9 === 0;
+                      const r1 = 94;
+                      const r2 = major ? 82 : 88;
+                      return (
+                        <line
+                          key={i}
+                          x1={100 + r1 * Math.sin(ang)} y1={100 - r1 * Math.cos(ang)}
+                          x2={100 + r2 * Math.sin(ang)} y2={100 - r2 * Math.cos(ang)}
+                          stroke={major ? 'rgba(76,154,91,0.5)' : 'rgba(76,154,91,0.2)'}
+                          strokeWidth={major ? 1.5 : 1}
+                        />
+                      );
+                    })}
+                  </svg>
+
+                  {/* "N" true-north marker */}
+                  <span className="absolute top-1.5 left-1/2 -translate-x-1/2 font-mono text-[10px] font-black text-emerald-600">N</span>
+
+                  {/* Center compass + swinging needle */}
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <div className="relative flex h-28 w-28 items-center justify-center rounded-full glass shadow-lg">
+                      <motion.div
+                        animate={{ rotate: active.deg }}
+                        transition={{ type: 'spring', stiffness: 80, damping: 12 }}
+                      >
+                        <svg width="84" height="84" viewBox="0 0 84 84">
+                          <polygon points="42,8 49,42 42,37 35,42" fill="#4C9A5B" />
+                          <polygon points="42,76 49,42 42,47 35,42" fill="#9AA6A0" />
+                        </svg>
+                      </motion.div>
+                      <span className="absolute h-3 w-3 rounded-full bg-emerald-600 ring-4 ring-white/70" />
+                    </div>
+                  </div>
+
+                  {/* Pillar nodes */}
+                  {pillars.map((p, idx) => {
+                    const on = idx === activeMissionIdx;
+                    const Icon = p.icon;
+                    return (
+                      <button
+                        key={idx}
+                        onMouseEnter={() => setActiveMissionIdx(idx)}
+                        onClick={() => setActiveMissionIdx(idx)}
+                        style={{ left: `${p.pos.x}%`, top: `${p.pos.y}%` }}
+                        className="absolute -translate-x-1/2 -translate-y-1/2 z-20 flex flex-col items-center gap-1"
+                        aria-label={p.label}
+                      >
+                        {on && <span className="absolute top-0 h-14 w-14 rounded-2xl bg-emerald-400/40 animate-ping" />}
+                        <span className={`relative flex h-14 w-14 items-center justify-center rounded-2xl border transition-all duration-300 ${
+                          on ? 'bg-emerald-500 text-white border-emerald-500 scale-110 shadow-lg shadow-emerald-600/30' : 'glass text-emerald-600 border-white/60 hover:scale-105'
+                        }`}>
+                          <Icon className="h-6 w-6" />
+                        </span>
+                        <span className={`font-mono text-[9px] font-bold uppercase tracking-wide transition-colors ${on ? 'text-emerald-700' : 'text-gray-400'}`}>
+                          {p.short}
+                        </span>
+                      </button>
+                    );
+                  })}
+                </div>
+              </motion.div>
+            </div>
+          );
+        })()}
       </section>
 
       {/* 4. OUR SERVICES OVERVIEW — interactive selector + animated detail panel */}
@@ -546,92 +715,96 @@ export default function HomeView({
             </p>
           </motion.div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
-            {/* Left: numbered selector list */}
-            <div className="lg:col-span-5 flex flex-col gap-3">
-              {SERVICES_DATA.map((service, index) => {
-                const active = index === activeServiceIdx;
-                return (
-                  <motion.button
-                    key={service.id}
-                    id={`home-service-card-${service.id}`}
-                    initial={{ opacity: 0, x: -20 }}
-                    whileInView={{ opacity: 1, x: 0 }}
-                    viewport={{ once: true, margin: '-80px' }}
-                    transition={{ duration: 0.4, delay: index * 0.08 }}
-                    onMouseEnter={() => setActiveServiceIdx(index)}
-                    onClick={() => setActiveServiceIdx(index)}
-                    className={`group flex items-center gap-4 w-full p-5 rounded-2xl border text-left transition-all duration-300 ${
-                      active
-                        ? 'glass-green border-emerald-300/60 shadow-lg shadow-emerald-900/5'
-                        : 'glass border-transparent hover:-translate-y-0.5'
-                    }`}
-                  >
-                    <span className={`font-mono text-sm font-black tabular-nums transition-colors ${active ? 'text-emerald-600' : 'text-gray-300 group-hover:text-emerald-400'}`}>
-                      {String(index + 1).padStart(2, '0')}
-                    </span>
-                    <span className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl transition-colors ${
-                      active ? 'bg-emerald-500 text-white' : 'bg-emerald-50 text-emerald-600'
-                    }`}>
-                      {getServiceIcon(service.id)}
-                    </span>
-                    <span className="grow">
-                      <span className="block font-sans text-base font-bold text-gray-900">{service.title}</span>
-                    </span>
-                    <ArrowRight className={`w-4 h-4 shrink-0 transition-all ${active ? 'text-emerald-600 translate-x-0' : 'text-gray-300 -translate-x-1 group-hover:translate-x-0'}`} />
-                  </motion.button>
-                );
-              })}
-            </div>
-
-            {/* Right: animated detail panel */}
-            <div className="lg:col-span-7">
-              <AnimatePresence mode="wait">
+          {/* Expanding image-panel gallery */}
+          <div className="flex flex-col lg:flex-row gap-3 lg:h-[520px]">
+            {SERVICES_DATA.map((service, index) => {
+              const active = index === activeServiceIdx;
+              const num = String(index + 1).padStart(2, '0');
+              return (
                 <motion.div
-                  key={activeServiceIdx}
-                  initial={{ opacity: 0, y: 16 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -12 }}
-                  transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
-                  className="glass rounded-3xl p-8 md:p-10 h-full flex flex-col justify-between relative overflow-hidden shadow-xl shadow-emerald-900/5"
+                  key={service.id}
+                  id={`home-service-card-${service.id}`}
+                  initial={{ opacity: 0, y: 24 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, margin: '-80px' }}
+                  transition={{ duration: 0.5, delay: index * 0.08 }}
+                  onMouseEnter={() => setActiveServiceIdx(index)}
+                  onClick={() => setActiveServiceIdx(index)}
+                  className={`group relative overflow-hidden rounded-3xl cursor-pointer bg-emerald-900 border border-white/30 transition-all duration-500 ease-[cubic-bezier(.16,1,.3,1)] ${
+                    active ? 'h-[420px] lg:h-full lg:flex-[3.4]' : 'h-[86px] lg:h-full lg:flex-[1]'
+                  }`}
                 >
-                  {/* Big watermark number */}
-                  <span className="pointer-events-none absolute -top-6 -right-2 font-sans text-[9rem] font-black leading-none text-emerald-500/[0.06] select-none">
-                    {String(activeServiceIdx + 1).padStart(2, '0')}
+                  {/* Background image */}
+                  <img
+                    src={SERVICE_IMAGES[service.id]}
+                    alt={service.title}
+                    referrerPolicy="no-referrer"
+                    className={`absolute inset-0 h-full w-full object-cover transition-all duration-700 ${
+                      active ? 'scale-105 opacity-100' : 'opacity-60 group-hover:opacity-80'
+                    }`}
+                  />
+                  {/* Overlay */}
+                  <div className={`absolute inset-0 transition-all duration-500 ${
+                    active
+                      ? 'bg-gradient-to-t from-emerald-950/95 via-emerald-950/45 to-emerald-950/10'
+                      : 'bg-emerald-950/65'
+                  }`} />
+
+                  {/* Number */}
+                  <span className="absolute top-5 left-6 z-10 font-mono text-xs font-black tracking-widest text-white/80">
+                    {num}
+                  </span>
+                  {/* Icon chip */}
+                  <div className="absolute top-4 right-4 z-10 flex h-11 w-11 items-center justify-center rounded-xl bg-white/15 backdrop-blur-sm text-white border border-white/25">
+                    {getServiceIcon(service.id)}
+                  </div>
+
+                  {/* Collapsed label — horizontal on mobile, vertical on desktop */}
+                  <span className={`lg:hidden absolute bottom-5 left-6 z-10 font-sans text-lg font-bold text-white transition-opacity duration-300 ${active ? 'opacity-0' : 'opacity-100'}`}>
+                    {service.title}
+                  </span>
+                  <span className={`hidden lg:block absolute bottom-7 left-1/2 -translate-x-1/2 z-10 [writing-mode:vertical-rl] rotate-180 whitespace-nowrap font-sans text-base font-bold text-white transition-opacity duration-300 ${active ? 'opacity-0' : 'opacity-100'}`}>
+                    {service.title}
                   </span>
 
-                  <div className="relative z-10">
-                    <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-emerald-500 text-white mb-6 shadow-lg shadow-emerald-600/20">
-                      {getServiceIcon(SERVICES_DATA[activeServiceIdx].id)}
-                    </div>
-                    <h3 className="font-sans text-2xl font-bold text-gray-950 tracking-tight mb-3">
-                      {SERVICES_DATA[activeServiceIdx].title}
+                  {/* Expanded content */}
+                  <div className={`absolute inset-x-0 bottom-0 z-10 p-6 md:p-8 transition-all duration-500 ${
+                    active ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6 pointer-events-none'
+                  }`}>
+                    <h3 className="font-sans text-2xl font-bold text-white tracking-tight mb-2 drop-shadow">
+                      {service.title}
                     </h3>
-                    <p className="font-sans text-sm md:text-base text-gray-500 font-light leading-relaxed mb-6 max-w-lg">
-                      {SERVICES_DATA[activeServiceIdx].shortDesc}
+                    <p className="font-sans text-sm text-white/85 font-light leading-relaxed mb-4 max-w-md">
+                      {service.shortDesc}
                     </p>
-
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-2.5">
-                      {SERVICES_DATA[activeServiceIdx].features.slice(0, 4).map((feat, fIdx) => (
-                        <div key={fIdx} className="flex items-start gap-2 text-xs text-gray-600">
-                          <CheckCircle className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />
+                    <div className="flex flex-col gap-1.5 mb-5">
+                      {service.features.slice(0, 2).map((feat, fIdx) => (
+                        <div key={fIdx} className="flex items-start gap-2 text-xs text-white/80">
+                          <CheckCircle className="w-4 h-4 text-emerald-300 shrink-0 mt-0.5" />
                           <span className="font-light leading-relaxed">{feat}</span>
                         </div>
                       ))}
                     </div>
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onSelectService(service.id);
+                      }}
+                      className="w-fit flex items-center gap-2 px-5 py-3 rounded-xl bg-white text-emerald-800 hover:bg-emerald-50 text-xs font-bold transition-all shadow-lg group/btn"
+                    >
+                      Explore {service.title}
+                      <ArrowRight className="w-4 h-4 transition-transform group-hover/btn:translate-x-1" />
+                    </button>
                   </div>
-
-                  <button
-                    onClick={() => onSelectService(SERVICES_DATA[activeServiceIdx].id)}
-                    className="relative z-10 mt-8 w-fit flex items-center gap-2 px-6 py-3.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-semibold transition-all shadow-md shadow-emerald-600/10 group"
-                  >
-                    Explore {SERVICES_DATA[activeServiceIdx].title}
-                    <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
-                  </button>
                 </motion.div>
-              </AnimatePresence>
-            </div>
+              );
+            })}
           </div>
+
+          {/* Mobile helper hint */}
+          <p className="lg:hidden text-center font-mono text-[10px] text-gray-400 uppercase tracking-wider mt-4">
+            Tap a panel to expand
+          </p>
         </div>
       </section>
 
@@ -659,108 +832,265 @@ export default function HomeView({
           </p>
         </motion.div>
 
-        {/* Zig-zag connected timeline */}
-        <div className="relative max-w-5xl mx-auto">
-          {/* Center spine (desktop) */}
-          <div className="hidden lg:block absolute left-1/2 top-3 bottom-3 w-px -translate-x-1/2 bg-gradient-to-b from-emerald-300 via-emerald-300/50 to-transparent" />
-          {/* Left spine (mobile) */}
-          <div className="lg:hidden absolute left-[21px] top-3 bottom-3 w-px bg-gradient-to-b from-emerald-300 to-transparent" />
-
-          <div className="flex flex-col gap-8 lg:gap-6">
-            {technologies.map((tech, idx) => {
-              const isLeft = idx % 2 === 0;
-              const num = String(idx + 1).padStart(2, '0');
-              return (
+        {/* Interactive radial tech orbit */}
+        {(() => {
+          const NODE_POS = [
+            { x: 50, y: 9 },   // top
+            { x: 85, y: 67 },  // bottom-right
+            { x: 15, y: 67 }   // bottom-left
+          ];
+          const activeTech = technologies[activeTechIdx];
+          return (
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-8 items-center max-w-5xl mx-auto">
+              {/* Orbit diagram */}
+              <motion.div
+                initial={{ opacity: 0, scale: 0.92 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: true, margin: '-100px' }}
+                transition={{ duration: 0.6 }}
+                className="relative mx-auto w-full max-w-sm aspect-square"
+              >
+                {/* Decorative rings */}
                 <motion.div
-                  key={idx}
-                  initial={{ opacity: 0, y: 30 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true, margin: '-100px' }}
-                  transition={{ duration: 0.5, delay: idx * 0.1, ease: 'easeOut' }}
-                  className="relative lg:grid lg:grid-cols-2 items-center"
-                >
-                  {/* Node badge on the spine */}
-                  <div className="absolute z-10 left-[21px] lg:left-1/2 top-7 lg:top-1/2 -translate-x-1/2 lg:-translate-y-1/2 flex h-11 w-11 items-center justify-center rounded-full bg-emerald-500 text-white shadow-lg shadow-emerald-600/25 ring-4 ring-emerald-50">
-                    <tech.icon className="w-5 h-5" />
-                  </div>
+                  animate={{ rotate: 360 }}
+                  transition={{ repeat: Infinity, duration: 45, ease: 'linear' }}
+                  className="absolute inset-4 rounded-full border border-dashed border-emerald-300/50"
+                />
+                <div className="absolute inset-[18%] rounded-full border border-emerald-200/40" />
 
-                  {/* Card, alternating sides on desktop */}
-                  <div className={`pl-14 lg:pl-0 ${isLeft ? 'lg:col-start-1 lg:pr-14 lg:text-right' : 'lg:col-start-2 lg:pl-14'}`}>
-                    <div className="glass rounded-2xl p-6 md:p-7 relative overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-emerald-900/5">
-                      {/* Big ghost number */}
-                      <span className={`pointer-events-none absolute -top-5 text-7xl font-black text-emerald-500/[0.08] select-none ${isLeft ? 'left-5' : 'right-5'}`}>
-                        {num}
+                {/* Connectors with flowing data animation */}
+                <svg viewBox="0 0 100 100" className="absolute inset-0 w-full h-full pointer-events-none">
+                  {NODE_POS.map((p, idx) => {
+                    const active = idx === activeTechIdx;
+                    return (
+                      <motion.line
+                        key={idx}
+                        x1="50" y1="50" x2={p.x} y2={p.y}
+                        stroke={active ? '#4C9A5B' : '#A7C3AC'}
+                        strokeWidth={active ? 1.4 : 0.7}
+                        strokeDasharray="3 4"
+                        strokeLinecap="round"
+                        animate={{ strokeDashoffset: [0, -14] }}
+                        transition={{ repeat: Infinity, duration: active ? 0.9 : 2, ease: 'linear' }}
+                        opacity={active ? 1 : 0.5}
+                      />
+                    );
+                  })}
+                </svg>
+
+                {/* Center hub */}
+                <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-10 flex flex-col items-center">
+                  <motion.span
+                    animate={{ scale: [1, 1.35, 1], opacity: [0.4, 0, 0.4] }}
+                    transition={{ repeat: Infinity, duration: 2.4, ease: 'easeInOut' }}
+                    className="absolute inset-0 m-auto h-20 w-20 rounded-full bg-emerald-400/40"
+                  />
+                  <div className="relative flex h-20 w-20 items-center justify-center rounded-full bg-emerald-600 text-white shadow-xl shadow-emerald-600/30">
+                    <Leaf className="h-8 w-8" />
+                  </div>
+                  <span className="mt-2 font-mono text-[9px] uppercase tracking-widest text-emerald-700 font-bold">
+                    AiGROW Core
+                  </span>
+                </div>
+
+                {/* Tech nodes */}
+                {technologies.map((tech, idx) => {
+                  const p = NODE_POS[idx];
+                  const active = idx === activeTechIdx;
+                  return (
+                    <button
+                      key={idx}
+                      onMouseEnter={() => setActiveTechIdx(idx)}
+                      onClick={() => setActiveTechIdx(idx)}
+                      style={{ left: `${p.x}%`, top: `${p.y}%` }}
+                      className="absolute -translate-x-1/2 -translate-y-1/2 z-20 group"
+                      aria-label={tech.title}
+                    >
+                      {active && (
+                        <span className="absolute inset-0 rounded-2xl bg-emerald-400/50 animate-ping" />
+                      )}
+                      <span className={`relative flex h-14 w-14 items-center justify-center rounded-2xl border transition-all duration-300 ${
+                        active
+                          ? 'bg-emerald-500 text-white border-emerald-500 scale-110 shadow-lg shadow-emerald-600/30'
+                          : 'glass text-emerald-600 border-white/60 hover:scale-105'
+                      }`}>
+                        <tech.icon className="h-6 w-6" />
                       </span>
-                      <div className={`relative z-10 flex flex-col ${isLeft ? 'lg:items-end' : 'items-start'}`}>
-                        <span className="font-mono text-xs font-bold text-emerald-600 mb-2">{num}</span>
-                        <h3 className="font-sans text-lg font-bold text-gray-900 mb-2">{tech.title}</h3>
-                        <p className={`font-sans text-sm text-gray-500 leading-relaxed font-light max-w-md ${isLeft ? 'lg:text-right' : ''}`}>
-                          {tech.description}
-                        </p>
+                      <span className="absolute -bottom-6 left-1/2 -translate-x-1/2 whitespace-nowrap font-mono text-[9px] font-bold text-gray-400">
+                        {String(idx + 1).padStart(2, '0')}
+                      </span>
+                    </button>
+                  );
+                })}
+              </motion.div>
+
+              {/* Detail card (swaps as you select a node) */}
+              <div className="relative">
+                <motion.div
+                  key={activeTechIdx}
+                  initial={{ opacity: 0, y: 16 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+                  className="glass rounded-3xl p-8 md:p-10 relative overflow-hidden shadow-xl shadow-emerald-900/5"
+                >
+                  <span className="pointer-events-none absolute -top-6 -right-2 font-sans text-[9rem] font-black leading-none text-emerald-500/[0.06] select-none">
+                    {String(activeTechIdx + 1).padStart(2, '0')}
+                  </span>
+                  <div className="relative z-10">
+                    <div className="flex items-center gap-3 mb-5">
+                      <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-emerald-500 text-white shadow-lg shadow-emerald-600/20">
+                        <activeTech.icon className="h-7 w-7" />
                       </div>
+                      <span className="font-mono text-xs font-bold text-emerald-600 uppercase tracking-widest">
+                        Core Technology {String(activeTechIdx + 1).padStart(2, '0')}
+                      </span>
+                    </div>
+                    <h3 className="font-sans text-2xl font-bold text-gray-950 tracking-tight mb-3">
+                      {activeTech.title}
+                    </h3>
+                    <p className="font-sans text-sm md:text-base text-gray-500 font-light leading-relaxed">
+                      {activeTech.description}
+                    </p>
+
+                    {/* Selector dots */}
+                    <div className="flex items-center gap-2 mt-8">
+                      {technologies.map((_, idx) => (
+                        <button
+                          key={idx}
+                          onClick={() => setActiveTechIdx(idx)}
+                          aria-label={`Show technology ${idx + 1}`}
+                          className={`h-2 rounded-full transition-all ${idx === activeTechIdx ? 'w-8 bg-emerald-600' : 'w-2 bg-gray-200 hover:bg-gray-300'}`}
+                        />
+                      ))}
                     </div>
                   </div>
                 </motion.div>
-              );
-            })}
-          </div>
-        </div>
+              </div>
+            </div>
+          );
+        })()}
       </section>
 
       {/* 5b. INTERACTIVE GREENHOUSE SIMULATOR */}
       <GreenhouseSimulator onNavigate={onNavigate} />
 
-      {/* 6. ADVANTAGES LIST */}
+      {/* 6. ADVANTAGES — interactive stat dial + accordion */}
       <section className="py-20 px-6 w-full mx-auto border-b border-gray-100">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
-          <motion.div 
-            initial={{ opacity: 0, scale: 0.98 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true, margin: "-120px" }}
-            transition={{ duration: 0.7, ease: [0.215, 0.610, 0.355, 1.000] }}
-            className="lg:col-span-6"
-          >
-            <div className="relative rounded-2xl overflow-hidden shadow-lg img-zoom-wrap">
-              <img
-                src="https://images.unsplash.com/photo-1535090486071-4157038d9885?auto=format&fit=crop&q=80&w=1000"
-                alt="Resilient crops and sun"
-                className="w-full h-80 object-cover img-zoom"
-                referrerPolicy="no-referrer"
-              />
-              <div className="absolute inset-0 from-emerald-950/20 to-transparent"></div>
-            </div>
-          </motion.div>
+        <motion.div
+          initial={{ opacity: 0, y: 25 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: '-120px' }}
+          transition={{ duration: 0.6 }}
+          className="max-w-3xl mb-12"
+        >
+          <div className="text-emerald-600 font-mono text-xs uppercase tracking-wider font-semibold mb-3">
+            The AiGROW Edge
+          </div>
+          <h2 className="font-sans text-3xl md:text-4xl font-bold tracking-tight text-gray-950 mb-4">
+            Why Growers Choose Our Platform
+          </h2>
+          <p className="font-sans text-gray-500 font-light text-base md:text-lg">
+            Traditional farming is vulnerable to climate shifts, soil degradation, and nutrient volatility. Explore the edge AiGROW gives you.
+          </p>
+        </motion.div>
 
-          <motion.div 
-            initial={{ opacity: 0, x: 20 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true, margin: "-120px" }}
-            transition={{ duration: 0.7, delay: 0.1, ease: [0.215, 0.610, 0.355, 1.000] }}
-            className="lg:col-span-6 flex flex-col gap-6"
-          >
-            <div className="text-emerald-600 font-mono text-xs uppercase tracking-wider font-semibold">
-              The AiGROW Edge
-            </div>
-            <h2 className="font-sans text-3xl font-bold tracking-tight text-gray-900">
-              Why Growers Choose Our Platform
-            </h2>
-            <p className="font-sans text-gray-500 font-light text-sm md:text-base">
-              Traditional farming is vulnerable to climate shifts, soil degradation, and nutrient volatility. AiGROW provides complete predictability.
-            </p>
+        {(() => {
+          const activeEdge = advantages[activeEdgeIdx];
+          const R = 86;
+          const CIRC = 2 * Math.PI * R;
+          const fill = (activeEdgeIdx + 1) / advantages.length;
+          return (
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
+              {/* Animated stat dial */}
+              <motion.div
+                initial={{ opacity: 0, scale: 0.95 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: true, margin: '-100px' }}
+                transition={{ duration: 0.6 }}
+                className="lg:col-span-5 glass-green rounded-3xl p-8 md:p-10 relative overflow-hidden flex flex-col items-center justify-center text-center shadow-xl shadow-emerald-900/5 min-h-[360px]"
+              >
+                <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-emerald-500 text-white mb-2 shadow-lg shadow-emerald-600/20">
+                  <activeEdge.icon className="h-6 w-6" />
+                </div>
 
-            <div className="flex flex-col gap-5 mt-2">
-              {advantages.map((adv, idx) => (
-                <div key={idx} className="flex gap-3 items-start">
-                  <adv.icon className="w-5 h-5 text-emerald-500 shrink-0 mt-0.5" />
-                  <div>
-                    <h4 className="font-sans text-sm font-bold text-gray-900">{adv.title}</h4>
-                    <p className="font-sans text-xs text-gray-500 mt-0.5 leading-relaxed font-light">{adv.desc}</p>
+                <div className="relative w-52 h-52 my-2">
+                  <svg viewBox="0 0 200 200" className="w-full h-full -rotate-90">
+                    <circle cx="100" cy="100" r={R} fill="none" stroke="rgba(76,154,91,0.15)" strokeWidth="12" />
+                    <motion.circle
+                      cx="100" cy="100" r={R} fill="none" stroke="#4C9A5B" strokeWidth="12" strokeLinecap="round"
+                      strokeDasharray={CIRC}
+                      animate={{ strokeDashoffset: CIRC * (1 - fill) }}
+                      transition={{ type: 'spring', stiffness: 90, damping: 18 }}
+                    />
+                  </svg>
+                  <div className="absolute inset-0 flex flex-col items-center justify-center">
+                    <motion.span
+                      key={activeEdge.stat}
+                      initial={{ opacity: 0, scale: 0.8, y: 6 }}
+                      animate={{ opacity: 1, scale: 1, y: 0 }}
+                      transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+                      className="font-mono text-5xl font-black text-emerald-700 tracking-tight"
+                    >
+                      {activeEdge.stat}
+                    </motion.span>
+                    <span className="font-sans text-[11px] text-emerald-800/70 font-semibold mt-1 max-w-[7rem] leading-tight">
+                      {activeEdge.statLabel}
+                    </span>
                   </div>
                 </div>
-              ))}
+
+                <motion.h4
+                  key={activeEdge.title}
+                  initial={{ opacity: 0, y: 8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.4 }}
+                  className="font-sans text-base font-bold text-gray-900 mt-2 max-w-xs"
+                >
+                  {activeEdge.title}
+                </motion.h4>
+              </motion.div>
+
+              {/* Accordion list */}
+              <div className="lg:col-span-7 flex flex-col gap-2.5">
+                {advantages.map((adv, idx) => {
+                  const active = idx === activeEdgeIdx;
+                  const num = String(idx + 1).padStart(2, '0');
+                  return (
+                    <motion.button
+                      key={idx}
+                      initial={{ opacity: 0, x: 20 }}
+                      whileInView={{ opacity: 1, x: 0 }}
+                      viewport={{ once: true, margin: '-60px' }}
+                      transition={{ duration: 0.4, delay: idx * 0.06 }}
+                      onMouseEnter={() => setActiveEdgeIdx(idx)}
+                      onClick={() => setActiveEdgeIdx(idx)}
+                      className={`w-full text-left rounded-2xl border p-4 md:p-5 transition-all duration-300 ${
+                        active ? 'glass-green border-emerald-300/60 shadow-md shadow-emerald-900/5' : 'glass border-transparent hover:border-emerald-200/50'
+                      }`}
+                    >
+                      <div className="flex items-center gap-4">
+                        <span className={`font-mono text-sm font-black tabular-nums transition-colors ${active ? 'text-emerald-600' : 'text-gray-300'}`}>
+                          {num}
+                        </span>
+                        <span className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl transition-colors ${active ? 'bg-emerald-500 text-white' : 'bg-emerald-50 text-emerald-600'}`}>
+                          <adv.icon className="h-5 w-5" />
+                        </span>
+                        <h4 className="grow font-sans text-sm md:text-base font-bold text-gray-900">{adv.title}</h4>
+                        <span className={`shrink-0 font-mono text-xs font-bold ${active ? 'text-emerald-600' : 'text-gray-300'}`}>{adv.stat}</span>
+                        <ChevronRight className={`w-4 h-4 shrink-0 text-emerald-500 transition-transform duration-300 ${active ? 'rotate-90' : ''}`} />
+                      </div>
+                      <div className={`overflow-hidden transition-all duration-300 ${active ? 'max-h-40 opacity-100' : 'max-h-0 opacity-0'}`}>
+                        <p className="font-sans text-xs md:text-sm text-gray-500 leading-relaxed font-light pt-3 pl-[4.5rem]">
+                          {adv.desc}
+                        </p>
+                      </div>
+                    </motion.button>
+                  );
+                })}
+              </div>
             </div>
-          </motion.div>
-        </div>
+          );
+        })()}
       </section>
 
       {/* 7. STATS BAR (ANIMATED) */}
@@ -803,115 +1133,137 @@ export default function HomeView({
       {/* 8. PROJECTS CAROUSEL */}
       <section className="py-20 bg-gray-50/30 border-b border-gray-100 px-6">
         <div className="w-full mx-auto">
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-120px" }}
             transition={{ duration: 0.6 }}
-            className="flex flex-col md:flex-row items-baseline justify-between gap-4 mb-12"
+            className="max-w-3xl mb-10"
           >
-            <div>
-              <div className="text-emerald-600 font-mono text-xs uppercase tracking-wider font-semibold mb-2">
-                Our Harvest of Success
-              </div>
-              <h2 className="font-sans text-3xl font-bold tracking-tight text-gray-900 mb-3">
-                Empowering Sri Lankan Farms
-              </h2>
-              <p className="font-sans text-xs text-gray-500 max-w-2xl font-light leading-relaxed">
-                We have successfully established our technology around Sri Lanka and empowering over 50 farmers while bridging the gap of traditional farming and modern practices.
-              </p>
+            <div className="text-emerald-600 font-mono text-xs uppercase tracking-wider font-semibold mb-3">
+              Our Harvest of Success
             </div>
-            
-            {/* Control buttons */}
-            <div className="flex gap-2">
-              <button
-                id="prev-project-btn"
-                onClick={prevProject}
-                className="w-10 h-10 rounded-xl border border-gray-200 flex items-center justify-center text-gray-600 bg-white hover:bg-emerald-50 hover:text-emerald-600 transition-colors"
-                aria-label="Previous Project"
-              >
-                <ChevronLeft className="w-5 h-5" />
-              </button>
-              <button
-                id="next-project-btn"
-                onClick={nextProject}
-                className="w-10 h-10 rounded-xl border border-gray-200 flex items-center justify-center text-gray-600 bg-white hover:bg-emerald-50 hover:text-emerald-600 transition-colors"
-                aria-label="Next Project"
-              >
-                <ChevronRight className="w-5 h-5" />
-              </button>
-            </div>
+            <h2 className="font-sans text-3xl md:text-4xl font-bold tracking-tight text-gray-950 mb-4">
+              Empowering Sri Lankan Farms
+            </h2>
+            <p className="font-sans text-gray-500 max-w-2xl font-light leading-relaxed text-base">
+              We have successfully established our technology around Sri Lanka, empowering over 50 farmers while bridging the gap of traditional farming and modern practices.
+            </p>
           </motion.div>
 
-          {/* Active Carousel Project Panel */}
-          <motion.div 
+          {/* Cinematic featured showcase */}
+          <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-120px" }}
+            viewport={{ once: true, margin: "-100px" }}
             transition={{ duration: 0.7, ease: [0.215, 0.610, 0.355, 1.000] }}
-            className="glass rounded-3xl shadow-xl shadow-emerald-900/5 overflow-hidden grid grid-cols-1 lg:grid-cols-12"
+            onMouseEnter={() => setProjPaused(true)}
+            onMouseLeave={() => setProjPaused(false)}
+            className="relative rounded-3xl overflow-hidden h-[540px] shadow-xl shadow-emerald-900/10 border border-white/40"
           >
-            <div className="lg:col-span-5 h-64 sm:h-80 lg:h-auto relative img-zoom-wrap">
-              <img
-                src={activeProject.image}
-                alt={activeProject.title}
-                className="absolute inset-0 w-full h-full object-cover img-zoom"
+            {/* Crossfading Ken-Burns backgrounds */}
+            {PROJECTS_DATA.map((proj, idx) => (
+              <motion.img
+                key={proj.id}
+                src={proj.image}
+                alt={proj.title}
                 referrerPolicy="no-referrer"
+                initial={false}
+                animate={{ opacity: idx === currentProjectIdx ? 1 : 0, scale: idx === currentProjectIdx ? 1.08 : 1 }}
+                transition={{ opacity: { duration: 1 }, scale: { duration: 6, ease: 'linear' } }}
+                className="absolute inset-0 h-full w-full object-cover"
               />
-              <div className="absolute top-4 left-4 px-3 py-1.5 bg-emerald-600 text-white rounded-lg text-xs font-semibold uppercase tracking-wider">
-                {activeProject.location}
-              </div>
+            ))}
+            {/* Overlays */}
+            <div className="absolute inset-0 bg-gradient-to-t from-emerald-950/95 via-emerald-950/45 to-emerald-950/25" />
+            <div className="absolute inset-0 bg-gradient-to-r from-emerald-950/70 via-transparent to-transparent" />
+
+            {/* Thumbnail filmstrip (desktop) */}
+            <div className="hidden md:flex absolute top-6 right-6 z-20 flex-col gap-3 w-44">
+              {PROJECTS_DATA.map((proj, idx) => {
+                const active = idx === currentProjectIdx;
+                return (
+                  <button
+                    key={proj.id}
+                    onClick={() => setCurrentProjectIdx(idx)}
+                    className={`relative h-20 w-full rounded-xl overflow-hidden border-2 transition-all duration-300 ${
+                      active ? 'border-emerald-400 shadow-lg scale-100' : 'border-white/30 opacity-70 hover:opacity-100 scale-95'
+                    }`}
+                  >
+                    <img src={proj.image} alt={proj.title} referrerPolicy="no-referrer" className="h-full w-full object-cover" />
+                    <div className="absolute inset-0 bg-emerald-950/40" />
+                    <span className="absolute bottom-1.5 left-2 right-2 text-left font-mono text-[9px] font-bold text-white uppercase tracking-wide leading-tight truncate">
+                      {proj.location.split(',')[0]}
+                    </span>
+                    {active && (
+                      <motion.span
+                        layoutId="proj-thumb-active"
+                        className="absolute inset-0 rounded-lg ring-2 ring-emerald-400"
+                      />
+                    )}
+                  </button>
+                );
+              })}
             </div>
 
-            <div className="lg:col-span-7 p-8 md:p-12 flex flex-col justify-between">
-              <div className="flex flex-col gap-4">
-                <span className="font-mono text-xs text-emerald-600 uppercase tracking-widest font-semibold">
-                  {activeProject.type}
+            {/* Content */}
+            <div className="absolute inset-x-0 bottom-0 z-10 p-8 md:p-12 md:pr-56">
+              <motion.div
+                key={currentProjectIdx}
+                initial={{ opacity: 0, y: 24 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+              >
+                <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-500 px-3 py-1 text-[11px] font-bold uppercase tracking-wider text-white mb-4">
+                  {activeProject.location}
                 </span>
-                
-                <h3 className="font-sans text-2xl font-bold text-gray-950 tracking-tight">
+                <p className="font-mono text-xs text-emerald-300 uppercase tracking-widest font-semibold mb-2">
+                  {activeProject.type}
+                </p>
+                <h3 className="font-sans text-2xl md:text-4xl font-bold text-white tracking-tight mb-3 max-w-2xl">
                   {activeProject.title}
                 </h3>
-                
-                <p className="font-sans text-sm text-gray-500 leading-relaxed font-light">
+                <p className="font-sans text-sm text-white/80 font-light leading-relaxed max-w-xl mb-6">
                   {activeProject.summary}
                 </p>
 
-                {/* Micro Stats inside project */}
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 py-4 border-y border-gray-100 my-2">
+                {/* Glass stat chips */}
+                <div className="flex flex-wrap gap-2.5 mb-7">
                   {activeProject.stats.map((stat, i) => (
-                    <div key={i} className="flex flex-col">
-                      <span className="font-mono text-base md:text-lg font-bold text-emerald-600">{stat.value}</span>
-                      <span className="font-sans text-[10px] text-gray-400 font-medium tracking-wide uppercase mt-0.5">{stat.label}</span>
+                    <div key={i} className="rounded-xl bg-white/10 backdrop-blur-sm border border-white/20 px-3.5 py-2">
+                      <span className="block font-mono text-base md:text-lg font-black text-emerald-300 leading-none">{stat.value}</span>
+                      <span className="block font-sans text-[9px] text-white/60 font-medium uppercase tracking-wide mt-1">{stat.label}</span>
                     </div>
                   ))}
                 </div>
-              </div>
 
-              <div className="flex items-center justify-between mt-6 pt-4 border-t border-gray-50">
                 <button
                   onClick={() => onSelectProject(activeProject.id)}
-                  className="px-5 py-2.5 bg-gray-50 text-gray-800 hover:bg-emerald-50 hover:text-emerald-700 font-medium rounded-xl text-xs transition-colors flex items-center gap-2 group"
+                  className="flex items-center gap-2 px-6 py-3 rounded-xl bg-white text-emerald-800 hover:bg-emerald-50 font-bold text-xs transition-all shadow-lg group"
                 >
-                  View Details
-                  <ArrowUpRight className="w-3.5 h-3.5 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                  View Project Details
+                  <ArrowUpRight className="w-4 h-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
                 </button>
-
-                <div className="flex gap-1.5">
-                  {PROJECTS_DATA.map((_, idx) => (
-                    <button
-                      key={idx}
-                      onClick={() => setCurrentProjectIdx(idx)}
-                      className={`h-2 rounded-full transition-all ${
-                        idx === currentProjectIdx ? 'w-6 bg-emerald-600' : 'w-2 bg-gray-200 hover:bg-gray-300'
-                      }`}
-                      aria-label={`Slide ${idx + 1}`}
-                    />
-                  ))}
-                </div>
-              </div>
+              </motion.div>
             </div>
           </motion.div>
+
+          {/* Thumbnail filmstrip (mobile) */}
+          <div className="md:hidden grid grid-cols-3 gap-2.5 mt-3">
+            {PROJECTS_DATA.map((proj, idx) => {
+              const active = idx === currentProjectIdx;
+              return (
+                <button
+                  key={proj.id}
+                  onClick={() => setCurrentProjectIdx(idx)}
+                  className={`relative h-16 rounded-xl overflow-hidden border-2 transition-all ${active ? 'border-emerald-500' : 'border-transparent opacity-70'}`}
+                >
+                  <img src={proj.image} alt={proj.title} referrerPolicy="no-referrer" className="h-full w-full object-cover" />
+                  <div className="absolute inset-0 bg-emerald-950/30" />
+                </button>
+              );
+            })}
+          </div>
         </div>
       </section>
 
@@ -1218,70 +1570,125 @@ export default function HomeView({
         </div>
       </section>
 
-      {/* 10. AWARDS STRIP */}
-      <section className="py-16 bg-white border-b border-gray-100 px-6">
-        <div className="w-full mx-auto">
-          <motion.h3 
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-            className="font-sans text-xs font-semibold text-gray-400 uppercase tracking-widest text-center mb-10"
-          >
-            Recognized Excellence in Agritech
-          </motion.h3>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-center">
-            
-            <motion.div 
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-100px" }}
-              transition={{ duration: 0.5, delay: 0 }}
-              className="flex items-center gap-4 p-5 bg-gray-50 rounded-2xl border border-gray-100 transition-all hover:border-emerald-200"
-            >
-              <div className="w-12 h-12 shrink-0 rounded-xl bg-emerald-100/50 flex items-center justify-center text-emerald-600">
-                <Award className="w-6 h-6" />
-              </div>
-              <div>
-                <h4 className="font-sans text-sm font-bold text-gray-800">E-Swabhimani Awards</h4>
-                <p className="font-sans text-xs text-gray-500 mt-0.5">Digital Social Impact 2018</p>
-              </div>
-            </motion.div>
-
-            <motion.div 
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-100px" }}
-              transition={{ duration: 0.5, delay: 0.1 }}
-              className="flex items-center gap-4 p-5 bg-gray-50 rounded-2xl border border-gray-100 transition-all hover:border-emerald-200"
-            >
-              <div className="w-12 h-12 shrink-0 rounded-xl bg-emerald-100/50 flex items-center justify-center text-emerald-600">
-                <Award className="w-6 h-6" />
-              </div>
-              <div>
-                <h4 className="font-sans text-sm font-bold text-gray-800">SLASSCOM National</h4>
-                <p className="font-sans text-xs text-gray-500 mt-0.5">1st Runner-up Best Innovative Product in Agritech 2024</p>
-              </div>
-            </motion.div>
-
-            <motion.div 
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-100px" }}
-              transition={{ duration: 0.5, delay: 0.2 }}
-              className="flex items-center gap-4 p-5 bg-gray-50 rounded-2xl border border-gray-100 transition-all hover:border-emerald-200"
-            >
-              <div className="w-12 h-12 shrink-0 rounded-xl bg-emerald-100/50 flex items-center justify-center text-emerald-600">
-                <Award className="w-6 h-6" />
-              </div>
-              <div>
-                <h4 className="font-sans text-sm font-bold text-gray-800">Pioneering AI Solutions</h4>
-                <p className="font-sans text-xs text-gray-500 mt-0.5">Agricultural Productivity Award 2025</p>
-              </div>
-            </motion.div>
-
+      {/* 10. AWARDS — interactive timeline + featured trophy */}
+      <section className="py-20 px-6 w-full mx-auto border-b border-gray-100">
+        <motion.div
+          initial={{ opacity: 0, y: 25 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: '-120px' }}
+          transition={{ duration: 0.6 }}
+          className="max-w-3xl mb-12"
+        >
+          <div className="text-emerald-600 font-mono text-xs uppercase tracking-wider font-semibold mb-3">
+            Awards &amp; Recognition
           </div>
-        </div>
+          <h2 className="font-sans text-3xl md:text-4xl font-bold tracking-tight text-gray-950 mb-4">
+            Recognized Excellence in Agritech
+          </h2>
+          <p className="font-sans text-gray-500 font-light text-base md:text-lg">
+            A track record celebrated by Sri Lanka&apos;s leading technology and innovation bodies.
+          </p>
+        </motion.div>
+
+        {(() => {
+          const awards = [
+            { year: '2018', org: 'E-Swabhimani Awards', title: 'Digital Social Impact', desc: 'National recognition for technology creating measurable social good across Sri Lankan agriculture.', icon: Medal },
+            { year: '2024', org: 'SLASSCOM National', title: '1st Runner-up · Best Innovative Product in Agritech', desc: 'Honoured among the nation’s most innovative technology products for our precision agritech platform.', icon: Trophy },
+            { year: '2025', org: 'AI Excellence Awards', title: 'Pioneering AI Solutions for Agricultural Productivity', desc: 'Awarded for advancing AI-driven crop management and data-led productivity gains for growers.', icon: Star }
+          ];
+          const active = awards[activeAwardIdx];
+          const ActiveIcon = active.icon;
+          return (
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
+              {/* Year timeline selector */}
+              <div className="lg:col-span-4 relative">
+                <div className="absolute left-[23px] top-4 bottom-4 w-px bg-gradient-to-b from-emerald-300 via-emerald-300/50 to-transparent" />
+                <div className="flex flex-col gap-3">
+                  {awards.map((a, idx) => {
+                    const on = idx === activeAwardIdx;
+                    const Icon = a.icon;
+                    return (
+                      <button
+                        key={a.year}
+                        onMouseEnter={() => setActiveAwardIdx(idx)}
+                        onClick={() => setActiveAwardIdx(idx)}
+                        className={`relative z-10 flex items-center gap-4 p-3 rounded-2xl text-left transition-all duration-300 ${
+                          on ? 'glass-green shadow-md shadow-emerald-900/5' : 'hover:bg-white/40'
+                        }`}
+                      >
+                        <span className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-full border-2 transition-all duration-300 ${
+                          on ? 'bg-emerald-500 text-white border-emerald-500 scale-105 shadow-lg shadow-emerald-600/25' : 'bg-white text-emerald-600 border-emerald-100'
+                        }`}>
+                          <Icon className="h-5 w-5" />
+                        </span>
+                        <span>
+                          <span className={`block font-mono text-lg font-black tabular-nums ${on ? 'text-emerald-700' : 'text-gray-800'}`}>{a.year}</span>
+                          <span className="block font-sans text-xs text-gray-500 font-medium">{a.org}</span>
+                        </span>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* Featured award card */}
+              <div className="lg:col-span-8">
+                <motion.div
+                  key={activeAwardIdx}
+                  initial={{ opacity: 0, y: 16 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+                  className="relative overflow-hidden rounded-3xl bg-emerald-950 text-white p-8 md:p-12 h-full flex flex-col justify-between shadow-xl shadow-emerald-900/20 border border-emerald-800/50"
+                >
+                  {/* Animated shine sweep */}
+                  <motion.div
+                    animate={{ x: ['-30%', '160%'] }}
+                    transition={{ repeat: Infinity, duration: 3.5, ease: 'easeInOut', repeatDelay: 1.5 }}
+                    className="pointer-events-none absolute inset-y-0 -left-1/3 w-1/3 -skew-x-12 bg-gradient-to-r from-transparent via-white/10 to-transparent"
+                  />
+                  {/* Watermark year */}
+                  <span className="pointer-events-none absolute -bottom-8 -right-2 font-sans text-[10rem] font-black leading-none text-white/[0.04] select-none">
+                    {active.year}
+                  </span>
+                  {/* Radial green glow */}
+                  <div className="pointer-events-none absolute -top-16 -right-16 h-64 w-64 rounded-full bg-emerald-500/20 blur-3xl" />
+
+                  <div className="relative z-10">
+                    <div className="flex items-center gap-3 mb-6">
+                      <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-emerald-500 text-white shadow-lg shadow-emerald-600/30">
+                        <ActiveIcon className="h-8 w-8" />
+                      </div>
+                      <div>
+                        <span className="inline-flex items-center gap-1.5 rounded-full bg-white/10 border border-white/20 px-3 py-1 text-[11px] font-bold uppercase tracking-wider text-emerald-200">
+                          <CheckCircle className="h-3 w-3" /> Verified · {active.year}
+                        </span>
+                        <p className="font-mono text-xs text-emerald-300 uppercase tracking-widest font-semibold mt-2">{active.org}</p>
+                      </div>
+                    </div>
+                    <h3 className="font-sans text-2xl md:text-3xl font-bold tracking-tight mb-3 max-w-lg">
+                      {active.title}
+                    </h3>
+                    <p className="font-sans text-sm md:text-base text-white/70 font-light leading-relaxed max-w-lg">
+                      {active.desc}
+                    </p>
+                  </div>
+
+                  {/* Progress dots */}
+                  <div className="relative z-10 flex items-center gap-2 mt-8">
+                    {awards.map((_, idx) => (
+                      <button
+                        key={idx}
+                        onClick={() => setActiveAwardIdx(idx)}
+                        aria-label={`Award ${idx + 1}`}
+                        className={`h-2 rounded-full transition-all ${idx === activeAwardIdx ? 'w-8 bg-emerald-400' : 'w-2 bg-white/25 hover:bg-white/50'}`}
+                      />
+                    ))}
+                  </div>
+                </motion.div>
+              </div>
+            </div>
+          );
+        })()}
       </section>
 
       {/* 11. CLOSING CTA BANNER */}
