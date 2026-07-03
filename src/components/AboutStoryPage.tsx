@@ -63,7 +63,7 @@ export default function AboutStoryPage({ onNavigate }: AboutStoryPageProps) {
               We believe the future of agriculture lies in high-precision, software-driven solutions. By applying CodeGens advanced software capabilities to commercial farming, we enable growers to automate the entire microclimate lifecycle and increase yield outputs.
             </p>
             <p className="font-sans text-xs text-gray-500 italic leading-relaxed">
-              "We don't just sell greenhouses; we build intelligent closed-loop agricultural operating systems." — Dr. Harsha Subasinghe, CEO CodeGen International
+              "We don't just sell greenhouses; we build intelligent closed-loop agricultural operating systems." Dr. Harsha Subasinghe, CEO CodeGen International
             </p>
           </div>
 

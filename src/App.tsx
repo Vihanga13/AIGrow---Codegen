@@ -244,7 +244,7 @@ export default function App() {
       <Navbar currentPage={currentPage} onNavigate={handleNavigate} />
 
       {/* Main Active Page Stage with animated page-shifts */}
-      <main className={`grow ${currentPage !== 'home' ? '' : ''}`}>
+      <main className={`grow ${currentPage !== 'home' ? 'pt-28 lg:pt-32' : ''}`}>
         <AnimatePresence mode="wait">
           <motion.div
             key={currentPage}

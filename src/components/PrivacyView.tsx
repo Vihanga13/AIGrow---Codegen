@@ -9,7 +9,7 @@ interface PrivacyViewProps {
 const SECTIONS = [
   {
     title: '1. Information We Collect',
-    body: 'We collect information you provide directly through our contact forms, quote calculators, and equipment inquiries — including your name, email address, phone number, and project specifications. We also collect anonymous usage data such as pages visited and device type to improve our services.'
+    body: 'We collect information you provide directly through our contact forms, quote calculators, and equipment inquiries, including your name, email address, phone number, and project specifications. We also collect anonymous usage data such as pages visited and device type to improve our services.'
   },
   {
     title: '2. How We Use Your Information',

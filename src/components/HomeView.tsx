@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { motion } from 'motion/react';
+import { motion, AnimatePresence } from 'motion/react';
 import { 
   ArrowRight, 
   Leaf, 
@@ -28,6 +28,7 @@ import {
 import { PageId } from '../types';
 import { SERVICES_DATA, PROJECTS_DATA } from '../data';
 import StatsCounter from './StatsCounter';
+import GreenhouseSimulator from './GreenhouseSimulator';
 
 const HERO_SLIDES = [
   {
@@ -68,6 +69,7 @@ export default function HomeView({
 }: HomeViewProps) {
   const [currentSlideIdx, setCurrentSlideIdx] = useState(0);
   const [currentProjectIdx, setCurrentProjectIdx] = useState(0);
+  const [activeServiceIdx, setActiveServiceIdx] = useState(0);
   const [isVideoPlaying, setIsVideoPlaying] = useState(false);
 
   // Interactive Simulation states for the live Hero dashboard widget
@@ -211,7 +213,7 @@ export default function HomeView({
     {
       icon: Droplet,
       title: 'Precision Fertigation',
-      description: 'Smart systems that deliver the exact drop of water and nutrient needed—zero waste, maximum growth.'
+      description: 'Smart systems that deliver the exact drop of water and nutrient needed, zero waste, maximum growth.'
     }
   ];
 
@@ -468,10 +470,10 @@ export default function HomeView({
           </div>
           <div className="lg:col-span-7 font-sans text-base md:text-lg text-gray-600 leading-relaxed font-light">
             <p className="mb-4">
-              AiGROW is a pioneer Sri Lankan agritech enterprise and a dedicated subsidiary of **CodeGen International**. We engineer high-yield, modular food production ecosystems that bypass regional climatic barriers.
+              AiGROW is a sustainable agri-tech company dedicated to transforming how Sri Lanka grows its food. Backed by deep technological expertise and a strong commitment to environmental responsibility, we design innovative, scalable, and eco-friendly agricultural solutions that empower farmers, businesses, and communities across the island.
             </p>
-            <p>
-              By fusing smart electronics, custom sensory software, and climate-safe structures, we empower local commercial growers and urban micro-farmers to produce 100% pesticide-free, nutrient-dense fresh food safely and efficiently.
+            <p className="text-gray-900 font-normal">
+              We don't just grow crops, we grow resilient ecosystems.
             </p>
           </div>
         </motion.div>
@@ -495,7 +497,7 @@ export default function HomeView({
               Transforming Sri Lankan Food Security
             </h3>
             <blockquote className="border-l-4 border-emerald-500 pl-4 font-sans text-lg italic text-emerald-800 font-medium bg-emerald-50/40 py-2.5 pr-2 rounded-r-lg">
-              "Our mission is to build sovereign, zero-waste food networks that yield higher, cleaner crops while consuming a fraction of the land and water resources."
+              "To strengthen Sri Lanka's food systems through smart, sustainable, and circular agricultural innovations that improve productivity, protect the environment, and uplift local livelihoods."
             </blockquote>
             <p className="font-sans text-gray-600 leading-relaxed font-light">
               Through strategic automation and circular practices, we are designing food systems that secure predictable local harvests, reduce reliance on chemical imports, and build a climate-resilient Sri Lanka.
@@ -523,15 +525,15 @@ export default function HomeView({
         </div>
       </section>
 
-      {/* 4. OUR SERVICES OVERVIEW */}
-      <section className="py-20 bg-gray-50/50 border-b border-gray-100 px-6">
+      {/* 4. OUR SERVICES OVERVIEW — interactive selector + animated detail panel */}
+      <section className="py-20 bg-emerald-50/20 border-b border-gray-100 px-6">
         <div className="w-full mx-auto">
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: 25 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-120px" }}
             transition={{ duration: 0.6, ease: [0.215, 0.610, 0.355, 1.000] }}
-            className="text-center max-w-3xl mx-auto mb-16"
+            className="max-w-3xl mb-14"
           >
             <div className="text-emerald-600 font-mono text-xs uppercase tracking-wider font-semibold mb-3">
               What We Deliver
@@ -540,82 +542,173 @@ export default function HomeView({
               Modular Agritech Services
             </h2>
             <p className="font-sans text-gray-500 font-light text-base md:text-lg">
-              Explore our four core specialized solutions engineered to bring technology to farming.
+              Four core specialized solutions engineered to bring technology to farming. Pick one to explore.
             </p>
           </motion.div>
 
-          {/* Cards Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {SERVICES_DATA.map((service, index) => (
-              <motion.div
-                key={service.id}
-                id={`home-service-card-${service.id}`}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "-100px" }}
-                transition={{ duration: 0.5, delay: index * 0.1, ease: "easeOut" }}
-                className="glass rounded-2xl p-6 transition-all duration-300 hover:shadow-xl hover:shadow-emerald-900/5 hover:-translate-y-1 flex flex-col justify-between"
-              >
-                <div>
-                  <div className="w-12 h-12 rounded-xl bg-emerald-50 flex items-center justify-center text-emerald-600 mb-6 font-semibold">
-                    {getServiceIcon(service.id)}
-                  </div>
-                  <h3 className="font-sans text-lg font-bold text-gray-900 mb-3">{service.title}</h3>
-                  <p className="font-sans text-sm text-gray-500 leading-relaxed font-light mb-6">{service.shortDesc}</p>
-                </div>
-                
-                <button
-                  onClick={() => onSelectService(service.id)}
-                  className="mt-auto pt-4 border-t border-gray-50 text-emerald-600 text-xs font-semibold hover:text-emerald-700 flex items-center gap-1.5 self-start group transition-all"
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
+            {/* Left: numbered selector list */}
+            <div className="lg:col-span-5 flex flex-col gap-3">
+              {SERVICES_DATA.map((service, index) => {
+                const active = index === activeServiceIdx;
+                return (
+                  <motion.button
+                    key={service.id}
+                    id={`home-service-card-${service.id}`}
+                    initial={{ opacity: 0, x: -20 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    viewport={{ once: true, margin: '-80px' }}
+                    transition={{ duration: 0.4, delay: index * 0.08 }}
+                    onMouseEnter={() => setActiveServiceIdx(index)}
+                    onClick={() => setActiveServiceIdx(index)}
+                    className={`group flex items-center gap-4 w-full p-5 rounded-2xl border text-left transition-all duration-300 ${
+                      active
+                        ? 'glass-green border-emerald-300/60 shadow-lg shadow-emerald-900/5'
+                        : 'glass border-transparent hover:-translate-y-0.5'
+                    }`}
+                  >
+                    <span className={`font-mono text-sm font-black tabular-nums transition-colors ${active ? 'text-emerald-600' : 'text-gray-300 group-hover:text-emerald-400'}`}>
+                      {String(index + 1).padStart(2, '0')}
+                    </span>
+                    <span className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl transition-colors ${
+                      active ? 'bg-emerald-500 text-white' : 'bg-emerald-50 text-emerald-600'
+                    }`}>
+                      {getServiceIcon(service.id)}
+                    </span>
+                    <span className="grow">
+                      <span className="block font-sans text-base font-bold text-gray-900">{service.title}</span>
+                    </span>
+                    <ArrowRight className={`w-4 h-4 shrink-0 transition-all ${active ? 'text-emerald-600 translate-x-0' : 'text-gray-300 -translate-x-1 group-hover:translate-x-0'}`} />
+                  </motion.button>
+                );
+              })}
+            </div>
+
+            {/* Right: animated detail panel */}
+            <div className="lg:col-span-7">
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={activeServiceIdx}
+                  initial={{ opacity: 0, y: 16 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -12 }}
+                  transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+                  className="glass rounded-3xl p-8 md:p-10 h-full flex flex-col justify-between relative overflow-hidden shadow-xl shadow-emerald-900/5"
                 >
-                  Learn More
-                  <ArrowRight className="w-3.5 h-3.5 transition-transform group-hover:translate-x-1" />
-                </button>
-              </motion.div>
-            ))}
+                  {/* Big watermark number */}
+                  <span className="pointer-events-none absolute -top-6 -right-2 font-sans text-[9rem] font-black leading-none text-emerald-500/[0.06] select-none">
+                    {String(activeServiceIdx + 1).padStart(2, '0')}
+                  </span>
+
+                  <div className="relative z-10">
+                    <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-emerald-500 text-white mb-6 shadow-lg shadow-emerald-600/20">
+                      {getServiceIcon(SERVICES_DATA[activeServiceIdx].id)}
+                    </div>
+                    <h3 className="font-sans text-2xl font-bold text-gray-950 tracking-tight mb-3">
+                      {SERVICES_DATA[activeServiceIdx].title}
+                    </h3>
+                    <p className="font-sans text-sm md:text-base text-gray-500 font-light leading-relaxed mb-6 max-w-lg">
+                      {SERVICES_DATA[activeServiceIdx].shortDesc}
+                    </p>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-2.5">
+                      {SERVICES_DATA[activeServiceIdx].features.slice(0, 4).map((feat, fIdx) => (
+                        <div key={fIdx} className="flex items-start gap-2 text-xs text-gray-600">
+                          <CheckCircle className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />
+                          <span className="font-light leading-relaxed">{feat}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  <button
+                    onClick={() => onSelectService(SERVICES_DATA[activeServiceIdx].id)}
+                    className="relative z-10 mt-8 w-fit flex items-center gap-2 px-6 py-3.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-semibold transition-all shadow-md shadow-emerald-600/10 group"
+                  >
+                    Explore {SERVICES_DATA[activeServiceIdx].title}
+                    <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
+                  </button>
+                </motion.div>
+              </AnimatePresence>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* 5. TECHNOLOGY HIGHLIGHTS / POPULAR PRODUCT SNIPPETS */}
-      <section className="py-20 px-6 w-full mx-auto border-b border-gray-100">
-        <motion.div 
+      {/* 5. TECHNOLOGY HIGHLIGHTS — zig-zag timeline layout */}
+      <section className="py-20 px-6 w-full mx-auto border-b border-gray-100 overflow-hidden">
+        {/* Editorial split header */}
+        <motion.div
           initial={{ opacity: 0, y: 25 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-120px" }}
           transition={{ duration: 0.6, ease: [0.215, 0.610, 0.355, 1.000] }}
-          className="text-center max-w-3xl mx-auto mb-16"
+          className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-10 items-end mb-16 max-w-6xl mx-auto"
         >
-          <div className="text-emerald-600 font-mono text-xs uppercase tracking-wider font-semibold mb-3">
-            At AiGROW, Technology Meets Nature
+          <div className="lg:col-span-6">
+            <div className="flex items-center gap-2 text-emerald-600 font-mono text-xs uppercase tracking-wider font-semibold mb-3">
+              <span className="h-px w-8 bg-emerald-400" />
+              At AiGROW, Technology Meets Nature
+            </div>
+            <h2 className="font-sans text-3xl md:text-4xl font-bold tracking-tight text-gray-950">
+              Snippets of Our Most Popular Products
+            </h2>
           </div>
-          <h2 className="font-sans text-3xl md:text-4xl font-bold tracking-tight text-gray-950 mb-4">
-            Snippets of Our Most Popular Products
-          </h2>
-          <p className="font-sans text-gray-500 font-light leading-relaxed">
+          <p className="lg:col-span-6 font-sans text-gray-500 font-light leading-relaxed lg:pb-1">
             We integrate IoT-enabled systems, climate control, data-driven precision farming practices, and sustainable materials to create efficient, low-waste agricultural solutions tailored for Sri Lankan conditions.
           </p>
         </motion.div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {technologies.map((tech, idx) => (
-            <motion.div 
-              key={idx} 
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-100px" }}
-              transition={{ duration: 0.5, delay: idx * 0.1, ease: "easeOut" }}
-              className="glass rounded-2xl p-8 shadow-sm hover:shadow-md transition-shadow"
-            >
-              <div className="w-12 h-12 rounded-xl bg-emerald-50 flex items-center justify-center text-emerald-600 mb-6">
-                <tech.icon className="w-6 h-6" />
-              </div>
-              <h3 className="font-sans text-lg font-bold text-gray-900 mb-3">{tech.title}</h3>
-              <p className="font-sans text-sm text-gray-500 leading-relaxed font-light">{tech.description}</p>
-            </motion.div>
-          ))}
+        {/* Zig-zag connected timeline */}
+        <div className="relative max-w-5xl mx-auto">
+          {/* Center spine (desktop) */}
+          <div className="hidden lg:block absolute left-1/2 top-3 bottom-3 w-px -translate-x-1/2 bg-gradient-to-b from-emerald-300 via-emerald-300/50 to-transparent" />
+          {/* Left spine (mobile) */}
+          <div className="lg:hidden absolute left-[21px] top-3 bottom-3 w-px bg-gradient-to-b from-emerald-300 to-transparent" />
+
+          <div className="flex flex-col gap-8 lg:gap-6">
+            {technologies.map((tech, idx) => {
+              const isLeft = idx % 2 === 0;
+              const num = String(idx + 1).padStart(2, '0');
+              return (
+                <motion.div
+                  key={idx}
+                  initial={{ opacity: 0, y: 30 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, margin: '-100px' }}
+                  transition={{ duration: 0.5, delay: idx * 0.1, ease: 'easeOut' }}
+                  className="relative lg:grid lg:grid-cols-2 items-center"
+                >
+                  {/* Node badge on the spine */}
+                  <div className="absolute z-10 left-[21px] lg:left-1/2 top-7 lg:top-1/2 -translate-x-1/2 lg:-translate-y-1/2 flex h-11 w-11 items-center justify-center rounded-full bg-emerald-500 text-white shadow-lg shadow-emerald-600/25 ring-4 ring-emerald-50">
+                    <tech.icon className="w-5 h-5" />
+                  </div>
+
+                  {/* Card, alternating sides on desktop */}
+                  <div className={`pl-14 lg:pl-0 ${isLeft ? 'lg:col-start-1 lg:pr-14 lg:text-right' : 'lg:col-start-2 lg:pl-14'}`}>
+                    <div className="glass rounded-2xl p-6 md:p-7 relative overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-emerald-900/5">
+                      {/* Big ghost number */}
+                      <span className={`pointer-events-none absolute -top-5 text-7xl font-black text-emerald-500/[0.08] select-none ${isLeft ? 'left-5' : 'right-5'}`}>
+                        {num}
+                      </span>
+                      <div className={`relative z-10 flex flex-col ${isLeft ? 'lg:items-end' : 'items-start'}`}>
+                        <span className="font-mono text-xs font-bold text-emerald-600 mb-2">{num}</span>
+                        <h3 className="font-sans text-lg font-bold text-gray-900 mb-2">{tech.title}</h3>
+                        <p className={`font-sans text-sm text-gray-500 leading-relaxed font-light max-w-md ${isLeft ? 'lg:text-right' : ''}`}>
+                          {tech.description}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </motion.div>
+              );
+            })}
+          </div>
         </div>
       </section>
+
+      {/* 5b. INTERACTIVE GREENHOUSE SIMULATOR */}
+      <GreenhouseSimulator onNavigate={onNavigate} />
 
       {/* 6. ADVANTAGES LIST */}
       <section className="py-20 px-6 w-full mx-auto border-b border-gray-100">

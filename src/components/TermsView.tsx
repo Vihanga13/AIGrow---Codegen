@@ -21,7 +21,7 @@ const SECTIONS = [
   },
   {
     title: '4. Intellectual Property',
-    body: 'All content on this site — including designs, text, logos, software, and system architecture — is the property of AiGROW and CodeGen International and may not be reproduced or redistributed without written permission.'
+    body: 'All content on this site, including designs, text, logos, software, and system architecture, is the property of AiGROW and CodeGen International and may not be reproduced or redistributed without written permission.'
   },
   {
     title: '5. Warranties & Liability',
