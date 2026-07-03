@@ -24,9 +24,9 @@ export default function Footer({ onNavigate }: FooterProps) {
       {/* Top brand accent line */}
       <div className="h-px w-full from-transparent via-emerald-500/50 to-transparent" />
 
-      {/* Large faint brand wordmark watermark */}
-      <div className="pointer-events-none absolute -bottom-6 right-0 select-none px-6 text-right">
-        <span className="block font-sans text-[22vw] font-black leading-none tracking-tighter lg:text-[16vw]">
+      {/* Large brand wordmark watermark (kept behind content, but visible) */}
+      <div className="pointer-events-none absolute -bottom-10 right-0 z-0 select-none overflow-hidden px-6 text-right">
+        <span className="block font-sans text-[22vw] font-black leading-none tracking-tighter text-white/10 lg:text-[16vw]">
           AiGROW
         </span>
       </div>

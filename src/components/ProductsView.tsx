@@ -40,7 +40,7 @@ export default function ProductsView({
   };
 
   return (
-    <div className="min-h-screen text-[#1F2321] py-12 px-6">
+    <div className="min-h-screen py-12 px-6">
       <div className="w-full mx-auto">
 
         {/* Main Catalog Grid View */}
