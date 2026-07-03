@@ -88,7 +88,7 @@ export default function AboutView({ onNavigate }: AboutViewProps) {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-100px" }}
           transition={{ duration: 0.5 }}
-          className="bg-white rounded-3xl p-8 md:p-12 border border-gray-100 shadow-xl shadow-gray-100/30 grid grid-cols-1 sm:grid-cols-3 gap-8 text-center mb-20"
+          className="glass rounded-3xl p-8 md:p-12 shadow-xl shadow-emerald-900/5 grid grid-cols-1 sm:grid-cols-3 gap-8 text-center mb-20"
         >
           <div className="flex flex-col items-center">
             <StatsCounter target={220} suffix="+" />
@@ -200,7 +200,7 @@ export default function AboutView({ onNavigate }: AboutViewProps) {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-100px" }}
                 transition={{ duration: 0.5, delay: index * 0.08 }}
-                className="bg-white rounded-2xl border border-gray-100 overflow-hidden flex flex-col justify-between transition-all duration-300 hover:shadow-xl hover:shadow-gray-100/40"
+                className="glass rounded-2xl overflow-hidden flex flex-col justify-between transition-all duration-300 hover:shadow-xl hover:shadow-emerald-900/5"
               >
                 <div>
                   <div className="h-48 relative overflow-hidden">

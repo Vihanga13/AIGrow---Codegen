@@ -554,7 +554,7 @@ export default function HomeView({
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-100px" }}
                 transition={{ duration: 0.5, delay: index * 0.1, ease: "easeOut" }}
-                className="bg-white rounded-2xl p-6 border border-gray-100 transition-all duration-300 hover:shadow-xl hover:shadow-gray-100 hover:-translate-y-1 flex flex-col justify-between"
+                className="glass rounded-2xl p-6 transition-all duration-300 hover:shadow-xl hover:shadow-emerald-900/5 hover:-translate-y-1 flex flex-col justify-between"
               >
                 <div>
                   <div className="w-12 h-12 rounded-xl bg-emerald-50 flex items-center justify-center text-emerald-600 mb-6 font-semibold">
@@ -605,7 +605,7 @@ export default function HomeView({
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-100px" }}
               transition={{ duration: 0.5, delay: idx * 0.1, ease: "easeOut" }}
-              className="bg-white rounded-2xl p-8 border border-gray-100 shadow-sm hover:shadow-md transition-shadow"
+              className="glass rounded-2xl p-8 shadow-sm hover:shadow-md transition-shadow"
             >
               <div className="w-12 h-12 rounded-xl bg-emerald-50 flex items-center justify-center text-emerald-600 mb-6">
                 <tech.icon className="w-6 h-6" />
@@ -756,7 +756,7 @@ export default function HomeView({
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-120px" }}
             transition={{ duration: 0.7, ease: [0.215, 0.610, 0.355, 1.000] }}
-            className="bg-white rounded-3xl border border-gray-100 shadow-xl shadow-gray-100/50 overflow-hidden grid grid-cols-1 lg:grid-cols-12"
+            className="glass rounded-3xl shadow-xl shadow-emerald-900/5 overflow-hidden grid grid-cols-1 lg:grid-cols-12"
           >
             <div className="lg:col-span-5 h-64 sm:h-80 lg:h-auto relative img-zoom-wrap">
               <img
@@ -845,7 +845,7 @@ export default function HomeView({
 
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
             {/* Calculator Controls (Left 7 Columns) */}
-            <div className="lg:col-span-7 bg-white rounded-3xl p-6 md:p-8 border border-gray-100 shadow-xl shadow-gray-100/30 flex flex-col gap-8">
+            <div className="lg:col-span-7 glass rounded-3xl p-6 md:p-8 shadow-xl shadow-emerald-900/5 flex flex-col gap-8">
               
               {/* Type Selection */}
               <div className="flex flex-col gap-3">

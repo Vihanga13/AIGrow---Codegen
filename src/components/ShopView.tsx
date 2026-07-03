@@ -183,7 +183,7 @@ export default function ShopView({
             <Reveal
               key={prod.id}
               delay={(idx % 3) * 0.08}
-              className="bg-white rounded-2xl border border-gray-100 overflow-hidden flex flex-col justify-between transition-all duration-300 hover:shadow-xl hover:shadow-gray-100/30 hover:-translate-y-1"
+              className="glass rounded-2xl overflow-hidden flex flex-col justify-between transition-all duration-300 hover:shadow-xl hover:shadow-emerald-900/5 hover:-translate-y-1"
             >
               <div id={`shop-item-card-${prod.id}`} className="contents">
               <div className="p-6 flex flex-col gap-4">

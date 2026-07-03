@@ -180,7 +180,7 @@ export default function ServicesView({
           initial={{ opacity: 0, y: 15 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, ease: "easeOut" }}
-          className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start bg-white rounded-3xl p-8 md:p-12 border border-gray-100 shadow-xl shadow-gray-100/30"
+          className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start glass rounded-3xl p-8 md:p-12 shadow-xl shadow-emerald-900/5"
         >
           
           {/* Left Column: Brief and Features */}
@@ -285,7 +285,7 @@ export default function ServicesView({
             {/* Special Traceability QR Code Mock (Only for Fresh Produce) */}
             {activeService.id === 'fresh-produce' && (
               <div className="bg-emerald-50/30 border border-emerald-100 rounded-3xl p-6 md:p-8 flex flex-col sm:flex-row items-center gap-6 mt-4">
-                <div className="p-4 bg-white rounded-2xl shadow-sm border border-emerald-100 shrink-0">
+                <div className="p-4 glass rounded-2xl shadow-sm shrink-0">
                   {/* Mock QR Code element */}
                   <div className="w-32 h-32 bg-gray-50 flex flex-col items-center justify-center border border-gray-100 rounded-xl relative group">
                     <QrCode className="w-24 h-24 text-gray-800" />

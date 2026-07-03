@@ -65,7 +65,7 @@ export default function TermsView({ onNavigate }: TermsViewProps) {
             <Reveal
               key={section.title}
               delay={Math.min(idx * 0.05, 0.3)}
-              className="bg-white rounded-2xl border border-gray-100 p-6 md:p-8 shadow-sm"
+              className="glass rounded-2xl p-6 md:p-8 shadow-sm"
             >
               <h2 className="font-sans text-lg font-bold text-gray-950 mb-3">
                 {section.title}

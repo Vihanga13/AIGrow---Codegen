@@ -103,7 +103,7 @@ export default function ProjectsView({
             </button>
 
             {/* High level details sheet */}
-            <div className="bg-white rounded-3xl border border-gray-100 p-8 md:p-12 shadow-xl shadow-gray-100/50 grid grid-cols-1 lg:grid-cols-12 gap-12">
+            <div className="glass rounded-3xl p-8 md:p-12 shadow-xl shadow-emerald-900/5 grid grid-cols-1 lg:grid-cols-12 gap-12">
               
               {/* Left Column: Image and quick stats */}
               <div className="lg:col-span-6 flex flex-col gap-6">
@@ -212,7 +212,7 @@ export default function ProjectsView({
                 <Reveal
                   key={proj.id}
                   delay={(idx % 3) * 0.1}
-                  className="bg-white rounded-2xl border border-gray-100 overflow-hidden flex flex-col justify-between transition-all duration-300 hover:shadow-xl hover:shadow-gray-100/40 hover:-translate-y-1"
+                  className="glass rounded-2xl overflow-hidden flex flex-col justify-between transition-all duration-300 hover:shadow-xl hover:shadow-emerald-900/5 hover:-translate-y-1"
                 >
                   <div id={`project-card-gallery-${proj.id}`}>
                     <div className="h-56 relative overflow-hidden img-zoom-wrap">

@@ -59,7 +59,7 @@ export default function AboutNewsPage({ onNavigate }: AboutNewsPageProps) {
         </div>
 
         {/* Filter Controls Bar */}
-        <div className="bg-white rounded-2xl border border-gray-100 p-4 shadow-xs flex flex-col md:flex-row justify-between items-center gap-4 mb-10">
+        <div className="glass rounded-2xl p-4 shadow-xs flex flex-col md:flex-row justify-between items-center gap-4 mb-10">
           {/* Categories */}
           <div className="flex flex-wrap gap-2">
             {categories.map((cat) => (
@@ -96,7 +96,7 @@ export default function AboutNewsPage({ onNavigate }: AboutNewsPageProps) {
             {filteredNews.map((item) => (
               <div 
                 key={item.id}
-                className="bg-white rounded-3xl border border-gray-100 overflow-hidden flex flex-col justify-between transition-all duration-300 hover:shadow-lg hover:border-emerald-100"
+                className="glass rounded-3xl overflow-hidden flex flex-col justify-between transition-all duration-300 hover:shadow-lg hover:border-emerald-100"
               >
                 <div>
                   <div className="h-48 relative overflow-hidden bg-gray-100">
@@ -141,7 +141,7 @@ export default function AboutNewsPage({ onNavigate }: AboutNewsPageProps) {
             ))}
           </div>
         ) : (
-          <div className="text-center py-16 bg-white rounded-3xl border border-gray-100 mb-16">
+          <div className="text-center py-16 glass rounded-3xl mb-16">
             <BookOpen className="w-12 h-12 text-gray-300 mx-auto mb-4" />
             <h3 className="text-sm font-bold text-gray-800">No press articles match your filter.</h3>
             <p className="text-xs text-gray-400 mt-1">Try resetting the search query or selecting a different category.</p>

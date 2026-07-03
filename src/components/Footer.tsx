@@ -20,9 +20,12 @@ export default function Footer({ onNavigate }: FooterProps) {
   ];
 
   return (
-    <footer className="relative overflow-hidden bg-emerald-950 font-sans text-emerald-100/80">
+    <footer className="relative overflow-hidden bg-emerald-950/85 backdrop-blur-2xl font-sans text-emerald-100/80">
+      {/* Softer green glow so the footer feels less heavy / flat */}
+      <div className="pointer-events-none absolute inset-0 z-0 bg-[radial-gradient(1000px_500px_at_15%_-10%,rgba(76,154,91,0.25),transparent_60%),radial-gradient(800px_400px_at_100%_120%,rgba(76,154,91,0.18),transparent_55%)]" />
+
       {/* Top brand accent line */}
-      <div className="h-px w-full from-transparent via-emerald-500/50 to-transparent" />
+      <div className="h-px w-full bg-gradient-to-r from-transparent via-emerald-500/50 to-transparent" />
 
       {/* Large brand wordmark watermark (kept behind content, but visible) */}
       <div className="pointer-events-none absolute -bottom-10 right-0 z-0 select-none overflow-hidden px-6 text-right">

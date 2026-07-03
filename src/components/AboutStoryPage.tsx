@@ -80,7 +80,7 @@ export default function AboutStoryPage({ onNavigate }: AboutStoryPageProps) {
         </section>
 
         {/* Stats */}
-        <section className="bg-white rounded-3xl p-8 border border-gray-100 shadow-xs grid grid-cols-1 md:grid-cols-3 gap-8 text-center mb-16">
+        <section className="glass rounded-3xl p-8 shadow-xs grid grid-cols-1 md:grid-cols-3 gap-8 text-center mb-16">
           <div className="flex flex-col items-center">
             <StatsCounter target={2018} suffix="" />
             <span className="font-sans text-xs text-gray-500 mt-2 font-medium">Established Year</span>

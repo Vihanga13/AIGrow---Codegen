@@ -112,7 +112,7 @@ export default function ContactView({
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
 
           {/* Form Side */}
-          <Reveal direction="right" className="lg:col-span-7 bg-white rounded-3xl p-8 md:p-10 border border-gray-100 shadow-xl shadow-gray-100/30">
+          <Reveal direction="right" className="lg:col-span-7 glass rounded-3xl p-8 md:p-10 shadow-xl shadow-emerald-900/5">
             {isSubmitted ? (
               <div className="flex flex-col items-center justify-center py-10 text-center gap-6">
                 <div className="w-16 h-16 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-600 animate-bounce">
@@ -299,7 +299,7 @@ export default function ContactView({
             </div>
 
             {/* Quick HQ Card */}
-            <div className="bg-white rounded-3xl p-6 border border-gray-100 shadow-sm flex flex-col gap-4">
+            <div className="glass rounded-3xl p-6 shadow-sm flex flex-col gap-4">
               <h4 className="font-sans text-xs font-bold text-gray-400 uppercase tracking-wider">
                 CodeGen Agritech HQ
               </h4>

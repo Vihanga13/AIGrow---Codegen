@@ -31,11 +31,11 @@ body {
   color: #1F2321;
   font-family: var(--font-sans);
   /* Soft, brand-green tinted canvas so glass surfaces read across every page */
-  background-color: #EFF5F0;
+  background-color: #E6F0E8;
   background-image:
-    radial-gradient(1100px 600px at 100% -8%, rgba(76, 154, 91, 0.14), transparent 60%),
-    radial-gradient(900px 500px at -10% 18%, rgba(76, 154, 91, 0.10), transparent 55%),
-    linear-gradient(180deg, #F3F8F3 0%, #E9F1EB 100%);
+    radial-gradient(1100px 600px at 100% -8%, rgba(76, 154, 91, 0.22), transparent 60%),
+    radial-gradient(900px 500px at -10% 18%, rgba(76, 154, 91, 0.16), transparent 55%),
+    linear-gradient(180deg, #EDF5EE 0%, #DCEBDF 100%);
   background-attachment: fixed;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -70,10 +70,11 @@ body {
 /* Reusable frosted-glass surfaces (apply on any card / panel)        */
 /* ------------------------------------------------------------------ */
 .glass {
-  background-color: rgba(255, 255, 255, 0.6);
+  /* Subtly green-tinted frosted white so every card reads a touch greener */
+  background-color: rgba(238, 246, 240, 0.62);
   backdrop-filter: blur(18px) saturate(150%);
   -webkit-backdrop-filter: blur(18px) saturate(150%);
-  border: 1px solid rgba(255, 255, 255, 0.5);
+  border: 1px solid rgba(76, 154, 91, 0.14);
 }
 
 /* Green-tinted frosted glass for a stronger brand feel */

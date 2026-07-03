@@ -223,7 +223,7 @@ export default function ServiceDetailPage({
         </section>
 
         {/* Core Deliverables / Highlights list */}
-        <section className="bg-white rounded-3xl p-8 md:p-12 border border-gray-100 shadow-sm mb-16">
+        <section className="glass rounded-3xl p-8 md:p-12 shadow-sm mb-16">
           <h2 className="font-sans text-2xl font-bold text-gray-900 tracking-tight mb-8">
             Core Service Deliverables
           </h2>
@@ -261,7 +261,7 @@ export default function ServiceDetailPage({
               {service.subCategories.map((sub, sIdx) => (
                 <div 
                   key={sIdx}
-                  className="bg-white rounded-3xl p-8 border border-gray-100 shadow-sm flex flex-col justify-between"
+                  className="glass rounded-3xl p-8 shadow-sm flex flex-col justify-between"
                 >
                   <div>
                     <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 text-emerald-700 text-xs font-semibold mb-4">
@@ -309,7 +309,7 @@ export default function ServiceDetailPage({
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
               {service.process.map((pStep, pIdx) => (
-                <div key={pIdx} className="bg-white rounded-2xl p-6 border border-emerald-100/30 shadow-xs relative">
+                <div key={pIdx} className="glass rounded-2xl p-6 shadow-xs relative">
                   <span className="absolute top-4 right-4 font-mono text-3xl font-extrabold text-emerald-100 leading-none">
                     {pStep.step}
                   </span>
@@ -326,7 +326,7 @@ export default function ServiceDetailPage({
 
         {/* Greenhouse Project Responsibility Matrix */}
         {serviceId === 'greenhouse' && (
-          <section className="bg-white rounded-3xl p-8 md:p-12 border border-gray-100 shadow-sm mb-16">
+          <section className="glass rounded-3xl p-8 md:p-12 shadow-sm mb-16">
             <div className="mb-6">
               <span className="font-mono text-xs text-emerald-600 font-bold uppercase tracking-widest block mb-2">
                 Operational Framework
