@@ -21,8 +21,13 @@ import PrivacyView from './components/PrivacyView';
 import TermsView from './components/TermsView';
 
 // New Subpage Views
-import ServiceDetailPage from './components/ServiceDetailPage';
 import ProductCategoryPage from './components/ProductCategoryPage';
+
+// Individual service pages (one dedicated file/route per service)
+import GreenhousePage from './components/services/GreenhousePage';
+import IndoorFarmingPage from './components/services/IndoorFarmingPage';
+import HomeGardeningPage from './components/services/HomeGardeningPage';
+import FreshProducePage from './components/services/FreshProducePage';
 
 // Individual product pages (one dedicated file/route per product)
 import SmartClimatePage from './components/products/SmartClimatePage';
@@ -91,37 +96,13 @@ export default function App() {
           />
         );
       case 'services-greenhouse':
-        return (
-          <ServiceDetailPage 
-            serviceId="greenhouse"
-            onNavigate={handleNavigate}
-            onSelectProductForEnquiry={handleSelectProductForEnquiry}
-          />
-        );
+        return <GreenhousePage onNavigate={handleNavigate} onSelectProductForEnquiry={handleSelectProductForEnquiry} />;
       case 'services-indoor-farming':
-        return (
-          <ServiceDetailPage 
-            serviceId="indoor-farming"
-            onNavigate={handleNavigate}
-            onSelectProductForEnquiry={handleSelectProductForEnquiry}
-          />
-        );
+        return <IndoorFarmingPage onNavigate={handleNavigate} onSelectProductForEnquiry={handleSelectProductForEnquiry} />;
       case 'services-home-gardening':
-        return (
-          <ServiceDetailPage 
-            serviceId="home-gardening"
-            onNavigate={handleNavigate}
-            onSelectProductForEnquiry={handleSelectProductForEnquiry}
-          />
-        );
+        return <HomeGardeningPage onNavigate={handleNavigate} onSelectProductForEnquiry={handleSelectProductForEnquiry} />;
       case 'services-fresh-produce':
-        return (
-          <ServiceDetailPage 
-            serviceId="fresh-produce"
-            onNavigate={handleNavigate}
-            onSelectProductForEnquiry={handleSelectProductForEnquiry}
-          />
-        );
+        return <FreshProducePage onNavigate={handleNavigate} onSelectProductForEnquiry={handleSelectProductForEnquiry} />;
       case 'products':
         return (
           <ProductsView 
