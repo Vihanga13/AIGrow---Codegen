@@ -254,7 +254,7 @@ export default function Navbar({ currentPage, onNavigate }: NavbarProps) {
         </div>
 
         {/* ISLAND 2 — CENTER NAVIGATION (desktop) */}
-        <div className={`${islandShell} hidden md:flex items-center gap-1 px-2.5 py-2`}>
+        <div className={`${islandShell} hidden xl:flex items-center gap-1 px-2.5 py-2`}>
           {/* Home */}
           <button
             id="nav-item-home"
@@ -358,7 +358,7 @@ export default function Navbar({ currentPage, onNavigate }: NavbarProps) {
         </div>
 
         {/* ISLAND 3 — ACTIONS (desktop) */}
-        <div className={`${islandShell} hidden md:flex items-center gap-2 px-2.5 py-2`}>
+        <div className={`${islandShell} hidden xl:flex items-center gap-2 px-2.5 py-2`}>
 
           {/* Live Farm Monitor */}
           <div className="relative">
@@ -523,7 +523,7 @@ export default function Navbar({ currentPage, onNavigate }: NavbarProps) {
         <button
           id="nav-mobile-toggle"
           onClick={() => setIsOpen(!isOpen)}
-          className={`${islandShell} md:hidden flex items-center justify-center w-12 h-12 transition-colors ${
+          className={`${islandShell} xl:hidden flex items-center justify-center w-12 h-12 transition-colors ${
             isDarkTheme ? 'text-white' : 'text-gray-700'
           }`}
           aria-label="Toggle Menu"
@@ -540,7 +540,7 @@ export default function Navbar({ currentPage, onNavigate }: NavbarProps) {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
             transition={{ duration: 0.2 }}
-            className="md:hidden mx-4 mt-3 bg-white border border-gray-100 rounded-3xl shadow-2xl z-50 overflow-y-auto max-h-[calc(100vh-120px)]"
+            className="xl:hidden mx-4 mt-3 bg-white border border-gray-100 rounded-3xl shadow-2xl z-50 overflow-y-auto max-h-[calc(100vh-120px)]"
           >
           <div className="flex flex-col p-5 gap-3">
             {/* Home */}

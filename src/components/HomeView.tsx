@@ -87,6 +87,7 @@ export default function HomeView({
   const [projPaused, setProjPaused] = useState(false);
   const [activeAwardIdx, setActiveAwardIdx] = useState(1);
   const [activeMissionIdx, setActiveMissionIdx] = useState(0);
+  const [selectedBuild, setSelectedBuild] = useState<number | null>(null);
   const [isVideoPlaying, setIsVideoPlaying] = useState(false);
 
   // Interactive Simulation states for the live Hero dashboard widget
@@ -1691,18 +1692,39 @@ export default function HomeView({
         })()}
       </section>
 
-      {/* 11. CLOSING CTA BANNER */}
-      <motion.section 
+      {/* 11. CLOSING CTA BANNER — interactive "what are you building?" */}
+      <motion.section
         initial={{ opacity: 0, y: 30 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, margin: "-120px" }}
         transition={{ duration: 0.6, ease: [0.215, 0.610, 0.355, 1.000] }}
-        className="bg-emerald-950 text-white rounded-3xl p-10 md:p-16 w-full mx-auto my-16 relative overflow-hidden"
+        className="relative overflow-hidden rounded-3xl bg-emerald-950 text-white p-10 md:p-16 w-full mx-auto my-16"
       >
-        <div className="absolute right-0 bottom-0 w-80 h-80 text-emerald-900/40 pointer-events-none select-none">
-          <Leaf className="w-full h-full rotate-45" />
-        </div>
-        
+        {/* Animated aurora glows */}
+        <motion.div
+          animate={{ x: [0, 40, 0], y: [0, -20, 0] }}
+          transition={{ repeat: Infinity, duration: 12, ease: 'easeInOut' }}
+          className="pointer-events-none absolute -top-24 -left-10 h-72 w-72 rounded-full bg-emerald-500/25 blur-3xl"
+        />
+        <motion.div
+          animate={{ x: [0, -30, 0], y: [0, 20, 0] }}
+          transition={{ repeat: Infinity, duration: 14, ease: 'easeInOut' }}
+          className="pointer-events-none absolute -bottom-28 right-8 h-80 w-80 rounded-full bg-emerald-400/15 blur-3xl"
+        />
+        {/* Drifting leaves */}
+        {[{ l: '14%', d: 0, s: 26 }, { l: '46%', d: 2.5, s: 18 }, { l: '78%', d: 1.2, s: 30 }].map((lf, i) => (
+          <motion.div
+            key={i}
+            className="pointer-events-none absolute text-emerald-700/30 select-none"
+            style={{ left: lf.l }}
+            initial={{ y: -40, opacity: 0 }}
+            animate={{ y: [-40, 460], opacity: [0, 0.5, 0], rotate: [0, 200] }}
+            transition={{ repeat: Infinity, duration: 11 + lf.d * 2, delay: lf.d, ease: 'linear' }}
+          >
+            <Leaf style={{ width: lf.s, height: lf.s }} />
+          </motion.div>
+        ))}
+
         <div className="relative z-10 max-w-2xl flex flex-col gap-6">
           <span className="font-mono text-xs text-emerald-400 font-bold uppercase tracking-widest">
             A CodeGen Initiative
@@ -1711,18 +1733,65 @@ export default function HomeView({
             Built for Those Who Feed the Nation
           </h2>
           <p className="font-sans text-gray-300 text-base md:text-lg leading-relaxed font-light">
-            From individual farmers to agribusinesses and institutions, AiGROW delivers scalable solutions tailored to real agricultural needs. Reach out to AiGROW Team Today!
+            From individual farmers to agribusinesses and institutions, AiGROW delivers scalable solutions tailored to real agricultural needs.
           </p>
+
+          {/* Interactive project-type chips */}
+          <div className="mt-2">
+            <span className="block font-sans text-xs font-semibold text-emerald-300/80 uppercase tracking-wider mb-3">
+              What are you building?
+            </span>
+            <div className="flex flex-wrap gap-2.5">
+              {[
+                { label: 'Turnkey Greenhouse', icon: Building2 },
+                { label: 'Indoor Farm', icon: Layers },
+                { label: 'Home Garden', icon: Sprout },
+                { label: 'Smart Equipment', icon: Cpu }
+              ].map((b, idx) => {
+                const on = selectedBuild === idx;
+                const Icon = b.icon;
+                return (
+                  <button
+                    key={idx}
+                    onClick={() => setSelectedBuild(on ? null : idx)}
+                    className={`inline-flex items-center gap-2 rounded-xl border px-4 py-2.5 text-sm font-semibold transition-all duration-300 ${
+                      on
+                        ? 'bg-emerald-500 border-emerald-500 text-white shadow-lg shadow-emerald-500/25'
+                        : 'bg-white/10 border-white/20 text-white/90 hover:bg-white/20 hover:border-white/30'
+                    }`}
+                  >
+                    <Icon className="h-4 w-4" />
+                    {b.label}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Primary CTA with shine sweep */}
           <button
             id="home-closing-cta-btn"
             onClick={() => {
+              const builds = ['Turnkey Greenhouse', 'Indoor Farm', 'Home Garden', 'Smart Equipment'];
+              if (selectedBuild !== null && onSelectProductForEnquiry) {
+                onSelectProductForEnquiry(builds[selectedBuild]);
+              }
               onNavigate('contact');
               window.scrollTo({ top: 0, behavior: 'smooth' });
             }}
-            className="w-fit mt-4 px-7 py-3.5 bg-emerald-500 hover:bg-emerald-600 text-white rounded-xl font-semibold text-sm transition-all duration-300 flex items-center gap-2 group animate-pulse hover:animate-none"
+            className="relative overflow-hidden w-fit mt-5 px-7 py-3.5 bg-emerald-500 hover:bg-emerald-600 text-white rounded-xl font-semibold text-sm transition-colors duration-300 flex items-center gap-2 group shadow-lg shadow-emerald-500/20"
           >
-            Contact Us
-            <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
+            <motion.span
+              animate={{ x: ['-120%', '220%'] }}
+              transition={{ repeat: Infinity, duration: 3, ease: 'easeInOut', repeatDelay: 1.5 }}
+              className="pointer-events-none absolute inset-y-0 -left-1/3 w-1/3 -skew-x-12 bg-white/25"
+            />
+            <span className="relative z-10 flex items-center gap-2">
+              {selectedBuild !== null
+                ? `Start my ${['Greenhouse', 'Indoor Farm', 'Home Garden', 'Equipment'][selectedBuild]} project`
+                : 'Start Your Project'}
+              <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
+            </span>
           </button>
         </div>
       </motion.section>

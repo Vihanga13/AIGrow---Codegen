@@ -49,45 +49,56 @@ const CONTROL_LIST: { key: keyof Controls; label: string; short: string; icon: t
   { key: 'irrigation', label: 'Drip Irrigation', short: 'Drip', icon: Droplet }
 ];
 
-// Compact HUD gauge — used both as an overlay (desktop) and a strip (mobile)
-function GaugeChip({ m, baseValue }: { m: Metric; baseValue: number }) {
+// Semicircular dashboard gauge (arc fills toward the current reading)
+const ARC = 131.95; // length of the semicircle arc (r = 42)
+function GaugeDial({ m, baseValue }: { m: Metric; baseValue: number }) {
   const pct = Math.min(100, Math.max(0, ((m.value - m.min) / (m.max - m.min)) * 100));
-  const bandLeft = ((m.optLow - m.min) / (m.max - m.min)) * 100;
-  const bandWidth = ((m.optHigh - m.optLow) / (m.max - m.min)) * 100;
   const inRange = baseValue >= m.optLow && baseValue <= m.optHigh;
   const Icon = m.icon;
   return (
     <motion.div
       animate={{ borderColor: inRange ? 'rgba(76,154,91,0.4)' : 'rgba(76,154,91,0.14)' }}
-      className="glass rounded-xl p-3 shadow-sm"
+      className="glass rounded-2xl p-5 flex flex-col items-center shadow-sm"
     >
-      <div className="flex items-center justify-between mb-2">
-        <span className="flex items-center gap-1.5 font-sans text-[10px] font-bold text-gray-600 uppercase tracking-wide">
-          <Icon className="h-3.5 w-3.5 text-emerald-600" />
-          {m.label}
-        </span>
+      <span className="flex items-center gap-1.5 font-sans text-[11px] font-bold text-gray-600 uppercase tracking-wide mb-1">
+        <Icon className="h-3.5 w-3.5 text-emerald-600" />
+        {m.label}
+      </span>
+
+      <div className="relative w-full max-w-[168px]">
+        <svg viewBox="0 0 100 56" className="w-full">
+          <path d="M8 50 A 42 42 0 0 1 92 50" fill="none" stroke="rgba(0,0,0,0.08)" strokeWidth="8" strokeLinecap="round" />
+          <motion.path
+            d="M8 50 A 42 42 0 0 1 92 50"
+            fill="none"
+            stroke={inRange ? '#4C9A5B' : '#F59E0B'}
+            strokeWidth="8"
+            strokeLinecap="round"
+            strokeDasharray={ARC}
+            animate={{ strokeDashoffset: ARC * (1 - pct / 100) }}
+            transition={{ type: 'spring', stiffness: 90, damping: 18 }}
+          />
+        </svg>
+        <div className="absolute inset-x-0 bottom-0 flex flex-col items-center">
+          <div className="flex items-baseline gap-0.5">
+            <motion.span
+              key={m.display}
+              initial={{ opacity: 0.5, y: 2 }}
+              animate={{ opacity: 1, y: 0 }}
+              className={`font-mono text-2xl font-black tracking-tight ${inRange ? 'text-emerald-600' : 'text-gray-800'}`}
+            >
+              {m.display}
+            </motion.span>
+            <span className="font-mono text-[10px] text-gray-400 font-medium">{m.unit}</span>
+          </div>
+        </div>
+      </div>
+
+      <div className="flex items-center gap-1.5 mt-1">
         <span className={`flex h-4 w-4 items-center justify-center rounded-full ${inRange ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'}`}>
           {inRange ? <Check className="h-2.5 w-2.5" /> : <span className="h-1.5 w-1.5 rounded-full bg-amber-500 animate-pulse" />}
         </span>
-      </div>
-      <div className="flex items-baseline gap-1 mb-2">
-        <motion.span
-          key={m.display}
-          initial={{ opacity: 0.5, y: 2 }}
-          animate={{ opacity: 1, y: 0 }}
-          className={`font-mono text-xl font-black tracking-tight ${inRange ? 'text-emerald-600' : 'text-gray-800'}`}
-        >
-          {m.display}
-        </motion.span>
-        <span className="font-mono text-[10px] text-gray-400 font-medium">{m.unit}</span>
-      </div>
-      <div className="relative h-1.5 w-full rounded-full bg-gray-200/70 overflow-hidden">
-        <div className="absolute inset-y-0 rounded-full bg-emerald-500/15" style={{ left: `${bandLeft}%`, width: `${bandWidth}%` }} />
-        <motion.div
-          className={`absolute inset-y-0 left-0 rounded-full ${inRange ? 'bg-emerald-500' : 'bg-amber-400'}`}
-          animate={{ width: `${pct}%` }}
-          transition={{ type: 'spring', stiffness: 120, damping: 20 }}
-        />
+        <span className="font-mono text-[9px] text-gray-400">Optimal {m.optLabel}</span>
       </div>
     </motion.div>
   );
@@ -163,195 +174,182 @@ export default function GreenhouseSimulator({ onNavigate }: GreenhouseSimulatorP
             Take the controls of a smart greenhouse
           </h2>
           <p className="font-sans text-gray-500 font-light text-base md:text-lg">
-            This is how AiGROW automation works. Flip the climate controls and watch the greenhouse, and its sensor gauges, respond in real time.
+            This is how AiGROW automation works. Flip the climate controls and watch the greenhouse, and its instrument dials, respond in real time.
           </p>
         </motion.div>
 
-        {/* IMMERSIVE MISSION-CONTROL STAGE */}
+        {/* Wide cinematic greenhouse banner */}
         <motion.div
           initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: '-100px' }}
           transition={{ duration: 0.6 }}
-          className="relative"
+          animate={{ boxShadow: allOptimal ? '0 0 0 3px rgba(76,154,91,0.35), 0 30px 60px -30px rgba(76,154,91,0.5)' : '0 20px 45px -25px rgba(15,30,18,0.35)' }}
+          className="relative h-[300px] sm:h-[340px] lg:h-[380px] rounded-3xl overflow-hidden border border-white/50"
         >
-          {/* Living greenhouse canvas */}
+          {/* Sky */}
+          <motion.div className="absolute inset-0" animate={{ backgroundColor: sky }} transition={{ duration: 1 }} />
+          <div className="absolute inset-0 bg-[radial-gradient(120%_80%_at_80%_-10%,rgba(255,255,255,0.5),transparent_60%)]" />
+
+          {/* Sun */}
           <motion.div
-            animate={{ boxShadow: allOptimal ? '0 0 0 3px rgba(76,154,91,0.35), 0 30px 60px -30px rgba(76,154,91,0.5)' : '0 20px 45px -25px rgba(15,30,18,0.35)' }}
-            transition={{ duration: 0.6 }}
-            className="relative h-[440px] sm:h-[500px] lg:h-[560px] rounded-3xl overflow-hidden border border-white/50"
+            className="absolute top-6 right-10"
+            animate={{ opacity: controls.shade ? 0.3 : 1, scale: controls.shade ? 0.88 : 1, rotate: 360 }}
+            transition={{ opacity: { duration: 0.6 }, scale: { duration: 0.6 }, rotate: { repeat: Infinity, ease: 'linear', duration: 40 } }}
           >
-            {/* Sky */}
-            <motion.div className="absolute inset-0" animate={{ backgroundColor: sky }} transition={{ duration: 1 }} />
-            <div className="absolute inset-0 bg-[radial-gradient(120%_80%_at_80%_-10%,rgba(255,255,255,0.5),transparent_60%)]" />
-
-            {/* Sun */}
-            <motion.div
-              className="absolute top-6 right-8 lg:right-72"
-              animate={{ opacity: controls.shade ? 0.3 : 1, scale: controls.shade ? 0.88 : 1, rotate: 360 }}
-              transition={{ opacity: { duration: 0.6 }, scale: { duration: 0.6 }, rotate: { repeat: Infinity, ease: 'linear', duration: 40 } }}
-            >
-              <Sun className="h-16 w-16 text-amber-400 drop-shadow-[0_0_16px_rgba(251,191,36,0.55)]" />
-            </motion.div>
-
-            {/* Status badge */}
-            <div className="absolute top-5 left-5 z-30">
-              <motion.span
-                animate={{ backgroundColor: allOptimal ? 'rgba(16,185,129,0.18)' : 'rgba(245,158,11,0.18)' }}
-                className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-[11px] font-bold uppercase tracking-wider backdrop-blur-sm border border-white/40 ${allOptimal ? 'text-emerald-800' : 'text-amber-800'}`}
-              >
-                <Sprout className="h-3.5 w-3.5" />
-                {allOptimal ? 'Thriving' : health >= 0.5 ? 'Recovering' : 'Under stress'}
-                <span className="opacity-60">· {inRangeCount}/4</span>
-              </motion.span>
-            </div>
-
-            {/* Shade screen */}
-            <AnimatePresence>
-              {controls.shade && (
-                <motion.div
-                  initial={{ y: '-100%' }} animate={{ y: 0 }} exit={{ y: '-100%' }}
-                  transition={{ type: 'spring', stiffness: 90, damping: 18 }}
-                  className="absolute inset-x-0 top-0 h-2/5 z-10 bg-[repeating-linear-gradient(180deg,rgba(30,58,35,0.28)_0px,rgba(30,58,35,0.28)_3px,transparent_3px,transparent_9px)]"
-                />
-              )}
-            </AnimatePresence>
-
-            {/* Roof frame */}
-            <svg className="absolute inset-0 w-full h-full z-10 pointer-events-none" preserveAspectRatio="none" viewBox="0 0 400 300">
-              <path d="M20 120 L200 40 L380 120" fill="none" stroke="rgba(255,255,255,0.7)" strokeWidth="3" strokeLinejoin="round" />
-              <path d="M40 120 L40 250 M360 120 L360 250 M200 52 L200 250" stroke="rgba(255,255,255,0.45)" strokeWidth="2" />
-              <path d="M120 84 L120 250 M280 84 L280 250" stroke="rgba(255,255,255,0.3)" strokeWidth="1.5" />
-            </svg>
-
-            {/* Fan */}
-            <div className="absolute left-6 top-1/2 -translate-y-1/2 z-20">
-              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-white/70 border border-white shadow-sm backdrop-blur-sm">
-                <motion.div
-                  animate={{ rotate: controls.fans ? 360 : 0 }}
-                  transition={controls.fans ? { repeat: Infinity, ease: 'linear', duration: 0.9 } : { duration: 0.5 }}
-                >
-                  <Fan className={`h-7 w-7 ${controls.fans ? 'text-emerald-600' : 'text-gray-400'}`} />
-                </motion.div>
-              </div>
-            </div>
-
-            {/* Mist */}
-            <AnimatePresence>
-              {controls.mist && (
-                <div className="absolute inset-0 z-20 pointer-events-none">
-                  {[18, 30, 44, 58, 70, 82].map((leftPct, i) => (
-                    <motion.span
-                      key={leftPct}
-                      className="absolute bottom-40 h-2.5 w-2.5 rounded-full bg-white/70 blur-[2px]"
-                      style={{ left: `${leftPct}%` }}
-                      initial={{ opacity: 0, y: 0 }}
-                      animate={{ opacity: [0, 0.8, 0], y: [-4, -50] }}
-                      exit={{ opacity: 0 }}
-                      transition={{ repeat: Infinity, duration: 2.4, delay: i * 0.28, ease: 'easeOut' }}
-                    />
-                  ))}
-                </div>
-              )}
-            </AnimatePresence>
-
-            {/* Irrigation drips */}
-            <AnimatePresence>
-              {controls.irrigation && (
-                <div className="absolute inset-x-0 top-[48%] z-20 pointer-events-none">
-                  {[28, 50, 72].map((leftPct, i) => (
-                    <motion.span
-                      key={leftPct}
-                      className="absolute h-3 w-1 rounded-full bg-sky-400/80"
-                      style={{ left: `${leftPct}%` }}
-                      initial={{ y: 0, opacity: 0 }}
-                      animate={{ y: [0, 80], opacity: [0, 1, 0] }}
-                      exit={{ opacity: 0 }}
-                      transition={{ repeat: Infinity, duration: 1.1, delay: i * 0.35, ease: 'easeIn' }}
-                    />
-                  ))}
-                </div>
-              )}
-            </AnimatePresence>
-
-            {/* Soil */}
-            <div className="absolute bottom-0 inset-x-0 h-20 z-10 bg-gradient-to-t from-[#6b4a30] via-[#6b4a30]/80 to-transparent" />
-
-            {/* Plants */}
-            <div className="absolute bottom-4 left-0 right-0 lg:right-64 z-20 flex items-end justify-around px-10">
-              {[0, 1, 2, 3, 4].map((i) => (
-                <motion.div
-                  key={i}
-                  animate={{ scale: plantScale, rotate: [-2.5, 2.5, -2.5], color: plantColor }}
-                  transition={{
-                    scale: { type: 'spring', stiffness: 120, damping: 14 },
-                    color: { duration: 0.8 },
-                    rotate: { repeat: Infinity, duration: 3 + i * 0.4, ease: 'easeInOut' }
-                  }}
-                  style={{ transformOrigin: 'bottom center', color: plantColor }}
-                >
-                  <Sprout className="h-10 w-10" />
-                </motion.div>
-              ))}
-            </div>
-
-            {/* Gauge HUD overlay (desktop) */}
-            <div className="hidden lg:flex absolute top-5 right-5 z-30 flex-col gap-2.5 w-56">
-              {metrics.map((m) => (
-                <GaugeChip key={m.key} m={m} baseValue={baseByKey[m.key]} />
-              ))}
-            </div>
+            <Sun className="h-16 w-16 text-amber-400 drop-shadow-[0_0_16px_rgba(251,191,36,0.55)]" />
           </motion.div>
 
-          {/* Floating control dock */}
-          <div className="relative z-30 -mt-9 mx-3 lg:mx-8 glass rounded-2xl p-3 md:p-4 shadow-xl shadow-emerald-900/10 flex flex-wrap items-center gap-2.5 justify-between">
-            <div className="flex flex-wrap items-center gap-2">
-              {CONTROL_LIST.map(({ key, short, label, icon: Icon }) => {
-                const active = controls[key];
-                return (
-                  <button
-                    key={key}
-                    onClick={() => toggle(key)}
-                    title={label}
-                    className={`flex items-center gap-2 pl-2.5 pr-3 py-2 rounded-xl border text-xs font-bold transition-all duration-300 ${
-                      active
-                        ? 'bg-emerald-500 text-white border-emerald-500 shadow-md shadow-emerald-600/20'
-                        : 'bg-white/50 text-gray-600 border-gray-200/70 hover:border-emerald-300'
-                    }`}
-                  >
-                    <span className={`flex h-6 w-6 items-center justify-center rounded-lg ${active ? 'bg-white/20' : 'bg-gray-100'}`}>
-                      <Icon className="h-4 w-4" />
-                    </span>
-                    {short}
-                    <span className={`ml-0.5 h-1.5 w-1.5 rounded-full ${active ? 'bg-white' : 'bg-gray-300'}`} />
-                  </button>
-                );
-              })}
-            </div>
+          {/* Status badge */}
+          <div className="absolute top-5 left-5 z-30">
+            <motion.span
+              animate={{ backgroundColor: allOptimal ? 'rgba(16,185,129,0.18)' : 'rgba(245,158,11,0.18)' }}
+              className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-[11px] font-bold uppercase tracking-wider backdrop-blur-sm border border-white/40 ${allOptimal ? 'text-emerald-800' : 'text-amber-800'}`}
+            >
+              <Sprout className="h-3.5 w-3.5" />
+              {allOptimal ? 'Thriving' : health >= 0.5 ? 'Recovering' : 'Under stress'}
+              <span className="opacity-60">· {inRangeCount}/4</span>
+            </motion.span>
+          </div>
 
-            <div className="flex items-center gap-2">
-              <button
-                onClick={autoOptimize}
-                className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold transition-all shadow-md shadow-emerald-600/15"
+          {/* Shade screen */}
+          <AnimatePresence>
+            {controls.shade && (
+              <motion.div
+                initial={{ y: '-100%' }} animate={{ y: 0 }} exit={{ y: '-100%' }}
+                transition={{ type: 'spring', stiffness: 90, damping: 18 }}
+                className="absolute inset-x-0 top-0 h-2/5 z-10 bg-[repeating-linear-gradient(180deg,rgba(30,58,35,0.28)_0px,rgba(30,58,35,0.28)_3px,transparent_3px,transparent_9px)]"
+              />
+            )}
+          </AnimatePresence>
+
+          {/* Roof frame */}
+          <svg className="absolute inset-0 w-full h-full z-10 pointer-events-none" preserveAspectRatio="none" viewBox="0 0 400 300">
+            <path d="M20 120 L200 40 L380 120" fill="none" stroke="rgba(255,255,255,0.7)" strokeWidth="3" strokeLinejoin="round" />
+            <path d="M40 120 L40 250 M360 120 L360 250 M200 52 L200 250" stroke="rgba(255,255,255,0.45)" strokeWidth="2" />
+            <path d="M120 84 L120 250 M280 84 L280 250" stroke="rgba(255,255,255,0.3)" strokeWidth="1.5" />
+          </svg>
+
+          {/* Fan */}
+          <div className="absolute left-6 top-1/2 -translate-y-1/2 z-20">
+            <div className="flex h-12 w-12 items-center justify-center rounded-full bg-white/70 border border-white shadow-sm backdrop-blur-sm">
+              <motion.div
+                animate={{ rotate: controls.fans ? 360 : 0 }}
+                transition={controls.fans ? { repeat: Infinity, ease: 'linear', duration: 0.9 } : { duration: 0.5 }}
               >
-                <Sparkles className="h-4 w-4" />
-                Auto-optimize
-              </button>
-              <button
-                onClick={reset}
-                title="Reset"
-                className="flex items-center justify-center h-10 w-10 rounded-xl bg-white/60 border border-gray-200 text-gray-500 hover:text-gray-900 transition-all"
-              >
-                <RefreshCw className="h-4 w-4" />
-              </button>
+                <Fan className={`h-7 w-7 ${controls.fans ? 'text-emerald-600' : 'text-gray-400'}`} />
+              </motion.div>
             </div>
+          </div>
+
+          {/* Mist */}
+          <AnimatePresence>
+            {controls.mist && (
+              <div className="absolute inset-0 z-20 pointer-events-none">
+                {[18, 30, 44, 58, 70, 82].map((leftPct, i) => (
+                  <motion.span
+                    key={leftPct}
+                    className="absolute bottom-24 h-2.5 w-2.5 rounded-full bg-white/70 blur-[2px]"
+                    style={{ left: `${leftPct}%` }}
+                    initial={{ opacity: 0, y: 0 }}
+                    animate={{ opacity: [0, 0.8, 0], y: [-4, -46] }}
+                    exit={{ opacity: 0 }}
+                    transition={{ repeat: Infinity, duration: 2.4, delay: i * 0.28, ease: 'easeOut' }}
+                  />
+                ))}
+              </div>
+            )}
+          </AnimatePresence>
+
+          {/* Irrigation drips */}
+          <AnimatePresence>
+            {controls.irrigation && (
+              <div className="absolute inset-x-0 top-[45%] z-20 pointer-events-none">
+                {[24, 40, 56, 72].map((leftPct, i) => (
+                  <motion.span
+                    key={leftPct}
+                    className="absolute h-3 w-1 rounded-full bg-sky-400/80"
+                    style={{ left: `${leftPct}%` }}
+                    initial={{ y: 0, opacity: 0 }}
+                    animate={{ y: [0, 70], opacity: [0, 1, 0] }}
+                    exit={{ opacity: 0 }}
+                    transition={{ repeat: Infinity, duration: 1.1, delay: i * 0.3, ease: 'easeIn' }}
+                  />
+                ))}
+              </div>
+            )}
+          </AnimatePresence>
+
+          {/* Soil */}
+          <div className="absolute bottom-0 inset-x-0 h-16 z-10 bg-gradient-to-t from-[#6b4a30] via-[#6b4a30]/80 to-transparent" />
+
+          {/* Plants */}
+          <div className="absolute bottom-3 inset-x-0 z-20 flex items-end justify-around px-12">
+            {[0, 1, 2, 3, 4, 5].map((i) => (
+              <motion.div
+                key={i}
+                animate={{ scale: plantScale, rotate: [-2.5, 2.5, -2.5], color: plantColor }}
+                transition={{
+                  scale: { type: 'spring', stiffness: 120, damping: 14 },
+                  color: { duration: 0.8 },
+                  rotate: { repeat: Infinity, duration: 3 + i * 0.4, ease: 'easeInOut' }
+                }}
+                style={{ transformOrigin: 'bottom center', color: plantColor }}
+              >
+                <Sprout className="h-9 w-9" />
+              </motion.div>
+            ))}
           </div>
         </motion.div>
 
-        {/* Gauge strip (mobile) */}
-        <div className="lg:hidden grid grid-cols-2 gap-3 mt-4">
+        {/* Floating control dock */}
+        <div className="relative z-30 -mt-9 mx-3 lg:mx-8 glass rounded-2xl p-3 md:p-4 shadow-xl shadow-emerald-900/10 flex flex-wrap items-center gap-2.5 justify-between">
+          <div className="flex flex-wrap items-center gap-2">
+            {CONTROL_LIST.map(({ key, short, label, icon: Icon }) => {
+              const active = controls[key];
+              return (
+                <button
+                  key={key}
+                  onClick={() => toggle(key)}
+                  title={label}
+                  className={`flex items-center gap-2 pl-2.5 pr-3 py-2 rounded-xl border text-xs font-bold transition-all duration-300 ${
+                    active
+                      ? 'bg-emerald-500 text-white border-emerald-500 shadow-md shadow-emerald-600/20'
+                      : 'bg-white/50 text-gray-600 border-gray-200/70 hover:border-emerald-300'
+                  }`}
+                >
+                  <span className={`flex h-6 w-6 items-center justify-center rounded-lg ${active ? 'bg-white/20' : 'bg-gray-100'}`}>
+                    <Icon className="h-4 w-4" />
+                  </span>
+                  {short}
+                  <span className={`ml-0.5 h-1.5 w-1.5 rounded-full ${active ? 'bg-white' : 'bg-gray-300'}`} />
+                </button>
+              );
+            })}
+          </div>
+
+          <div className="flex items-center gap-2">
+            <button
+              onClick={autoOptimize}
+              className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold transition-all shadow-md shadow-emerald-600/15"
+            >
+              <Sparkles className="h-4 w-4" />
+              Auto-optimize
+            </button>
+            <button
+              onClick={reset}
+              title="Reset"
+              className="flex items-center justify-center h-10 w-10 rounded-xl bg-white/60 border border-gray-200 text-gray-500 hover:text-gray-900 transition-all"
+            >
+              <RefreshCw className="h-4 w-4" />
+            </button>
+          </div>
+        </div>
+
+        {/* Instrument dial cluster */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6">
           {metrics.map((m) => (
-            <GaugeChip key={m.key} m={m} baseValue={baseByKey[m.key]} />
+            <GaugeDial key={m.key} m={m} baseValue={baseByKey[m.key]} />
           ))}
         </div>
 
