@@ -1,8 +1,8 @@
 import { useState, FormEvent } from 'react';
-import { PageId } from '../types';
-import { NEWS_DATA } from '../data';
+import { PageId } from '../../types';
+import { NEWS_DATA } from '../../data';
 import { Search, Calendar, Clock, ArrowRight, BookOpen, CheckCircle, Send } from 'lucide-react';
-import CTABanner from './CTABanner';
+import CTABanner from '../CTABanner';
 
 interface AboutNewsPageProps {
   onNavigate: (pageId: PageId) => void;

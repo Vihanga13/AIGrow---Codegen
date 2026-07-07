@@ -1,6 +1,6 @@
-import { PageId } from '../types';
+import { PageId } from '../../types';
 import { ShieldCheck, MapPin, CheckCircle, RefreshCw, Cpu, Award } from 'lucide-react';
-import CTABanner from './CTABanner';
+import CTABanner from '../CTABanner';
 
 interface AboutCommitmentPageProps {
   onNavigate: (pageId: PageId) => void;

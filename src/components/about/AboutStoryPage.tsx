@@ -1,7 +1,7 @@
-import { PageId } from '../types';
+import { PageId } from '../../types';
 import { Building2, Calendar, Leaf, Trophy, ShieldAlert, ArrowRight, BookOpen } from 'lucide-react';
-import StatsCounter from './StatsCounter';
-import CTABanner from './CTABanner';
+import StatsCounter from '../StatsCounter';
+import CTABanner from '../CTABanner';
 
 interface AboutStoryPageProps {
   onNavigate: (pageId: PageId) => void;

@@ -40,9 +40,9 @@ import WaterMeterPage from './components/products/WaterMeterPage';
 import FertigationSystemPage from './components/products/FertigationSystemPage';
 import PlantFeederPage from './components/products/PlantFeederPage';
 import SmartDripperPage from './components/products/SmartDripperPage';
-import AboutStoryPage from './components/AboutStoryPage';
-import AboutCommitmentPage from './components/AboutCommitmentPage';
-import AboutNewsPage from './components/AboutNewsPage';
+import AboutStoryPage from './components/about/AboutStoryPage';
+import AboutCommitmentPage from './components/about/AboutCommitmentPage';
+import AboutNewsPage from './components/about/AboutNewsPage';
 
 export default function App() {
   const [currentPage, setCurrentPage] = useState<PageId>('home');
