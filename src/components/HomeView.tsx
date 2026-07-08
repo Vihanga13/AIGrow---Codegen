@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
-import { motion } from 'motion/react';
+import type { ComponentType } from 'react';
+import { motion, AnimatePresence } from 'motion/react';
 import { 
   ArrowRight, 
   Leaf, 
@@ -66,6 +67,136 @@ const SERVICE_IMAGES: Record<string, string> = {
   'fresh-produce': 'https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&q=80&w=1200'
 };
 
+// Animated "live graph" bars for the phone dashboard
+function LiveBars() {
+  return (
+    <div className="mt-3 flex h-9 items-end gap-1">
+      {[0, 1, 2, 3, 4, 5, 6].map((i) => (
+        <motion.span
+          key={i}
+          className="flex-1 rounded-sm bg-white/45"
+          style={{ height: '40%' }}
+          animate={{ height: ['30%', '85%', '50%', '72%', '35%'] }}
+          transition={{ repeat: Infinity, duration: 2.2, delay: i * 0.14, ease: 'easeInOut' }}
+        />
+      ))}
+    </div>
+  );
+}
+
+// Interactive technology showcase: a live AiGROW phone whose screen swaps
+// as you hover the feature list beside it.
+function TechShowcase({
+  items
+}: {
+  items: { icon: ComponentType<{ className?: string }>; title: string; description: string }[];
+}) {
+  const [active, setActive] = useState(0);
+
+  const screens = [
+    { tag: 'IoT Sensor Network', metric: 'Soil Moisture', value: '68', unit: '%', tiles: [{ l: 'Humidity', v: '74%' }, { l: 'Nutrient', v: '1.4' }, { l: 'Signal', v: 'Strong' }] },
+    { tag: 'Climate Control', metric: 'Canopy Temp', value: '24.3', unit: '°C', tiles: [{ l: 'Humidity', v: '72%' }, { l: 'CO₂', v: '512' }, { l: 'Venting', v: 'Auto' }] },
+    { tag: 'Precision Fertigation', metric: 'Nutrient EC', value: '1.42', unit: 'mS', tiles: [{ l: 'pH', v: '6.2' }, { l: 'Dose A', v: 'On' }, { l: 'Flow', v: '2.1' }] }
+  ];
+  const s = screens[active] ?? screens[0];
+
+  return (
+    <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-10 items-center max-w-6xl mx-auto">
+      {/* Live phone mockup */}
+      <div className="lg:col-span-5 flex justify-center order-1">
+        <div className="relative w-[268px]">
+          <div className="pointer-events-none absolute -inset-8 rounded-[3rem] bg-emerald-400/25 blur-3xl" />
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: '-100px' }}
+            transition={{ duration: 0.6 }}
+            className="relative rounded-[2.6rem] border-[11px] border-gray-900 bg-gray-900 shadow-2xl shadow-emerald-900/25 overflow-hidden aspect-[9/19]"
+          >
+            {/* Notch */}
+            <div className="absolute top-0 left-1/2 -translate-x-1/2 h-5 w-24 bg-gray-900 rounded-b-2xl z-20" />
+            {/* Screen */}
+            <div className="absolute inset-0 bg-gradient-to-b from-emerald-50 via-white to-white flex flex-col">
+              <div className="flex items-center justify-between px-5 pt-4 pb-1 text-[9px] font-mono text-gray-400">
+                <span>9:41</span>
+                <span className="inline-flex items-center gap-1 font-bold text-emerald-600">
+                  <span className="relative flex h-1.5 w-1.5">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+                    <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-emerald-500" />
+                  </span>
+                  LIVE
+                </span>
+              </div>
+              <div className="px-5 flex items-center gap-2">
+                <span className="flex h-6 w-6 items-center justify-center rounded-lg bg-emerald-500 text-white"><Leaf className="h-3.5 w-3.5" /></span>
+                <span className="font-sans text-sm font-bold text-gray-900">AiGROW</span>
+              </div>
+
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={active}
+                  initial={{ opacity: 0, y: 12 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -8 }}
+                  transition={{ duration: 0.3 }}
+                  className="px-5 pt-4 flex flex-col gap-3"
+                >
+                  <span className="font-mono text-[9px] font-bold uppercase tracking-wider text-emerald-600">{s.tag}</span>
+                  <div className="rounded-2xl bg-emerald-500 text-white p-4 shadow-lg shadow-emerald-600/20">
+                    <span className="block text-[10px] font-medium text-white/70">{s.metric}</span>
+                    <div className="flex items-baseline gap-1">
+                      <span className="font-mono text-3xl font-black tracking-tight">{s.value}</span>
+                      <span className="font-mono text-xs text-white/70">{s.unit}</span>
+                    </div>
+                    <LiveBars />
+                  </div>
+                  <div className="grid grid-cols-3 gap-2">
+                    {s.tiles.map((t, i) => (
+                      <div key={i} className="rounded-xl bg-gray-50 border border-gray-100 p-2 text-center">
+                        <span className="block font-mono text-[7px] uppercase tracking-wide text-gray-400">{t.l}</span>
+                        <span className="block font-mono text-[11px] font-bold text-gray-800 mt-0.5">{t.v}</span>
+                      </div>
+                    ))}
+                  </div>
+                </motion.div>
+              </AnimatePresence>
+            </div>
+          </motion.div>
+        </div>
+      </div>
+
+      {/* Feature list */}
+      <div className="lg:col-span-7 flex flex-col gap-3 order-2">
+        {items.map((it, idx) => {
+          const on = idx === active;
+          const Icon = it.icon;
+          return (
+            <button
+              key={idx}
+              onMouseEnter={() => setActive(idx)}
+              onClick={() => setActive(idx)}
+              className={`group flex items-start gap-4 rounded-2xl border p-5 text-left transition-all duration-300 ${
+                on ? 'glass-green border-emerald-300/60 shadow-lg shadow-emerald-900/5' : 'glass border-transparent hover:border-emerald-200/50'
+              }`}
+            >
+              <span className={`font-mono text-sm font-black tabular-nums ${on ? 'text-emerald-600' : 'text-gray-300'}`}>
+                {String(idx + 1).padStart(2, '0')}
+              </span>
+              <span className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl transition-colors ${on ? 'bg-emerald-500 text-white' : 'bg-emerald-50 text-emerald-600'}`}>
+                <Icon className="h-5 w-5" />
+              </span>
+              <span>
+                <span className="block font-sans text-base font-bold text-gray-900">{it.title}</span>
+                <span className="block font-sans text-sm text-gray-500 font-light leading-relaxed mt-1">{it.description}</span>
+              </span>
+            </button>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
 interface HomeViewProps {
   onNavigate: (pageId: PageId) => void;
   onSelectService: (serviceId: string) => void;
@@ -82,7 +213,6 @@ export default function HomeView({
   const [currentSlideIdx, setCurrentSlideIdx] = useState(0);
   const [currentProjectIdx, setCurrentProjectIdx] = useState(0);
   const [activeServiceIdx, setActiveServiceIdx] = useState(0);
-  const [activeTechIdx, setActiveTechIdx] = useState(0);
   const [activeEdgeIdx, setActiveEdgeIdx] = useState(0);
   const [projPaused, setProjPaused] = useState(false);
   const [activeAwardIdx, setActiveAwardIdx] = useState(1);
@@ -833,143 +963,8 @@ export default function HomeView({
           </p>
         </motion.div>
 
-        {/* Interactive radial tech orbit */}
-        {(() => {
-          const NODE_POS = [
-            { x: 50, y: 9 },   // top
-            { x: 85, y: 67 },  // bottom-right
-            { x: 15, y: 67 }   // bottom-left
-          ];
-          const activeTech = technologies[activeTechIdx];
-          return (
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-8 items-center max-w-5xl mx-auto">
-              {/* Orbit diagram */}
-              <motion.div
-                initial={{ opacity: 0, scale: 0.92 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                viewport={{ once: true, margin: '-100px' }}
-                transition={{ duration: 0.6 }}
-                className="relative mx-auto w-full max-w-sm aspect-square"
-              >
-                {/* Decorative rings */}
-                <motion.div
-                  animate={{ rotate: 360 }}
-                  transition={{ repeat: Infinity, duration: 45, ease: 'linear' }}
-                  className="absolute inset-4 rounded-full border border-dashed border-emerald-300/50"
-                />
-                <div className="absolute inset-[18%] rounded-full border border-emerald-200/40" />
-
-                {/* Connectors with flowing data animation */}
-                <svg viewBox="0 0 100 100" className="absolute inset-0 w-full h-full pointer-events-none">
-                  {NODE_POS.map((p, idx) => {
-                    const active = idx === activeTechIdx;
-                    return (
-                      <motion.line
-                        key={idx}
-                        x1="50" y1="50" x2={p.x} y2={p.y}
-                        stroke={active ? '#4C9A5B' : '#A7C3AC'}
-                        strokeWidth={active ? 1.4 : 0.7}
-                        strokeDasharray="3 4"
-                        strokeLinecap="round"
-                        animate={{ strokeDashoffset: [0, -14] }}
-                        transition={{ repeat: Infinity, duration: active ? 0.9 : 2, ease: 'linear' }}
-                        opacity={active ? 1 : 0.5}
-                      />
-                    );
-                  })}
-                </svg>
-
-                {/* Center hub */}
-                <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-10 flex flex-col items-center">
-                  <motion.span
-                    animate={{ scale: [1, 1.35, 1], opacity: [0.4, 0, 0.4] }}
-                    transition={{ repeat: Infinity, duration: 2.4, ease: 'easeInOut' }}
-                    className="absolute inset-0 m-auto h-20 w-20 rounded-full bg-emerald-400/40"
-                  />
-                  <div className="relative flex h-20 w-20 items-center justify-center rounded-full bg-emerald-600 text-white shadow-xl shadow-emerald-600/30">
-                    <Leaf className="h-8 w-8" />
-                  </div>
-                  <span className="mt-2 font-mono text-[9px] uppercase tracking-widest text-emerald-700 font-bold">
-                    AiGROW Core
-                  </span>
-                </div>
-
-                {/* Tech nodes */}
-                {technologies.map((tech, idx) => {
-                  const p = NODE_POS[idx];
-                  const active = idx === activeTechIdx;
-                  return (
-                    <button
-                      key={idx}
-                      onMouseEnter={() => setActiveTechIdx(idx)}
-                      onClick={() => setActiveTechIdx(idx)}
-                      style={{ left: `${p.x}%`, top: `${p.y}%` }}
-                      className="absolute -translate-x-1/2 -translate-y-1/2 z-20 group"
-                      aria-label={tech.title}
-                    >
-                      {active && (
-                        <span className="absolute inset-0 rounded-2xl bg-emerald-400/50 animate-ping" />
-                      )}
-                      <span className={`relative flex h-14 w-14 items-center justify-center rounded-2xl border transition-all duration-300 ${
-                        active
-                          ? 'bg-emerald-500 text-white border-emerald-500 scale-110 shadow-lg shadow-emerald-600/30'
-                          : 'glass text-emerald-600 border-white/60 hover:scale-105'
-                      }`}>
-                        <tech.icon className="h-6 w-6" />
-                      </span>
-                      <span className="absolute -bottom-6 left-1/2 -translate-x-1/2 whitespace-nowrap font-mono text-[9px] font-bold text-gray-400">
-                        {String(idx + 1).padStart(2, '0')}
-                      </span>
-                    </button>
-                  );
-                })}
-              </motion.div>
-
-              {/* Detail card (swaps as you select a node) */}
-              <div className="relative">
-                <motion.div
-                  key={activeTechIdx}
-                  initial={{ opacity: 0, y: 16 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-                  className="glass rounded-3xl p-8 md:p-10 relative overflow-hidden shadow-xl shadow-emerald-900/5"
-                >
-                  <span className="pointer-events-none absolute -top-6 -right-2 font-sans text-[9rem] font-black leading-none text-emerald-500/[0.06] select-none">
-                    {String(activeTechIdx + 1).padStart(2, '0')}
-                  </span>
-                  <div className="relative z-10">
-                    <div className="flex items-center gap-3 mb-5">
-                      <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-emerald-500 text-white shadow-lg shadow-emerald-600/20">
-                        <activeTech.icon className="h-7 w-7" />
-                      </div>
-                      <span className="font-mono text-xs font-bold text-emerald-600 uppercase tracking-widest">
-                        Core Technology {String(activeTechIdx + 1).padStart(2, '0')}
-                      </span>
-                    </div>
-                    <h3 className="font-sans text-2xl font-bold text-gray-950 tracking-tight mb-3">
-                      {activeTech.title}
-                    </h3>
-                    <p className="font-sans text-sm md:text-base text-gray-500 font-light leading-relaxed">
-                      {activeTech.description}
-                    </p>
-
-                    {/* Selector dots */}
-                    <div className="flex items-center gap-2 mt-8">
-                      {technologies.map((_, idx) => (
-                        <button
-                          key={idx}
-                          onClick={() => setActiveTechIdx(idx)}
-                          aria-label={`Show technology ${idx + 1}`}
-                          className={`h-2 rounded-full transition-all ${idx === activeTechIdx ? 'w-8 bg-emerald-600' : 'w-2 bg-gray-200 hover:bg-gray-300'}`}
-                        />
-                      ))}
-                    </div>
-                  </div>
-                </motion.div>
-              </div>
-            </div>
-          );
-        })()}
+        {/* Interactive live-app showcase */}
+        <TechShowcase items={technologies} />
       </section>
 
       {/* 5b. INTERACTIVE GREENHOUSE SIMULATOR */}
