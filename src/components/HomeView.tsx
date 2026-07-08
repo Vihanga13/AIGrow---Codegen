@@ -215,7 +215,6 @@ export default function HomeView({
   const [activeServiceIdx, setActiveServiceIdx] = useState(0);
   const [activeEdgeIdx, setActiveEdgeIdx] = useState(0);
   const [projPaused, setProjPaused] = useState(false);
-  const [activeAwardIdx, setActiveAwardIdx] = useState(1);
   const [activeMissionIdx, setActiveMissionIdx] = useState(0);
   const [selectedBuild, setSelectedBuild] = useState<number | null>(null);
   const [isVideoPlaying, setIsVideoPlaying] = useState(false);
@@ -1586,105 +1585,62 @@ export default function HomeView({
           </p>
         </motion.div>
 
-        {(() => {
-          const awards = [
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 max-w-6xl mx-auto">
+          {[
             { year: '2018', org: 'E-Swabhimani Awards', title: 'Digital Social Impact', desc: 'National recognition for technology creating measurable social good across Sri Lankan agriculture.', icon: Medal },
-            { year: '2024', org: 'SLASSCOM National', title: '1st Runner-up · Best Innovative Product in Agritech', desc: 'Honoured among the nation’s most innovative technology products for our precision agritech platform.', icon: Trophy },
+            { year: '2024', org: 'SLASSCOM National', title: '1st Runner-up · Best Innovative Product in Agritech', desc: 'Among the nation’s most innovative technology products for our precision agritech platform.', icon: Trophy },
             { year: '2025', org: 'AI Excellence Awards', title: 'Pioneering AI Solutions for Agricultural Productivity', desc: 'Awarded for advancing AI-driven crop management and data-led productivity gains for growers.', icon: Star }
-          ];
-          const active = awards[activeAwardIdx];
-          const ActiveIcon = active.icon;
-          return (
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
-              {/* Year timeline selector */}
-              <div className="lg:col-span-4 relative">
-                <div className="absolute left-[23px] top-4 bottom-4 w-px bg-gradient-to-b from-emerald-300 via-emerald-300/50 to-transparent" />
-                <div className="flex flex-col gap-3">
-                  {awards.map((a, idx) => {
-                    const on = idx === activeAwardIdx;
-                    const Icon = a.icon;
-                    return (
-                      <button
-                        key={a.year}
-                        onMouseEnter={() => setActiveAwardIdx(idx)}
-                        onClick={() => setActiveAwardIdx(idx)}
-                        className={`relative z-10 flex items-center gap-4 p-3 rounded-2xl text-left transition-all duration-300 ${
-                          on ? 'glass-green shadow-md shadow-emerald-900/5' : 'hover:bg-white/40'
-                        }`}
-                      >
-                        <span className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-full border-2 transition-all duration-300 ${
-                          on ? 'bg-emerald-500 text-white border-emerald-500 scale-105 shadow-lg shadow-emerald-600/25' : 'bg-white text-emerald-600 border-emerald-100'
-                        }`}>
-                          <Icon className="h-5 w-5" />
-                        </span>
-                        <span>
-                          <span className={`block font-mono text-lg font-black tabular-nums ${on ? 'text-emerald-700' : 'text-gray-800'}`}>{a.year}</span>
-                          <span className="block font-sans text-xs text-gray-500 font-medium">{a.org}</span>
-                        </span>
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
+          ].map((a, idx) => {
+            const Icon = a.icon;
+            return (
+              <motion.div
+                key={a.year}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: '-80px' }}
+                transition={{ duration: 0.5, delay: idx * 0.12 }}
+                className="group relative glass rounded-3xl px-6 pt-16 pb-8 text-center overflow-hidden shadow-xl shadow-emerald-900/5 transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl hover:shadow-emerald-900/10"
+              >
+                {/* Hover glow */}
+                <div className="pointer-events-none absolute -top-16 left-1/2 -translate-x-1/2 h-40 w-40 rounded-full bg-emerald-400/0 blur-3xl transition-colors duration-500 group-hover:bg-emerald-400/25" />
 
-              {/* Featured award card */}
-              <div className="lg:col-span-8">
-                <motion.div
-                  key={activeAwardIdx}
-                  initial={{ opacity: 0, y: 16 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-                  className="relative overflow-hidden rounded-3xl bg-emerald-950 text-white p-8 md:p-12 h-full flex flex-col justify-between shadow-xl shadow-emerald-900/20 border border-emerald-800/50"
-                >
-                  {/* Animated shine sweep */}
-                  <motion.div
-                    animate={{ x: ['-30%', '160%'] }}
-                    transition={{ repeat: Infinity, duration: 3.5, ease: 'easeInOut', repeatDelay: 1.5 }}
-                    className="pointer-events-none absolute inset-y-0 -left-1/3 w-1/3 -skew-x-12 bg-gradient-to-r from-transparent via-white/10 to-transparent"
-                  />
-                  {/* Watermark year */}
-                  <span className="pointer-events-none absolute -bottom-8 -right-2 font-sans text-[10rem] font-black leading-none text-white/[0.04] select-none">
-                    {active.year}
+                {/* Medallion */}
+                <div className="relative mx-auto mb-6 h-28 w-28">
+                  {/* Ribbon tails */}
+                  <div className="absolute top-[64%] left-1/2 -translate-x-1/2 -z-10 flex gap-7">
+                    <span className="block h-14 w-5 rotate-6 bg-gradient-to-b from-emerald-500 to-emerald-800 [clip-path:polygon(0_0,100%_0,100%_100%,50%_78%,0_100%)]" />
+                    <span className="block h-14 w-5 -rotate-6 bg-gradient-to-b from-emerald-400 to-emerald-700 [clip-path:polygon(0_0,100%_0,100%_100%,50%_78%,0_100%)]" />
+                  </div>
+                  {/* Seal */}
+                  <div className="absolute inset-0 rounded-full bg-gradient-to-br from-emerald-300 via-emerald-500 to-emerald-800 shadow-lg shadow-emerald-700/30 ring-4 ring-white/60 transition-transform duration-300 group-hover:scale-105" />
+                  <div className="absolute inset-2 rounded-full border-2 border-dashed border-white/40" />
+                  <div className="absolute inset-0 flex items-center justify-center overflow-hidden rounded-full">
+                    <Icon className="relative z-10 h-11 w-11 text-white drop-shadow" />
+                    {/* Gleam sweep */}
+                    <motion.span
+                      animate={{ x: ['-160%', '160%'] }}
+                      transition={{ repeat: Infinity, duration: 3.2, ease: 'easeInOut', repeatDelay: idx * 0.4 + 1 }}
+                      className="absolute inset-y-0 -left-1/2 w-1/2 -skew-x-12 bg-white/40"
+                    />
+                  </div>
+                  {/* Year badge */}
+                  <span className="absolute -bottom-1 left-1/2 -translate-x-1/2 z-20 rounded-full bg-gray-950 text-white text-[10px] font-mono font-black px-2.5 py-0.5 border border-white/20 shadow">
+                    {a.year}
                   </span>
-                  {/* Radial green glow */}
-                  <div className="pointer-events-none absolute -top-16 -right-16 h-64 w-64 rounded-full bg-emerald-500/20 blur-3xl" />
+                </div>
 
-                  <div className="relative z-10">
-                    <div className="flex items-center gap-3 mb-6">
-                      <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-emerald-500 text-white shadow-lg shadow-emerald-600/30">
-                        <ActiveIcon className="h-8 w-8" />
-                      </div>
-                      <div>
-                        <span className="inline-flex items-center gap-1.5 rounded-full bg-white/10 border border-white/20 px-3 py-1 text-[11px] font-bold uppercase tracking-wider text-emerald-200">
-                          <CheckCircle className="h-3 w-3" /> Verified · {active.year}
-                        </span>
-                        <p className="font-mono text-xs text-emerald-300 uppercase tracking-widest font-semibold mt-2">{active.org}</p>
-                      </div>
-                    </div>
-                    <h3 className="font-sans text-2xl md:text-3xl font-bold tracking-tight mb-3 max-w-lg">
-                      {active.title}
-                    </h3>
-                    <p className="font-sans text-sm md:text-base text-white/70 font-light leading-relaxed max-w-lg">
-                      {active.desc}
-                    </p>
-                  </div>
+                {/* Text */}
+                <p className="font-mono text-[11px] font-bold uppercase tracking-widest text-emerald-600 mb-1.5">{a.org}</p>
+                <h3 className="font-sans text-base font-bold text-gray-900 leading-snug mb-2 min-h-[2.75rem]">{a.title}</h3>
+                <p className="font-sans text-xs text-gray-500 font-light leading-relaxed">{a.desc}</p>
 
-                  {/* Progress dots */}
-                  <div className="relative z-10 flex items-center gap-2 mt-8">
-                    {awards.map((_, idx) => (
-                      <button
-                        key={idx}
-                        onClick={() => setActiveAwardIdx(idx)}
-                        aria-label={`Award ${idx + 1}`}
-                        className={`h-2 rounded-full transition-all ${idx === activeAwardIdx ? 'w-8 bg-emerald-400' : 'w-2 bg-white/25 hover:bg-white/50'}`}
-                      />
-                    ))}
-                  </div>
-                </motion.div>
-              </div>
-            </div>
-          );
-        })()}
+                <span className="inline-flex items-center gap-1 mt-4 rounded-full bg-emerald-50 text-emerald-700 text-[10px] font-bold uppercase tracking-wider px-2.5 py-1">
+                  <CheckCircle className="h-3 w-3" /> Verified
+                </span>
+              </motion.div>
+            );
+          })}
+        </div>
       </section>
 
       {/* 11. CLOSING CTA BANNER — interactive "what are you building?" */}

@@ -1,4 +1,5 @@
-import { motion } from 'motion/react';
+import { useState } from 'react';
+import { motion, AnimatePresence, useMotionValue, useSpring } from 'motion/react';
 import { Home, Layers, Leaf, Sparkles, ArrowUpRight } from 'lucide-react';
 import { PageId } from '../types';
 import { SERVICES_DATA } from '../data';
@@ -10,28 +11,27 @@ interface ServicesViewProps {
   onSelectServiceId: (id: string) => void;
 }
 
-// Imagery + bento span per service (keyed by id)
-const SERVICE_META: Record<string, { image: string; span: string }> = {
-  'greenhouse': {
-    image: 'https://images.unsplash.com/photo-1585320806297-9794b3e4eeae?auto=format&fit=crop&q=80&w=1200',
-    span: 'md:col-span-2 md:row-span-2'
-  },
-  'indoor-farming': {
-    image: 'https://images.unsplash.com/photo-1530595467537-0b5996c41f2d?auto=format&fit=crop&q=80&w=1200',
-    span: 'md:col-span-1 md:row-span-1'
-  },
-  'home-gardening': {
-    image: 'https://images.unsplash.com/photo-1466692476868-aef1dfb1e735?auto=format&fit=crop&q=80&w=1200',
-    span: 'md:col-span-1 md:row-span-1'
-  },
-  'fresh-produce': {
-    image: 'https://images.unsplash.com/photo-1610348725531-843dff163e2c?auto=format&fit=crop&q=80&w=1200',
-    span: 'md:col-span-3 md:row-span-1'
-  }
+const SERVICE_IMAGES: Record<string, string> = {
+  'greenhouse': 'https://images.unsplash.com/photo-1585320806297-9794b3e4eeae?auto=format&fit=crop&q=80&w=1000',
+  'indoor-farming': 'https://images.unsplash.com/photo-1530595467537-0b5996c41f2d?auto=format&fit=crop&q=80&w=1000',
+  'home-gardening': 'https://images.unsplash.com/photo-1466692476868-aef1dfb1e735?auto=format&fit=crop&q=80&w=1000',
+  'fresh-produce': 'https://images.unsplash.com/photo-1610348725531-843dff163e2c?auto=format&fit=crop&q=80&w=1000'
 };
 
 export default function ServicesView({ onNavigate }: ServicesViewProps) {
-  const getIcon = (iconName: string, cls = 'w-6 h-6') => {
+  const [hovered, setHovered] = useState<number | null>(null);
+
+  // Cursor-following preview image (desktop)
+  const mx = useMotionValue(0);
+  const my = useMotionValue(0);
+  const sx = useSpring(mx, { stiffness: 220, damping: 26, mass: 0.4 });
+  const sy = useSpring(my, { stiffness: 220, damping: 26, mass: 0.4 });
+  const handleMove = (e: React.MouseEvent) => {
+    mx.set(e.clientX);
+    my.set(e.clientY);
+  };
+
+  const getIcon = (iconName: string, cls = 'w-5 h-5') => {
     switch (iconName) {
       case 'Home': return <Home className={cls} />;
       case 'Layers': return <Layers className={cls} />;
@@ -55,82 +55,85 @@ export default function ServicesView({ onNavigate }: ServicesViewProps) {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
-          className="max-w-3xl mb-12"
+          className="max-w-3xl mb-14"
         >
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-50 text-emerald-800 text-xs font-semibold uppercase tracking-wider mb-4">
             Our Expertise
           </div>
-          <h1 className="font-sans text-4xl md:text-5xl font-extrabold tracking-tight text-gray-950 mb-4 leading-[1.1]">
+          <h1 className="font-sans text-4xl md:text-6xl font-extrabold tracking-tight text-gray-950 mb-4 leading-[1.05]">
             Precision Agricultural Solutions
           </h1>
           <p className="font-sans text-gray-500 font-light text-base md:text-lg">
-            From design and engineering to cloud-based monitoring and export-grade produce, we are reforming Sri Lankan farming. Explore each solution below.
+            Four core solutions, engineered end-to-end. Hover a line to preview, click to open its dedicated page.
           </p>
         </motion.div>
 
-        {/* Interactive bento gallery */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:auto-rows-[240px]">
+        {/* Cursor-following preview */}
+        <AnimatePresence>
+          {hovered !== null && (
+            <motion.div
+              key={hovered}
+              initial={{ opacity: 0, scale: 0.85 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.85 }}
+              transition={{ duration: 0.25 }}
+              style={{ left: sx, top: sy, x: '-50%', y: '-50%' }}
+              className="pointer-events-none fixed z-40 hidden lg:block"
+            >
+              <div className="relative h-44 w-64 overflow-hidden rounded-2xl shadow-2xl border-4 border-white rotate-[-3deg]">
+                <img
+                  src={SERVICE_IMAGES[SERVICES_DATA[hovered].id]}
+                  alt={SERVICES_DATA[hovered].title}
+                  referrerPolicy="no-referrer"
+                  className="h-full w-full object-cover"
+                />
+                <div className="absolute inset-0 bg-emerald-950/15" />
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* Editorial index list */}
+        <div className="border-t border-gray-200/70" onMouseMove={handleMove}>
           {SERVICES_DATA.map((service, idx) => {
-            const meta = SERVICE_META[service.id];
+            const on = hovered === idx;
             return (
               <motion.button
                 key={service.id}
-                id={`service-card-${service.id}`}
-                initial={{ opacity: 0, y: 24 }}
+                id={`service-row-${service.id}`}
+                initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: '-80px' }}
-                transition={{ duration: 0.5, delay: idx * 0.08 }}
+                viewport={{ once: true, margin: '-60px' }}
+                transition={{ duration: 0.4, delay: idx * 0.06 }}
+                onMouseEnter={() => setHovered(idx)}
+                onMouseLeave={() => setHovered(null)}
                 onClick={() => go(service.id)}
-                className={`group relative overflow-hidden rounded-3xl text-left bg-emerald-900 border border-white/40 min-h-[260px] ${meta?.span ?? ''}`}
+                className={`group relative flex w-full items-center justify-between gap-6 border-b border-gray-200/70 py-7 md:py-9 text-left transition-colors duration-300 ${on ? 'lg:pl-4' : ''}`}
               >
-                {/* Image */}
-                <img
-                  src={meta?.image}
-                  alt={service.title}
-                  referrerPolicy="no-referrer"
-                  className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
-                />
-                {/* Overlay */}
-                <div className="absolute inset-0 bg-gradient-to-t from-emerald-950/95 via-emerald-950/45 to-emerald-950/20 transition-colors duration-300 group-hover:from-emerald-950/90" />
-
-                {/* Content */}
-                <div className="absolute inset-0 p-6 md:p-7 flex flex-col justify-between">
-                  <div className="flex items-start justify-between">
-                    <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-white/15 backdrop-blur-sm text-white border border-white/25">
-                      {getIcon(service.iconName)}
-                    </span>
-                    <span className="flex h-10 w-10 items-center justify-center rounded-full bg-white/10 backdrop-blur-sm text-white border border-white/25 transition-all duration-300 group-hover:bg-emerald-500 group-hover:border-emerald-500">
-                      <ArrowUpRight className="w-5 h-5 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-                    </span>
-                  </div>
-
-                  <div>
-                    <h3 className="font-sans text-xl md:text-2xl font-bold text-white tracking-tight mb-2 drop-shadow">
+                <div className="flex items-center gap-4 md:gap-8 min-w-0">
+                  <span className={`font-mono text-sm font-bold tabular-nums transition-colors ${on ? 'text-emerald-500' : 'text-gray-300'}`}>
+                    {String(idx + 1).padStart(2, '0')}
+                  </span>
+                  <span className={`hidden sm:flex h-11 w-11 shrink-0 items-center justify-center rounded-xl transition-colors ${on ? 'bg-emerald-500 text-white' : 'bg-emerald-50 text-emerald-600'}`}>
+                    {getIcon(service.iconName)}
+                  </span>
+                  <span className="min-w-0">
+                    <h2 className={`font-sans text-2xl sm:text-3xl md:text-5xl font-extrabold tracking-tight transition-all duration-300 ${on ? 'text-emerald-600 md:translate-x-1' : 'text-gray-950'}`}>
                       {service.title}
-                    </h3>
-                    <p className="font-sans text-sm text-white/80 font-light leading-relaxed max-w-md mb-4 line-clamp-2">
+                    </h2>
+                    <p className="hidden md:block font-sans text-sm text-gray-500 font-light mt-1 max-w-xl truncate">
                       {service.shortDesc}
                     </p>
-                    {service.subCategories && (
-                      <div className="flex flex-wrap gap-2">
-                        {service.subCategories.map((sub) => (
-                          <span
-                            key={sub.name}
-                            className="rounded-full bg-white/10 backdrop-blur-sm border border-white/20 px-3 py-1 text-[11px] font-semibold text-white/90"
-                          >
-                            {sub.name}
-                          </span>
-                        ))}
-                      </div>
-                    )}
-                  </div>
+                  </span>
                 </div>
+                <span className={`flex h-11 w-11 md:h-14 md:w-14 shrink-0 items-center justify-center rounded-full border transition-all duration-300 ${on ? 'bg-emerald-500 border-emerald-500 text-white scale-105' : 'border-gray-200 text-gray-400'}`}>
+                  <ArrowUpRight className="h-5 w-5 md:h-6 md:w-6 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                </span>
               </motion.button>
             );
           })}
         </div>
 
-        {/* Reusable CTA Banner */}
         <CTABanner
           onNavigate={onNavigate}
           title="Grow with AiGROW today"
