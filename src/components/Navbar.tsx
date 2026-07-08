@@ -240,7 +240,7 @@ export default function Navbar({ currentPage, onNavigate }: NavbarProps) {
       ref={dropdownRef}
     >
       {/* FLOATING ISLANDS ROW */}
-      <div className={`w-full px-4 sm:px-6 flex items-start justify-between gap-3 transition-all duration-300 ${isScrolled ? 'pt-2.5' : 'pt-4 lg:pt-5'}`}>
+      <div className={`w-full px-4 sm:px-6 flex items-start gap-3 transition-all duration-300 ${isScrolled ? 'pt-2.5' : 'pt-4 lg:pt-5'}`}>
 
         {/* ISLAND 1 — LOGO */}
         <div
@@ -273,7 +273,7 @@ export default function Navbar({ currentPage, onNavigate }: NavbarProps) {
 
         {/* ISLAND 2 — CENTER NAVIGATION (desktop) with sliding highlight pill */}
         <div
-          className={`${islandShell} hidden xl:flex items-center gap-0.5 px-2 py-2`}
+          className={`${islandShell} hidden min-[960px]:flex items-center gap-0.5 px-2 py-2 min-[960px]:ml-auto`}
           onMouseLeave={() => { setHoveredNav(null); setOpenDropdown(null); }}
         >
           {/* Home */}
@@ -281,7 +281,7 @@ export default function Navbar({ currentPage, onNavigate }: NavbarProps) {
             id="nav-item-home"
             onMouseEnter={() => { setHoveredNav('home'); setOpenDropdown(null); }}
             onClick={() => handleNavClick('home')}
-            className={`relative font-sans text-sm tracking-wide px-3 py-2 rounded-xl transition-colors ${getLinkClass(currentPage === 'home')}`}
+            className={`relative font-sans text-sm tracking-wide px-2.5 py-2 rounded-xl transition-colors ${getLinkClass(currentPage === 'home')}`}
           >
             {highlight === 'home' && (
               <motion.span
@@ -301,7 +301,7 @@ export default function Navbar({ currentPage, onNavigate }: NavbarProps) {
             <button
               id="nav-item-services-trigger"
               onClick={() => handleNavClick('services')}
-              className={`relative flex items-center gap-1 font-sans text-sm tracking-wide px-3 py-2 rounded-xl transition-colors ${getLinkClass(isServicesActive)}`}
+              className={`relative flex items-center gap-1 font-sans text-sm tracking-wide px-2.5 py-2 rounded-xl transition-colors ${getLinkClass(isServicesActive)}`}
             >
               {highlight === 'services' && (
                 <motion.span layoutId="nav-pill" transition={{ type: 'spring', stiffness: 420, damping: 34 }} className={`absolute inset-0 rounded-xl ${isDarkTheme ? 'bg-white/15' : 'bg-emerald-50'}`} />
@@ -322,7 +322,7 @@ export default function Navbar({ currentPage, onNavigate }: NavbarProps) {
             <button
               id="nav-item-products-trigger"
               onClick={() => handleNavClick('products')}
-              className={`relative flex items-center gap-1 font-sans text-sm tracking-wide px-3 py-2 rounded-xl transition-colors ${getLinkClass(isProductsActive)}`}
+              className={`relative flex items-center gap-1 font-sans text-sm tracking-wide px-2.5 py-2 rounded-xl transition-colors ${getLinkClass(isProductsActive)}`}
             >
               {highlight === 'products' && (
                 <motion.span layoutId="nav-pill" transition={{ type: 'spring', stiffness: 420, damping: 34 }} className={`absolute inset-0 rounded-xl ${isDarkTheme ? 'bg-white/15' : 'bg-emerald-50'}`} />
@@ -343,7 +343,7 @@ export default function Navbar({ currentPage, onNavigate }: NavbarProps) {
             <button
               id="nav-item-about-trigger"
               onClick={() => handleNavClick('about')}
-              className={`relative flex items-center gap-1 font-sans text-sm tracking-wide px-3 py-2 rounded-xl transition-colors ${getLinkClass(isAboutActive)}`}
+              className={`relative flex items-center gap-1 font-sans text-sm tracking-wide px-2.5 py-2 rounded-xl transition-colors ${getLinkClass(isAboutActive)}`}
             >
               {highlight === 'about' && (
                 <motion.span layoutId="nav-pill" transition={{ type: 'spring', stiffness: 420, damping: 34 }} className={`absolute inset-0 rounded-xl ${isDarkTheme ? 'bg-white/15' : 'bg-emerald-50'}`} />
@@ -361,7 +361,7 @@ export default function Navbar({ currentPage, onNavigate }: NavbarProps) {
             id="nav-item-projects"
             onMouseEnter={() => { setHoveredNav('projects'); setOpenDropdown(null); }}
             onClick={() => handleNavClick('projects')}
-            className={`relative font-sans text-sm tracking-wide px-3 py-2 rounded-xl transition-colors ${getLinkClass(currentPage === 'projects')}`}
+            className={`relative font-sans text-sm tracking-wide px-2.5 py-2 rounded-xl transition-colors ${getLinkClass(currentPage === 'projects')}`}
           >
             {highlight === 'projects' && (
               <motion.span layoutId="nav-pill" transition={{ type: 'spring', stiffness: 420, damping: 34 }} className={`absolute inset-0 rounded-xl ${isDarkTheme ? 'bg-white/15' : 'bg-emerald-50'}`} />
@@ -374,7 +374,7 @@ export default function Navbar({ currentPage, onNavigate }: NavbarProps) {
             id="nav-item-shop"
             onMouseEnter={() => { setHoveredNav('shop'); setOpenDropdown(null); }}
             onClick={() => handleNavClick('shop')}
-            className={`relative font-sans text-sm tracking-wide px-3 py-2 rounded-xl transition-colors ${getLinkClass(currentPage === 'shop')}`}
+            className={`relative font-sans text-sm tracking-wide px-2.5 py-2 rounded-xl transition-colors ${getLinkClass(currentPage === 'shop')}`}
           >
             {highlight === 'shop' && (
               <motion.span layoutId="nav-pill" transition={{ type: 'spring', stiffness: 420, damping: 34 }} className={`absolute inset-0 rounded-xl ${isDarkTheme ? 'bg-white/15' : 'bg-emerald-50'}`} />
@@ -387,7 +387,7 @@ export default function Navbar({ currentPage, onNavigate }: NavbarProps) {
             id="nav-item-contact"
             onMouseEnter={() => { setHoveredNav('contact'); setOpenDropdown(null); }}
             onClick={() => handleNavClick('contact')}
-            className={`relative font-sans text-sm tracking-wide px-3 py-2 rounded-xl transition-colors ${getLinkClass(currentPage === 'contact')}`}
+            className={`relative font-sans text-sm tracking-wide px-2.5 py-2 rounded-xl transition-colors ${getLinkClass(currentPage === 'contact')}`}
           >
             {highlight === 'contact' && (
               <motion.span layoutId="nav-pill" transition={{ type: 'spring', stiffness: 420, damping: 34 }} className={`absolute inset-0 rounded-xl ${isDarkTheme ? 'bg-white/15' : 'bg-emerald-50'}`} />
@@ -397,7 +397,7 @@ export default function Navbar({ currentPage, onNavigate }: NavbarProps) {
         </div>
 
         {/* ISLAND 3 — ACTIONS (desktop) */}
-        <div className={`${islandShell} hidden xl:flex items-center gap-2 px-2.5 py-2`}>
+        <div className={`${islandShell} hidden min-[960px]:flex items-center gap-1.5 px-2 py-2`}>
 
           {/* Live Farm Monitor */}
           <div className="relative">
@@ -423,7 +423,7 @@ export default function Navbar({ currentPage, onNavigate }: NavbarProps) {
                 }`}></span>
               </span>
               <Sprout className="w-3.5 h-3.5" />
-              <span className="hidden lg:inline">Live Farm Monitor</span>
+              <span className="hidden min-[1280px]:inline">Live Farm Monitor</span>
               <ChevronDown className={`w-3 h-3 transition-transform ${isTelemetryOpen ? 'rotate-180' : ''}`} />
             </button>
 
@@ -559,7 +559,7 @@ export default function Navbar({ currentPage, onNavigate }: NavbarProps) {
               className="pointer-events-none absolute inset-y-0 -left-1/3 w-1/3 -skew-x-12 bg-white/25"
             />
             <span className="relative z-10 flex items-center gap-2">
-              Start Your Project
+              Start Project
               <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-0.5" />
             </span>
           </button>
@@ -569,7 +569,7 @@ export default function Navbar({ currentPage, onNavigate }: NavbarProps) {
         <button
           id="nav-mobile-toggle"
           onClick={() => setIsOpen(!isOpen)}
-          className={`${islandShell} xl:hidden flex items-center justify-center w-12 h-12 transition-colors ${
+          className={`${islandShell} min-[960px]:hidden ml-auto flex items-center justify-center w-12 h-12 transition-colors ${
             isDarkTheme ? 'text-white' : 'text-gray-700'
           }`}
           aria-label="Toggle Menu"
@@ -586,7 +586,7 @@ export default function Navbar({ currentPage, onNavigate }: NavbarProps) {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
             transition={{ duration: 0.2 }}
-            className="xl:hidden mx-4 mt-3 bg-white border border-gray-100 rounded-3xl shadow-2xl z-50 overflow-y-auto max-h-[calc(100vh-120px)]"
+            className="min-[960px]:hidden mx-4 mt-3 bg-white border border-gray-100 rounded-3xl shadow-2xl z-50 overflow-y-auto max-h-[calc(100vh-120px)]"
           >
           <div className="flex flex-col p-5 gap-3">
             {/* Home */}
