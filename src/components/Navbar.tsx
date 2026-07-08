@@ -88,6 +88,7 @@ export default function Navbar({ currentPage, onNavigate }: NavbarProps) {
   const [liveData, setLiveData] = useState<AgriZone[]>(AGRI_ZONES);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const [hoveredNav, setHoveredNav] = useState<string | null>(null);
 
   const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -168,6 +169,18 @@ export default function Navbar({ currentPage, onNavigate }: NavbarProps) {
   const isProductsActive = currentPage === 'products' || currentPage.startsWith('products-');
   const isAboutActive = currentPage === 'about' || currentPage.startsWith('about-');
 
+  // Which nav key owns the sliding highlight pill (hover wins, else active page)
+  const activeNavKey =
+    currentPage === 'home' ? 'home'
+    : isServicesActive ? 'services'
+    : isProductsActive ? 'products'
+    : isAboutActive ? 'about'
+    : currentPage === 'projects' ? 'projects'
+    : currentPage === 'shop' ? 'shop'
+    : currentPage === 'contact' ? 'contact'
+    : null;
+  const highlight = hoveredNav ?? activeNavKey;
+
   const currentActiveZone = liveData.find(z => z.id === selectedZone) || liveData[0];
 
   const isDarkTheme = currentPage === 'home' && !isScrolled;
@@ -240,7 +253,12 @@ export default function Navbar({ currentPage, onNavigate }: NavbarProps) {
               ? 'bg-white/10 text-emerald-300 group-hover:bg-white/20'
               : 'bg-emerald-50 text-emerald-600 group-hover:bg-emerald-100'
           }`}>
-            <Leaf className="w-5 h-5" />
+            <motion.div
+              animate={{ rotate: [0, -10, 0, 8, 0] }}
+              transition={{ repeat: Infinity, duration: 6, ease: 'easeInOut' }}
+            >
+              <Leaf className="w-5 h-5" />
+            </motion.div>
           </div>
           <div className="pr-1">
             <div className="flex items-baseline gap-1">
@@ -253,34 +271,45 @@ export default function Navbar({ currentPage, onNavigate }: NavbarProps) {
           </div>
         </div>
 
-        {/* ISLAND 2 — CENTER NAVIGATION (desktop) */}
-        <div className={`${islandShell} hidden xl:flex items-center gap-1 px-2.5 py-2`}>
+        {/* ISLAND 2 — CENTER NAVIGATION (desktop) with sliding highlight pill */}
+        <div
+          className={`${islandShell} hidden xl:flex items-center gap-0.5 px-2 py-2`}
+          onMouseLeave={() => { setHoveredNav(null); setOpenDropdown(null); }}
+        >
           {/* Home */}
           <button
             id="nav-item-home"
+            onMouseEnter={() => { setHoveredNav('home'); setOpenDropdown(null); }}
             onClick={() => handleNavClick('home')}
-            className={`font-sans text-sm tracking-wide transition-all px-3 py-2 rounded-xl ${getLinkClass(currentPage === 'home')} ${
-              currentPage === 'home' ? (isDarkTheme ? 'bg-white/10' : 'bg-emerald-50/70') : 'hover:bg-black/5'
-            }`}
+            className={`relative font-sans text-sm tracking-wide px-3 py-2 rounded-xl transition-colors ${getLinkClass(currentPage === 'home')}`}
           >
-            Home
+            {highlight === 'home' && (
+              <motion.span
+                layoutId="nav-pill"
+                transition={{ type: 'spring', stiffness: 420, damping: 34 }}
+                className={`absolute inset-0 rounded-xl ${isDarkTheme ? 'bg-white/15' : 'bg-emerald-50'}`}
+              />
+            )}
+            <span className="relative z-10">Home</span>
           </button>
 
           {/* Services Dropdown Trigger */}
           <div
             className="relative"
-            onMouseEnter={() => handleMouseEnter('services')}
-            onMouseLeave={handleMouseLeave}
+            onMouseEnter={() => { handleMouseEnter('services'); setHoveredNav('services'); }}
           >
             <button
               id="nav-item-services-trigger"
               onClick={() => handleNavClick('services')}
-              className={`flex items-center gap-1 font-sans text-sm tracking-wide transition-all px-3 py-2 rounded-xl ${getLinkClass(isServicesActive)} ${
-                isServicesActive ? (isDarkTheme ? 'bg-white/10' : 'bg-emerald-50/70') : 'hover:bg-black/5'
-              }`}
+              className={`relative flex items-center gap-1 font-sans text-sm tracking-wide px-3 py-2 rounded-xl transition-colors ${getLinkClass(isServicesActive)}`}
             >
-              Services
-              <ChevronDown className={`w-3.5 h-3.5 transition-transform ${openDropdown === 'services' ? 'rotate-180' : ''}`} />
+              {highlight === 'services' && (
+                <motion.span layoutId="nav-pill" transition={{ type: 'spring', stiffness: 420, damping: 34 }} className={`absolute inset-0 rounded-xl ${isDarkTheme ? 'bg-white/15' : 'bg-emerald-50'}`} />
+              )}
+              <span className="relative z-10 flex items-center gap-1">
+                Services
+                <ChevronDown className={`w-3.5 h-3.5 transition-transform ${openDropdown === 'services' ? 'rotate-180' : ''}`} />
+              </span>
             </button>
             {openDropdown === 'services' && renderDropdownPanel(servicesDropdown, 'services', 'View Services Overview')}
           </div>
@@ -288,18 +317,20 @@ export default function Navbar({ currentPage, onNavigate }: NavbarProps) {
           {/* Products Dropdown Trigger */}
           <div
             className="relative"
-            onMouseEnter={() => handleMouseEnter('products')}
-            onMouseLeave={handleMouseLeave}
+            onMouseEnter={() => { handleMouseEnter('products'); setHoveredNav('products'); }}
           >
             <button
               id="nav-item-products-trigger"
               onClick={() => handleNavClick('products')}
-              className={`flex items-center gap-1 font-sans text-sm tracking-wide transition-all px-3 py-2 rounded-xl ${getLinkClass(isProductsActive)} ${
-                isProductsActive ? (isDarkTheme ? 'bg-white/10' : 'bg-emerald-50/70') : 'hover:bg-black/5'
-              }`}
+              className={`relative flex items-center gap-1 font-sans text-sm tracking-wide px-3 py-2 rounded-xl transition-colors ${getLinkClass(isProductsActive)}`}
             >
-              Products
-              <ChevronDown className={`w-3.5 h-3.5 transition-transform ${openDropdown === 'products' ? 'rotate-180' : ''}`} />
+              {highlight === 'products' && (
+                <motion.span layoutId="nav-pill" transition={{ type: 'spring', stiffness: 420, damping: 34 }} className={`absolute inset-0 rounded-xl ${isDarkTheme ? 'bg-white/15' : 'bg-emerald-50'}`} />
+              )}
+              <span className="relative z-10 flex items-center gap-1">
+                Products
+                <ChevronDown className={`w-3.5 h-3.5 transition-transform ${openDropdown === 'products' ? 'rotate-180' : ''}`} />
+              </span>
             </button>
             {openDropdown === 'products' && renderDropdownPanel(productsDropdown, 'products', 'View Products Catalog')}
           </div>
@@ -307,18 +338,20 @@ export default function Navbar({ currentPage, onNavigate }: NavbarProps) {
           {/* About Us Dropdown Trigger */}
           <div
             className="relative"
-            onMouseEnter={() => handleMouseEnter('about')}
-            onMouseLeave={handleMouseLeave}
+            onMouseEnter={() => { handleMouseEnter('about'); setHoveredNav('about'); }}
           >
             <button
               id="nav-item-about-trigger"
               onClick={() => handleNavClick('about')}
-              className={`flex items-center gap-1 font-sans text-sm tracking-wide transition-all px-3 py-2 rounded-xl ${getLinkClass(isAboutActive)} ${
-                isAboutActive ? (isDarkTheme ? 'bg-white/10' : 'bg-emerald-50/70') : 'hover:bg-black/5'
-              }`}
+              className={`relative flex items-center gap-1 font-sans text-sm tracking-wide px-3 py-2 rounded-xl transition-colors ${getLinkClass(isAboutActive)}`}
             >
-              About
-              <ChevronDown className={`w-3.5 h-3.5 transition-transform ${openDropdown === 'about' ? 'rotate-180' : ''}`} />
+              {highlight === 'about' && (
+                <motion.span layoutId="nav-pill" transition={{ type: 'spring', stiffness: 420, damping: 34 }} className={`absolute inset-0 rounded-xl ${isDarkTheme ? 'bg-white/15' : 'bg-emerald-50'}`} />
+              )}
+              <span className="relative z-10 flex items-center gap-1">
+                About
+                <ChevronDown className={`w-3.5 h-3.5 transition-transform ${openDropdown === 'about' ? 'rotate-180' : ''}`} />
+              </span>
             </button>
             {openDropdown === 'about' && renderDropdownPanel(aboutDropdown, 'about', 'View About Us Overview')}
           </div>
@@ -326,34 +359,40 @@ export default function Navbar({ currentPage, onNavigate }: NavbarProps) {
           {/* Projects */}
           <button
             id="nav-item-projects"
+            onMouseEnter={() => { setHoveredNav('projects'); setOpenDropdown(null); }}
             onClick={() => handleNavClick('projects')}
-            className={`font-sans text-sm tracking-wide transition-all px-3 py-2 rounded-xl ${getLinkClass(currentPage === 'projects')} ${
-              currentPage === 'projects' ? (isDarkTheme ? 'bg-white/10' : 'bg-emerald-50/70') : 'hover:bg-black/5'
-            }`}
+            className={`relative font-sans text-sm tracking-wide px-3 py-2 rounded-xl transition-colors ${getLinkClass(currentPage === 'projects')}`}
           >
-            Projects
+            {highlight === 'projects' && (
+              <motion.span layoutId="nav-pill" transition={{ type: 'spring', stiffness: 420, damping: 34 }} className={`absolute inset-0 rounded-xl ${isDarkTheme ? 'bg-white/15' : 'bg-emerald-50'}`} />
+            )}
+            <span className="relative z-10">Projects</span>
           </button>
 
           {/* Shop */}
           <button
             id="nav-item-shop"
+            onMouseEnter={() => { setHoveredNav('shop'); setOpenDropdown(null); }}
             onClick={() => handleNavClick('shop')}
-            className={`font-sans text-sm tracking-wide transition-all px-3 py-2 rounded-xl ${getLinkClass(currentPage === 'shop')} ${
-              currentPage === 'shop' ? (isDarkTheme ? 'bg-white/10' : 'bg-emerald-50/70') : 'hover:bg-black/5'
-            }`}
+            className={`relative font-sans text-sm tracking-wide px-3 py-2 rounded-xl transition-colors ${getLinkClass(currentPage === 'shop')}`}
           >
-            Shop
+            {highlight === 'shop' && (
+              <motion.span layoutId="nav-pill" transition={{ type: 'spring', stiffness: 420, damping: 34 }} className={`absolute inset-0 rounded-xl ${isDarkTheme ? 'bg-white/15' : 'bg-emerald-50'}`} />
+            )}
+            <span className="relative z-10">Shop</span>
           </button>
 
           {/* Contact */}
           <button
             id="nav-item-contact"
+            onMouseEnter={() => { setHoveredNav('contact'); setOpenDropdown(null); }}
             onClick={() => handleNavClick('contact')}
-            className={`font-sans text-sm tracking-wide transition-all px-3 py-2 rounded-xl ${getLinkClass(currentPage === 'contact')} ${
-              currentPage === 'contact' ? (isDarkTheme ? 'bg-white/10' : 'bg-emerald-50/70') : 'hover:bg-black/5'
-            }`}
+            className={`relative font-sans text-sm tracking-wide px-3 py-2 rounded-xl transition-colors ${getLinkClass(currentPage === 'contact')}`}
           >
-            Contact
+            {highlight === 'contact' && (
+              <motion.span layoutId="nav-pill" transition={{ type: 'spring', stiffness: 420, damping: 34 }} className={`absolute inset-0 rounded-xl ${isDarkTheme ? 'bg-white/15' : 'bg-emerald-50'}`} />
+            )}
+            <span className="relative z-10">Contact</span>
           </button>
         </div>
 
@@ -512,10 +551,17 @@ export default function Navbar({ currentPage, onNavigate }: NavbarProps) {
           <button
             id="nav-btn-start-project"
             onClick={() => handleNavClick('contact')}
-            className="flex items-center gap-2 px-4 py-2.5 bg-emerald-600 text-white rounded-xl text-sm font-medium transition-all duration-300 hover:bg-emerald-700 hover:shadow-lg hover:shadow-emerald-600/20"
+            className="relative overflow-hidden flex items-center gap-2 px-4 py-2.5 bg-emerald-600 text-white rounded-xl text-sm font-medium transition-all duration-300 hover:bg-emerald-700 hover:shadow-lg hover:shadow-emerald-600/20 group"
           >
-            Start Your Project
-            <ArrowRight className="w-4 h-4" />
+            <motion.span
+              animate={{ x: ['-120%', '220%'] }}
+              transition={{ repeat: Infinity, duration: 3, ease: 'easeInOut', repeatDelay: 1.6 }}
+              className="pointer-events-none absolute inset-y-0 -left-1/3 w-1/3 -skew-x-12 bg-white/25"
+            />
+            <span className="relative z-10 flex items-center gap-2">
+              Start Your Project
+              <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-0.5" />
+            </span>
           </button>
         </div>
 
