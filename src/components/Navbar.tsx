@@ -186,11 +186,7 @@ export default function Navbar({ currentPage, onNavigate }: NavbarProps) {
   const isDarkTheme = currentPage === 'home' && !isScrolled;
 
   // ---- Floating "island" styling helpers -------------------------------------
-  const islandShell = `backdrop-blur-xl border rounded-2xl transition-all duration-300 ${
-    isDarkTheme
-      ? 'bg-white/10 border-white/15 shadow-lg shadow-black/10'
-      : 'bg-white/85 border-gray-200/70 shadow-lg shadow-gray-300/30'
-  }`;
+  const islandShell = `rounded-2xl transition-all duration-300`;
 
   const getLinkClass = (isActive: boolean) => {
     if (isActive) {
