@@ -1,4 +1,3 @@
-import { motion } from 'motion/react';
 import {
   ArrowRight,
   ChevronRight,
@@ -12,7 +11,7 @@ import {
 } from 'lucide-react';
 import { PageId, Product } from '../../types';
 import { PRODUCTS_DATA } from '../../data';
-import ProductCoverflow from './ProductCoverflow';
+import Reveal from '../Reveal';
 
 interface ProductPageLayoutProps {
   product: Product;
@@ -40,8 +39,8 @@ export default function ProductPageLayout({
   };
 
   const meta = CATEGORY_META[product.category];
-  const categoryProducts = PRODUCTS_DATA.filter((p) => p.category === product.category);
-  const currentIndex = Math.max(0, categoryProducts.findIndex((p) => p.id === product.id));
+  const Icon = meta.icon;
+  const siblings = PRODUCTS_DATA.filter((p) => p.category === product.category && p.id !== product.id);
 
   const handleEnquire = () => {
     onSelectProductForEnquiry(product.name);
@@ -50,7 +49,7 @@ export default function ProductPageLayout({
 
   return (
     <div className="min-h-screen px-6 py-12 text-[#1F2321]">
-      <div className="mx-auto w-full">
+      <div className="max-w-5xl mx-auto">
 
         {/* Breadcrumb */}
         <div className="mb-8 flex items-center gap-1.5 font-mono text-[11px] uppercase tracking-wider text-gray-400">
@@ -61,53 +60,43 @@ export default function ProductPageLayout({
           <span className="text-emerald-700">{product.name}</span>
         </div>
 
-        {/* Coverflow gallery of this category (current unit centered) */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className="mb-10"
-        >
-          <ProductCoverflow
-            key={product.id}
-            products={categoryProducts}
-            initialActive={currentIndex}
-            onOpen={(p) => go(`product-${p.id}` as PageId)}
-          />
-        </motion.div>
-
-        {/* CTA bar */}
-        <div className="glass rounded-2xl p-5 flex flex-col sm:flex-row items-center justify-between gap-4 mb-14 max-w-5xl mx-auto shadow-sm">
-          <div className="text-center sm:text-left">
-            <h2 className="font-sans text-lg font-bold text-gray-950">{product.name}</h2>
-            <p className="font-sans text-sm italic text-emerald-700 font-medium">"{product.catchphrase}"</p>
-          </div>
-          <div className="flex flex-wrap items-center justify-center gap-4">
+        {/* Header */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-stretch mb-14">
+          {/* Visual tile */}
+          <div className="relative rounded-3xl overflow-hidden bg-gradient-to-br from-emerald-400 to-emerald-700 min-h-[240px] flex items-center justify-center">
+            <div className="absolute inset-0 bg-[radial-gradient(120%_100%_at_100%_0%,rgba(255,255,255,0.25),transparent_60%)]" />
+            <Icon className="relative h-20 w-20 text-white/95 drop-shadow" />
             {product.price && (
-              <div className="text-center sm:text-right">
-                <span className="block font-mono text-[10px] font-semibold uppercase tracking-wider text-gray-400">Est. Price</span>
-                <span className="font-mono text-xl font-black text-gray-900">{product.price}</span>
-              </div>
+              <span className="absolute top-4 right-4 rounded-lg bg-white/20 backdrop-blur-sm px-3 py-1.5 font-mono text-sm font-bold text-white">{product.price}</span>
             )}
-            <button
-              onClick={handleEnquire}
-              className="inline-flex items-center gap-2 px-5 py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl text-sm transition-all shadow-md shadow-emerald-600/15 group"
-            >
-              Enquire
-              <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
-            </button>
-            <button
-              onClick={() => go('shop')}
-              className="inline-flex items-center gap-2 px-5 py-3 glass text-gray-700 hover:text-gray-900 font-semibold rounded-xl text-sm transition-all"
-            >
-              <ShoppingBag className="w-4 h-4" />
-              Shop
-            </button>
+          </div>
+
+          {/* Info */}
+          <div className="flex flex-col justify-center gap-4">
+            <span className="font-mono text-[11px] font-bold uppercase tracking-widest text-emerald-600">{product.categoryLabel}</span>
+            <h1 className="font-sans text-3xl md:text-4xl font-extrabold tracking-tight text-gray-950 leading-tight">{product.name}</h1>
+            <p className="font-sans text-base italic font-medium text-emerald-800 leading-relaxed">"{product.catchphrase}"</p>
+            <div className="flex flex-wrap gap-3 mt-1">
+              <button
+                onClick={handleEnquire}
+                className="inline-flex items-center gap-2 px-5 py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl text-sm transition-all shadow-md shadow-emerald-600/15 group"
+              >
+                Enquire
+                <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
+              </button>
+              <button
+                onClick={() => go('shop')}
+                className="inline-flex items-center gap-2 px-5 py-3 glass text-gray-700 hover:text-gray-900 font-semibold rounded-xl text-sm transition-all"
+              >
+                <ShoppingBag className="w-4 h-4" />
+                Shop
+              </button>
+            </div>
           </div>
         </div>
 
         {/* Content */}
-        <div className="max-w-5xl mx-auto flex flex-col gap-14">
+        <div className="flex flex-col gap-14">
           {/* Overview */}
           <section>
             <h2 className="font-sans text-2xl md:text-3xl font-bold text-gray-950 tracking-tight mb-4">Overview</h2>
@@ -119,20 +108,13 @@ export default function ProductPageLayout({
             <h2 className="font-sans text-2xl md:text-3xl font-bold text-gray-950 tracking-tight mb-6">Key Capabilities</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {product.features.map((feat, idx) => (
-                <motion.div
-                  key={idx}
-                  initial={{ opacity: 0, y: 16 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true, margin: '-40px' }}
-                  transition={{ duration: 0.4, delay: idx * 0.05 }}
-                  className="glass rounded-2xl p-5 flex items-start gap-3 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-emerald-900/5"
-                >
+                <Reveal key={idx} delay={(idx % 2) * 0.06} className="glass rounded-2xl p-5 flex items-start gap-3 h-full">
                   <span className="font-mono text-lg font-black text-emerald-500/70 tabular-nums shrink-0">{String(idx + 1).padStart(2, '0')}</span>
                   <div className="flex items-start gap-2">
                     <CheckCircle className="mt-0.5 h-4 w-4 shrink-0 text-emerald-500" />
                     <span className="font-sans text-sm text-gray-700 font-light leading-relaxed">{feat}</span>
                   </div>
-                </motion.div>
+                </Reveal>
               ))}
             </div>
           </section>
@@ -156,6 +138,33 @@ export default function ProductPageLayout({
               <p>All hardware includes a 2-year warranty, CodeGen software integrations, and Colombo-based technical field support.</p>
             </div>
           </section>
+
+          {/* More in this category */}
+          {siblings.length > 0 && (
+            <section>
+              <h2 className="font-sans text-xl md:text-2xl font-bold text-gray-950 tracking-tight mb-5">More in {meta.label}</h2>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                {siblings.map((p) => (
+                  <button
+                    key={p.id}
+                    onClick={() => go(`product-${p.id}` as PageId)}
+                    className="group text-left glass rounded-2xl p-5 flex flex-col transition-all duration-300 hover:shadow-lg hover:shadow-emerald-900/5"
+                  >
+                    <div className="flex items-center justify-between mb-3">
+                      <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-emerald-50 text-emerald-600">
+                        <Icon className="h-4 w-4" />
+                      </span>
+                      {p.price && <span className="font-mono text-xs font-bold text-gray-700">{p.price}</span>}
+                    </div>
+                    <h3 className="font-sans text-sm font-bold text-gray-950 leading-snug">{p.name}</h3>
+                    <span className="mt-3 inline-flex items-center gap-1 text-xs font-bold text-emerald-700">
+                      View <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-1" />
+                    </span>
+                  </button>
+                ))}
+              </div>
+            </section>
+          )}
         </div>
 
       </div>

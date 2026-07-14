@@ -1,8 +1,7 @@
-import { useState } from 'react';
-import { motion } from 'motion/react';
 import { PageId } from '../../types';
-import { ShieldCheck, MapPin, RefreshCw, Cpu, ArrowLeft, Plus } from 'lucide-react';
+import { ShieldCheck, MapPin, RefreshCw, Cpu, ArrowLeft } from 'lucide-react';
 import CTABanner from '../CTABanner';
+import Reveal from '../Reveal';
 
 interface AboutCommitmentPageProps {
   onNavigate: (pageId: PageId) => void;
@@ -11,222 +10,109 @@ interface AboutCommitmentPageProps {
 const COMMITMENTS = [
   {
     title: 'Local Assembly & Calibration',
-    short: 'Assembled in Colombo',
     desc: 'All smart sensor hubs, capacitive probes and motorised dosing valves are designed, assembled and calibrated inside Trace Expert City, Colombo 10, by Sri Lankan software and electronics engineers.',
-    icon: Cpu,
-    image: 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&q=80&w=1000',
+    icon: Cpu
   },
   {
     title: 'Economic Self-Reliance',
-    short: 'Import-proof supply',
     desc: 'By avoiding finished-goods imports we protect agricultural projects from dollar volatility, customs bottlenecks and supply-chain holdups. Structural components are locally fabricated to high tolerances.',
-    icon: ShieldCheck,
-    image: 'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&q=80&w=1000',
+    icon: ShieldCheck
   },
   {
     title: 'Upcycled Organic Grow Mediums',
-    short: 'Circular coco-peat',
     desc: 'We replace imported rockwool with Sri Lankan premium coco-peat blocks, pre-conditioned organically. This promotes circular waste management across the coconut-producing belt.',
-    icon: RefreshCw,
-    image: 'https://images.unsplash.com/photo-1416879595882-3373a0480b5b?auto=format&fit=crop&q=80&w=1000',
+    icon: RefreshCw
   },
   {
     title: 'Dry-Zone Agrarian Impact',
-    short: 'Water for the dry zone',
     desc: 'We donate solar-powered LoRa moisture pods to cooperative societies in dry districts like Vavuniya and Hambantota, saving over 65% of precious tube-well water resources.',
-    icon: MapPin,
-    image: 'https://images.unsplash.com/photo-1560493676-04071c5f467b?auto=format&fit=crop&q=80&w=1000',
-  },
+    icon: MapPin
+  }
 ];
 
 const CREED = [
   ['100%', 'Local software & design'],
   ['0', 'Imported finished goods'],
-  ['65%', 'Dry-zone water saved'],
+  ['65%', 'Dry-zone water saved']
 ];
 
 export default function AboutCommitmentPage({ onNavigate }: AboutCommitmentPageProps) {
-  const [active, setActive] = useState(0);
-
   return (
-    <div className="min-h-screen text-[#1F2321] overflow-x-clip">
+    <div className="min-h-screen text-[#1F2321] px-6 py-12">
+      <div className="max-w-5xl mx-auto">
 
-      {/* ============================================================= */}
-      {/* FULL-BLEED MANIFESTO OPENER                                    */}
-      {/* ============================================================= */}
-      <section className="relative min-h-[92vh] flex items-end overflow-hidden">
-        <img
-          src="https://images.unsplash.com/photo-1599940824399-b87987ceb72a?auto=format&fit=crop&q=80&w=1600"
-          alt="Sri Lankan agricultural landscape"
-          className="absolute inset-0 w-full h-full object-cover"
-          referrerPolicy="no-referrer"
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-emerald-950 via-emerald-950/70 to-emerald-950/30" />
+        {/* Breadcrumb */}
+        <button
+          onClick={() => onNavigate('about')}
+          className="mb-8 flex items-center gap-2 text-sm text-gray-500 hover:text-emerald-600 transition-colors font-medium group"
+        >
+          <ArrowLeft className="w-4 h-4 transition-transform group-hover:-translate-x-1" />
+          Back to About Overview
+        </button>
 
-        <div className="relative z-10 max-w-7xl mx-auto w-full px-6 pb-14 pt-28">
-          <button
-            onClick={() => onNavigate('about')}
-            className="flex items-center gap-2 text-sm text-white/70 hover:text-white transition-colors font-medium group mb-10"
-          >
-            <ArrowLeft className="w-4 h-4 transition-transform group-hover:-translate-x-1" />
-            Back to About Overview
-          </button>
-
-          <motion.span
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            className="font-mono text-xs text-emerald-300 font-bold uppercase tracking-[0.3em] block mb-6"
-          >
+        {/* Header */}
+        <Reveal className="mb-10">
+          <span className="font-mono text-xs text-emerald-700 font-bold uppercase tracking-[0.3em] block mb-5">
             Sovereignty & Responsibility
-          </motion.span>
-
-          <motion.h1
-            initial={{ opacity: 0, y: 24 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1], delay: 0.05 }}
-            className="font-sans text-4xl md:text-7xl font-black text-white tracking-tighter leading-[0.9] max-w-4xl"
-          >
-            Built in Sri Lanka.
-            <br />
-            Engineered for <span className="text-emerald-300">independence.</span>
-          </motion.h1>
-
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.15 }}
-            className="font-sans text-base text-white/75 leading-relaxed font-light max-w-2xl mt-6"
-          >
+          </span>
+          <h1 className="font-sans text-4xl md:text-5xl font-black text-gray-950 tracking-tight leading-[0.95] max-w-3xl">
+            Built in Sri Lanka. Engineered for <span className="text-emerald-600">independence.</span>
+          </h1>
+          <p className="font-sans text-base text-gray-500 leading-relaxed font-light max-w-2xl mt-6">
             Every sensor, controller and line of code is managed locally — so heavy monsoons, currency swings and
             resource stresses never break a harvest.
-          </motion.p>
+          </p>
+        </Reveal>
 
-          {/* Creed strip */}
-          <div className="mt-10 flex flex-wrap gap-x-12 gap-y-6 border-t border-white/15 pt-8">
-            {CREED.map(([n, l], i) => (
-              <motion.div
-                key={l}
-                initial={{ opacity: 0, y: 16 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: 0.25 + i * 0.08 }}
-              >
-                <div className="font-mono text-4xl md:text-5xl font-black text-white leading-none">{n}</div>
-                <div className="font-sans text-xs text-emerald-200/80 uppercase tracking-wider mt-2">{l}</div>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
+        {/* Hero image */}
+        <Reveal className="rounded-3xl overflow-hidden shadow-xl shadow-emerald-900/5 mb-10">
+          <img
+            src="https://images.unsplash.com/photo-1599940824399-b87987ceb72a?auto=format&fit=crop&q=80&w=1600"
+            alt="Sri Lankan agricultural landscape"
+            className="w-full h-56 md:h-72 object-cover"
+            referrerPolicy="no-referrer"
+          />
+        </Reveal>
 
-      <div className="max-w-7xl mx-auto px-6">
-        {/* ============================================================= */}
-        {/* EXPANDING ACCORDION — hover/click a panel to reveal it        */}
-        {/* ============================================================= */}
-        <section className="py-20 md:py-28">
-          <div className="flex items-start gap-5 mb-12">
-            <span className="font-mono text-sm text-emerald-600 font-bold pt-1 shrink-0">§</span>
-            <div>
-              <span className="font-mono text-[11px] uppercase tracking-[0.3em] text-gray-400">The Manifesto</span>
-              <h2 className="font-sans text-3xl md:text-4xl font-extrabold text-gray-950 tracking-tight mt-2">
-                Four pillars of local commitment
-              </h2>
-              <p className="font-sans text-sm text-gray-500 font-light mt-2 max-w-lg">
-                Hover or tap a pillar to expand it and see how we protect agricultural infrastructure from external
-                dependencies.
-              </p>
+        {/* Creed stats */}
+        <div className="grid grid-cols-3 gap-4 mb-16">
+          {CREED.map(([n, l]) => (
+            <div key={l} className="glass rounded-2xl p-5 text-center">
+              <div className="font-mono text-3xl md:text-4xl font-black text-emerald-600 leading-none">{n}</div>
+              <div className="font-sans text-xs text-gray-500 mt-2 font-medium leading-tight">{l}</div>
             </div>
-          </div>
+          ))}
+        </div>
 
-          {/* Desktop: horizontal expanding panels */}
-          <div className="hidden md:flex gap-4 h-[480px]">
+        {/* Pillars */}
+        <section>
+          <Reveal className="mb-8">
+            <span className="font-mono text-[11px] uppercase tracking-[0.3em] text-gray-400">The Manifesto</span>
+            <h2 className="font-sans text-2xl md:text-3xl font-extrabold text-gray-950 tracking-tight mt-2">
+              Four pillars of local commitment
+            </h2>
+          </Reveal>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
             {COMMITMENTS.map((c, i) => {
               const Icon = c.icon;
-              const isActive = i === active;
               return (
-                <motion.div
-                  key={c.title}
-                  onMouseEnter={() => setActive(i)}
-                  onClick={() => setActive(i)}
-                  animate={{ flex: isActive ? 4 : 1 }}
-                  transition={{ type: 'spring', stiffness: 200, damping: 26 }}
-                  className="relative rounded-3xl overflow-hidden cursor-pointer border-4 border-white shadow-lg"
-                >
-                  <img src={c.image} alt={c.title} className="absolute inset-0 w-full h-full object-cover" referrerPolicy="no-referrer" />
-                  <div
-                    className={`absolute inset-0 transition-all duration-500 ${
-                      isActive
-                        ? 'bg-gradient-to-t from-emerald-950/90 via-emerald-950/40 to-emerald-950/10'
-                        : 'bg-emerald-950/55 hover:bg-emerald-950/45'
-                    }`}
-                  />
-
-                  {!isActive && (
-                    <div className="absolute inset-0 flex flex-col items-center justify-between py-6">
-                      <div className="w-10 h-10 rounded-xl bg-white/15 backdrop-blur-sm flex items-center justify-center text-white">
-                        <Icon className="w-5 h-5" />
-                      </div>
-                      <span className="font-sans text-sm font-bold text-white [writing-mode:vertical-rl] rotate-180 tracking-wide">
-                        {c.short}
-                      </span>
-                      <span className="font-mono text-xs text-white/60">0{i + 1}</span>
-                    </div>
-                  )}
-
-                  {isActive && (
-                    <motion.div
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      transition={{ delay: 0.15, duration: 0.4 }}
-                      className="absolute inset-0 flex flex-col justify-end p-8"
-                    >
-                      <div className="w-12 h-12 rounded-2xl bg-emerald-600 flex items-center justify-center text-white mb-4 shadow-lg">
-                        <Icon className="w-6 h-6" />
-                      </div>
-                      <span className="font-mono text-xs text-emerald-300 uppercase tracking-widest mb-2">Pillar 0{i + 1}</span>
-                      <h3 className="font-sans text-2xl font-extrabold text-white tracking-tight mb-3 max-w-md">{c.title}</h3>
-                      <p className="font-sans text-sm text-white/80 leading-relaxed font-light max-w-md">{c.desc}</p>
-                    </motion.div>
-                  )}
-                </motion.div>
-              );
-            })}
-          </div>
-
-          {/* Mobile: stacked expandable cards */}
-          <div className="md:hidden flex flex-col gap-3">
-            {COMMITMENTS.map((c, i) => {
-              const Icon = c.icon;
-              const isActive = i === active;
-              return (
-                <div key={c.title} className="rounded-3xl overflow-hidden border border-gray-100 bg-white shadow-sm">
-                  <button onClick={() => setActive(isActive ? -1 : i)} className="w-full flex items-center gap-4 p-5 text-left">
-                    <div className={`w-11 h-11 rounded-xl flex items-center justify-center shrink-0 transition-colors ${
-                      isActive ? 'bg-emerald-600 text-white' : 'bg-emerald-50 text-emerald-600'
-                    }`}>
-                      <Icon className="w-5 h-5" />
-                    </div>
-                    <div className="flex-1">
-                      <div className="font-mono text-[10px] text-emerald-600 uppercase tracking-widest">Pillar 0{i + 1}</div>
-                      <div className="font-sans text-base font-bold text-gray-950">{c.title}</div>
-                    </div>
-                    <Plus className={`w-5 h-5 text-gray-400 transition-transform ${isActive ? 'rotate-45' : ''}`} />
-                  </button>
-                  <motion.div
-                    initial={false}
-                    animate={{ height: isActive ? 'auto' : 0, opacity: isActive ? 1 : 0 }}
-                    transition={{ duration: 0.3 }}
-                    className="overflow-hidden"
-                  >
-                    <p className="px-5 pb-5 font-sans text-sm text-gray-500 leading-relaxed font-light">{c.desc}</p>
-                  </motion.div>
-                </div>
+                <Reveal key={c.title} delay={(i % 2) * 0.08} className="glass rounded-3xl p-6 flex flex-col gap-3 h-full">
+                  <div className="flex items-center gap-3">
+                    <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-emerald-500 text-white shrink-0">
+                      <Icon className="h-5 w-5" />
+                    </span>
+                    <span className="font-mono text-xs text-emerald-600 uppercase tracking-widest font-bold">Pillar 0{i + 1}</span>
+                  </div>
+                  <h3 className="font-sans text-lg font-bold text-gray-950">{c.title}</h3>
+                  <p className="font-sans text-sm text-gray-500 font-light leading-relaxed">{c.desc}</p>
+                </Reveal>
               );
             })}
           </div>
         </section>
 
-        <div className="pb-12">
+        <div className="mt-4">
           <CTABanner onNavigate={onNavigate} />
         </div>
       </div>

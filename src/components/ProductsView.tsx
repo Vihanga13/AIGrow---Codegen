@@ -1,9 +1,8 @@
 import { useState } from 'react';
-import { motion } from 'motion/react';
-import { Info } from 'lucide-react';
-import { PageId } from '../types';
+import { Info, Cpu, Activity, Droplet, ArrowRight } from 'lucide-react';
+import { PageId, Product } from '../types';
 import { PRODUCTS_DATA } from '../data';
-import ProductCoverflow from './products/ProductCoverflow';
+import Reveal from './Reveal';
 
 interface ProductsViewProps {
   onNavigate: (pageId: PageId) => void;
@@ -17,6 +16,12 @@ const FILTERS = [
   { id: 'irrigation', label: 'Irrigation' }
 ];
 
+const CAT_ICON: Record<Product['category'], typeof Cpu> = {
+  environmental: Cpu,
+  resource: Activity,
+  irrigation: Droplet
+};
+
 export default function ProductsView({ onNavigate }: ProductsViewProps) {
   const [filter, setFilter] = useState('all');
 
@@ -25,19 +30,14 @@ export default function ProductsView({ onNavigate }: ProductsViewProps) {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  const products = filter === 'all' ? PRODUCTS_DATA : PRODUCTS_DATA.filter(p => p.category === filter);
+  const products = filter === 'all' ? PRODUCTS_DATA : PRODUCTS_DATA.filter((p) => p.category === filter);
 
   return (
     <div className="min-h-screen text-[#1F2321] py-12 px-6">
-      <div className="w-full mx-auto">
+      <div className="max-w-6xl mx-auto">
 
         {/* Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          className="max-w-3xl mx-auto text-center mb-8"
-        >
+        <Reveal className="max-w-3xl mx-auto text-center mb-8">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-50 text-emerald-800 text-xs font-semibold uppercase tracking-wider mb-4">
             AiGROW Hardware
           </div>
@@ -45,12 +45,12 @@ export default function ProductsView({ onNavigate }: ProductsViewProps) {
             Engineered Agriculture Hardware
           </h1>
           <p className="font-sans text-gray-500 font-light text-base md:text-lg">
-            Flow through our full hardware line-up — drag the dots or arrows, then open any unit.
+            Browse our full hardware line-up by category, then open any unit for its full specifications.
           </p>
-        </motion.div>
+        </Reveal>
 
         {/* Filter chips */}
-        <div className="flex flex-wrap justify-center gap-2 mb-6">
+        <div className="flex flex-wrap justify-center gap-2 mb-10">
           {FILTERS.map((f) => (
             <button
               key={f.id}
@@ -64,19 +64,47 @@ export default function ProductsView({ onNavigate }: ProductsViewProps) {
           ))}
         </div>
 
-        {/* 3D coverflow */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.5 }}
-          className="mb-12"
-        >
-          <ProductCoverflow
-            key={filter}
-            products={products}
-            onOpen={(p) => go(`product-${p.id}` as PageId)}
-          />
-        </motion.div>
+        {/* Product grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
+          {products.map((p, idx) => {
+            const Icon = CAT_ICON[p.category];
+            return (
+              <Reveal key={p.id} delay={(idx % 3) * 0.06}>
+                <button
+                  id={`product-card-${p.id}`}
+                  onClick={() => go(`product-${p.id}` as PageId)}
+                  className="group w-full h-full text-left glass rounded-3xl p-6 flex flex-col transition-all duration-300 hover:shadow-xl hover:shadow-emerald-900/5"
+                >
+                  <div className="flex items-center justify-between mb-4">
+                    <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600">
+                      <Icon className="h-5 w-5" />
+                    </span>
+                    {p.price && (
+                      <span className="font-mono text-sm font-bold text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-lg">{p.price}</span>
+                    )}
+                  </div>
+
+                  <h3 className="font-sans text-base font-bold text-gray-950 leading-snug">{p.name}</h3>
+                  <p className="font-sans text-xs italic text-emerald-700 font-medium mt-1">"{p.catchphrase}"</p>
+
+                  <div className="mt-4 flex flex-col divide-y divide-gray-100 border-y border-gray-100">
+                    {p.specs.slice(0, 2).map((s, i) => (
+                      <div key={i} className="flex justify-between gap-2 py-2 text-[11px]">
+                        <span className="font-mono text-gray-400 uppercase tracking-wide truncate">{s.label}</span>
+                        <span className="font-mono text-gray-700 font-medium text-right truncate">{s.value}</span>
+                      </div>
+                    ))}
+                  </div>
+
+                  <span className="mt-auto pt-4 inline-flex items-center gap-1.5 text-xs font-bold text-emerald-700">
+                    View Details
+                    <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-1" />
+                  </span>
+                </button>
+              </Reveal>
+            );
+          })}
+        </div>
 
         {/* Info box */}
         <div className="glass rounded-2xl p-6 border border-emerald-100/50 flex items-start gap-4 max-w-4xl mx-auto">
