@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import {
   ShoppingBag,
@@ -8,11 +8,14 @@ import {
   Minus,
   CheckCircle,
   ChevronRight,
-  RotateCw,
-  ArrowLeft,
+  ChevronLeft,
   Info,
+  Zap,
   Cpu,
-  Zap
+  Thermometer,
+  Droplet,
+  Activity,
+  Check
 } from 'lucide-react';
 import { PageId, Product } from '../types';
 import { PRODUCTS_DATA } from '../data';
@@ -34,155 +37,103 @@ const CATEGORIES = [
   { id: 'irrigation', label: 'Irrigation Units' }
 ];
 
+const CATEGORY_ICON: Record<string, typeof Cpu> = {
+  environmental: Thermometer,
+  resource: Activity,
+  irrigation: Droplet
+};
+
 /* ---------------------------------------------------------------- */
-/* Flip-card SKU tile — front = pitch, back = spec sheet            */
+/* Blueprint schematic — CSS-drawn stand-in for a product photo     */
 /* ---------------------------------------------------------------- */
-function ProductTile({
-  product,
-  flipped,
-  onFlip,
-  onAdd,
-  onEnquire,
-  index
-}: {
-  product: Product;
-  flipped: boolean;
-  onFlip: () => void;
-  onAdd: () => void;
-  onEnquire: () => void;
-  index: number;
-}) {
+function Blueprint({ product, figNo }: { product: Product; figNo: number }) {
+  const Icon = CATEGORY_ICON[product.category] ?? Cpu;
   return (
-    <motion.div
-      layout
-      initial={{ opacity: 0, y: 24 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, scale: 0.9 }}
-      transition={{ duration: 0.4, delay: (index % 3) * 0.05 }}
-      className="relative h-[430px] perspective-[1600px]"
-      id={`shop-item-card-${product.id}`}
+    <div
+      className="relative overflow-hidden bg-emerald-950 min-h-[280px] lg:min-h-full flex items-center justify-center"
+      style={{
+        backgroundImage:
+          'linear-gradient(rgba(129,168,136,0.10) 1px, transparent 1px), linear-gradient(90deg, rgba(129,168,136,0.10) 1px, transparent 1px)',
+        backgroundSize: '26px 26px'
+      }}
     >
-      <motion.div
-        animate={{ rotateY: flipped ? 180 : 0 }}
-        transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-        className="relative w-full h-full transform-3d"
-      >
-        {/* FRONT */}
-        <div className="absolute inset-0 backface-hidden glass rounded-3xl p-6 flex flex-col overflow-hidden">
-          <div className="absolute -right-8 -top-8 w-32 h-32 rounded-full bg-emerald-400/10 blur-2xl pointer-events-none" />
+      {/* Corner ticks */}
+      <span className="absolute top-4 left-4 w-5 h-5 border-t-2 border-l-2 border-emerald-400/60" />
+      <span className="absolute top-4 right-4 w-5 h-5 border-t-2 border-r-2 border-emerald-400/60" />
+      <span className="absolute bottom-4 left-4 w-5 h-5 border-b-2 border-l-2 border-emerald-400/60" />
+      <span className="absolute bottom-4 right-4 w-5 h-5 border-b-2 border-r-2 border-emerald-400/60" />
 
-          <div className="flex items-center justify-between mb-4">
-            <span className="font-mono text-[9px] text-gray-400 font-bold uppercase tracking-widest">
-              SKU · {product.id.toUpperCase()}
-            </span>
-            <span className="font-mono text-sm font-black text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-lg">
-              {product.price}
-            </span>
-          </div>
+      {/* Scan line */}
+      <motion.span
+        className="absolute left-0 right-0 h-px bg-emerald-400/40"
+        animate={{ top: ['12%', '88%', '12%'] }}
+        transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' }}
+      />
 
-          <div className="w-11 h-11 rounded-2xl bg-emerald-600/10 text-emerald-600 flex items-center justify-center mb-4">
-            <Cpu className="w-5 h-5" />
-          </div>
+      {/* Annotations */}
+      <span className="absolute top-5 left-11 font-mono text-[10px] text-emerald-300/70 tracking-widest">FIG.0{figNo}</span>
+      <span className="absolute top-5 right-11 font-mono text-[10px] text-emerald-300/70 tracking-widest uppercase">
+        {product.category}
+      </span>
+      <span className="absolute bottom-5 left-11 font-mono text-[10px] text-emerald-300/70 tracking-widest">
+        AIGROW // {product.id.toUpperCase()}
+      </span>
+      <span className="absolute bottom-5 right-11 font-mono text-[10px] text-emerald-300/70 tracking-widest">{product.price}</span>
 
-          <h3 className="font-sans text-lg font-extrabold text-gray-950 tracking-tight leading-tight">{product.name}</h3>
-          <p className="font-sans text-xs text-emerald-800 italic font-medium mt-1">{product.catchphrase}</p>
-
-          <div className="flex flex-col gap-1.5 mt-4">
-            {product.features.slice(0, 3).map((feat, fIdx) => (
-              <div key={fIdx} className="flex gap-2 items-start text-[11px] text-gray-600">
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 shrink-0 mt-1.5" />
-                <span className="font-sans font-light leading-snug line-clamp-2">{feat}</span>
-              </div>
-            ))}
-          </div>
-
-          <div className="mt-auto pt-4 flex gap-2">
-            <button
-              onClick={onAdd}
-              className="grow py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl text-xs transition-colors flex items-center justify-center gap-1.5"
-            >
-              <Plus className="w-3.5 h-3.5" /> Add to Cart
-            </button>
-            <button
-              onClick={onFlip}
-              className="px-3.5 py-3 bg-white text-gray-700 border border-gray-200 hover:border-emerald-300 hover:text-emerald-700 font-semibold rounded-xl text-xs transition-colors flex items-center gap-1.5"
-              aria-label="View specifications"
-            >
-              <RotateCw className="w-3.5 h-3.5" /> Specs
-            </button>
-          </div>
+      {/* Central unit */}
+      <div className="relative flex flex-col items-center gap-4">
+        <span className="absolute -inset-8 rounded-full border border-dashed border-emerald-400/25 animate-[spin_18s_linear_infinite]" />
+        <div className="w-24 h-24 rounded-3xl bg-emerald-500/15 border border-emerald-400/40 backdrop-blur-sm flex items-center justify-center text-emerald-200">
+          <Icon className="w-11 h-11" strokeWidth={1.4} />
         </div>
-
-        {/* BACK */}
-        <div className="absolute inset-0 backface-hidden transform-[rotateY(180deg)] rounded-3xl p-6 flex flex-col bg-gray-950 text-white overflow-hidden">
-          <div className="flex items-center justify-between mb-3">
-            <span className="font-mono text-[10px] text-emerald-400 font-bold uppercase tracking-widest flex items-center gap-1.5">
-              <Zap className="w-3 h-3" /> Spec Sheet
-            </span>
-            <button
-              onClick={onFlip}
-              className="text-gray-400 hover:text-white transition-colors flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider"
-            >
-              <ArrowLeft className="w-3.5 h-3.5" /> Back
-            </button>
-          </div>
-
-          <h3 className="font-sans text-sm font-bold text-white leading-snug mb-3">{product.name}</h3>
-
-          <div className="flex flex-col divide-y divide-white/10 border-y border-white/10 overflow-y-auto grow">
-            {product.specs.map((spec, sIdx) => (
-              <div key={sIdx} className="flex items-start justify-between gap-3 py-2">
-                <span className="font-mono text-[9px] text-gray-500 uppercase tracking-wider shrink-0 pt-0.5">{spec.label}</span>
-                <span className="font-sans text-[11px] font-semibold text-gray-100 text-right leading-snug">{spec.value}</span>
-              </div>
-            ))}
-          </div>
-
-          <div className="mt-4 flex gap-2">
-            <button
-              onClick={onAdd}
-              className="grow py-3 bg-emerald-500 hover:bg-emerald-400 text-emerald-950 font-bold rounded-xl text-xs transition-colors flex items-center justify-center gap-1.5"
-            >
-              <Plus className="w-3.5 h-3.5" /> Add to Cart
-            </button>
-            <button
-              onClick={onEnquire}
-              className="px-4 py-3 bg-white/10 text-white hover:bg-white/20 font-semibold rounded-xl text-xs transition-colors"
-            >
-              Quote
-            </button>
-          </div>
-        </div>
-      </motion.div>
-    </motion.div>
+        <span className="font-mono text-[10px] text-emerald-300/60 tracking-[0.3em] uppercase">Schematic View</span>
+      </div>
+    </div>
   );
 }
 
 export default function ShopView({ onNavigate, onSelectProductForEnquiry }: ShopViewProps) {
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
+  const [activeId, setActiveId] = useState<string>(PRODUCTS_DATA[0].id);
+  const [qty, setQty] = useState(1);
   const [cart, setCart] = useState<CartItem[]>([]);
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [showAddedToast, setShowAddedToast] = useState<string | null>(null);
-  const [flippedId, setFlippedId] = useState<string | null>(null);
+
+  const stripRef = useRef<HTMLDivElement>(null);
 
   const filteredProducts =
     selectedCategory === 'all' ? PRODUCTS_DATA : PRODUCTS_DATA.filter((p) => p.category === selectedCategory);
 
+  const activeProduct = filteredProducts.find((p) => p.id === activeId) ?? filteredProducts[0];
+  const activeFigNo = PRODUCTS_DATA.findIndex((p) => p.id === activeProduct.id) + 1;
+
   const getRawPrice = (priceStr: string | undefined): number => {
     if (!priceStr) return 0;
-    const cleaned = priceStr.replace('LKR', '').replace(/,/g, '').trim();
-    return parseInt(cleaned, 10) || 0;
+    return parseInt(priceStr.replace('LKR', '').replace(/,/g, '').trim(), 10) || 0;
   };
 
-  const handleAddToCart = (product: Product) => {
+  const selectCategory = (id: string) => {
+    setSelectedCategory(id);
+    const list = id === 'all' ? PRODUCTS_DATA : PRODUCTS_DATA.filter((p) => p.category === id);
+    setActiveId(list[0].id);
+    setQty(1);
+  };
+
+  const selectProduct = (id: string) => {
+    setActiveId(id);
+    setQty(1);
+  };
+
+  const scrollStrip = (dir: number) => stripRef.current?.scrollBy({ left: dir * 260, behavior: 'smooth' });
+
+  const handleAddToCart = (product: Product, amount = 1) => {
     setCart((prev) => {
       const existing = prev.find((item) => item.product.id === product.id);
       if (existing) {
-        return prev.map((item) =>
-          item.product.id === product.id ? { ...item, quantity: item.quantity + 1 } : item
-        );
+        return prev.map((item) => (item.product.id === product.id ? { ...item, quantity: item.quantity + amount } : item));
       }
-      return [...prev, { product, quantity: 1 }];
+      return [...prev, { product, quantity: amount }];
     });
     setShowAddedToast(product.name);
     setTimeout(() => setShowAddedToast(null), 2500);
@@ -191,13 +142,7 @@ export default function ShopView({ onNavigate, onSelectProductForEnquiry }: Shop
   const updateQuantity = (productId: string, delta: number) => {
     setCart((prev) =>
       prev
-        .map((item) => {
-          if (item.product.id === productId) {
-            const newQty = item.quantity + delta;
-            return newQty > 0 ? { ...item, quantity: newQty } : item;
-          }
-          return item;
-        })
+        .map((item) => (item.product.id === productId ? { ...item, quantity: item.quantity + delta } : item))
         .filter((item) => item.quantity > 0)
     );
   };
@@ -222,17 +167,14 @@ export default function ShopView({ onNavigate, onSelectProductForEnquiry }: Shop
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  const selectCategory = (id: string) => {
-    setSelectedCategory(id);
-    setFlippedId(null);
-  };
+  const unitPrice = getRawPrice(activeProduct.price);
 
   return (
     <div className="min-h-screen text-[#1F2321] px-6 relative">
       <div className="max-w-7xl mx-auto py-12 lg:py-16">
 
         {/* HEADER */}
-        <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-10">
+        <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-8">
           <div>
             <div className="inline-flex items-center gap-2 font-mono text-xs uppercase tracking-[0.3em] text-emerald-700 font-semibold mb-4">
               <Zap className="w-3.5 h-3.5" /> AiGROW Supply Terminal
@@ -242,10 +184,6 @@ export default function ShopView({ onNavigate, onSelectProductForEnquiry }: Shop
               <br />
               <span className="text-emerald-600">shipped to spec.</span>
             </h1>
-            <p className="font-sans text-gray-500 font-light text-sm max-w-xl mt-4 leading-relaxed">
-              Telemetry pods, EC controllers and grow-light bars for home gardens or enterprise greenhouses. Flip any
-              unit to read its full spec sheet.
-            </p>
           </div>
 
           <button
@@ -269,7 +207,7 @@ export default function ShopView({ onNavigate, onSelectProductForEnquiry }: Shop
         </div>
 
         {/* CATEGORY TABS */}
-        <div className="flex flex-wrap items-center gap-2 border-b border-gray-200 pb-6 mb-10" id="shop-category-tabs">
+        <div className="flex flex-wrap items-center gap-2 mb-5" id="shop-category-tabs">
           {CATEGORIES.map((cat) => {
             const count = cat.id === 'all' ? PRODUCTS_DATA.length : PRODUCTS_DATA.filter((p) => p.category === cat.id).length;
             const isActive = selectedCategory === cat.id;
@@ -297,25 +235,155 @@ export default function ShopView({ onNavigate, onSelectProductForEnquiry }: Shop
           })}
         </div>
 
-        {/* PRODUCT GRID */}
-        <motion.div layout className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="shop-products-grid">
-          <AnimatePresence mode="popLayout">
-            {filteredProducts.map((prod, idx) => (
-              <ProductTile
-                key={prod.id}
-                product={prod}
-                index={idx}
-                flipped={flippedId === prod.id}
-                onFlip={() => setFlippedId((cur) => (cur === prod.id ? null : prod.id))}
-                onAdd={() => handleAddToCart(prod)}
-                onEnquire={() => handleEnquireProduct(prod)}
-              />
-            ))}
+        {/* SKU SELECTOR STRIP */}
+        <div className="flex items-center gap-2 mb-5">
+          <button
+            onClick={() => scrollStrip(-1)}
+            className="hidden sm:flex w-9 h-9 shrink-0 rounded-full glass items-center justify-center text-gray-600 hover:text-emerald-700 transition-colors"
+            aria-label="Scroll left"
+          >
+            <ChevronLeft className="w-4 h-4" />
+          </button>
+
+          <div ref={stripRef} className="flex gap-2 overflow-x-auto scrollbar-none py-1 grow" style={{ scrollbarWidth: 'none' }}>
+            {filteredProducts.map((p, i) => {
+              const isActive = p.id === activeProduct.id;
+              return (
+                <button
+                  key={p.id}
+                  id={`shop-item-card-${p.id}`}
+                  onClick={() => selectProduct(p.id)}
+                  className={`group shrink-0 w-56 text-left rounded-2xl border p-3.5 transition-all duration-200 ${
+                    isActive ? 'bg-gray-950 border-gray-950 text-white shadow-lg' : 'glass border-transparent hover:border-emerald-200'
+                  }`}
+                >
+                  <div className="flex items-center justify-between mb-1.5">
+                    <span className={`font-mono text-[10px] font-bold tracking-widest ${isActive ? 'text-emerald-400' : 'text-gray-400'}`}>
+                      SKU-{String(i + 1).padStart(2, '0')}
+                    </span>
+                    <span className={`font-mono text-[11px] font-bold ${isActive ? 'text-emerald-300' : 'text-emerald-600'}`}>{p.price}</span>
+                  </div>
+                  <div className={`font-sans text-sm font-bold leading-snug truncate ${isActive ? 'text-white' : 'text-gray-900'}`}>
+                    {p.name}
+                  </div>
+                </button>
+              );
+            })}
+          </div>
+
+          <button
+            onClick={() => scrollStrip(1)}
+            className="hidden sm:flex w-9 h-9 shrink-0 rounded-full glass items-center justify-center text-gray-600 hover:text-emerald-700 transition-colors"
+            aria-label="Scroll right"
+          >
+            <ChevronRight className="w-4 h-4" />
+          </button>
+        </div>
+
+        {/* DATASHEET PANEL */}
+        <div className="glass rounded-3xl overflow-hidden border border-emerald-100 shadow-xl shadow-emerald-900/5">
+          {/* Header band */}
+          <div className="flex items-center justify-between px-6 md:px-8 py-3.5 bg-gray-950 text-white">
+            <div className="flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.3em] text-emerald-400 font-bold">
+              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+              Datasheet
+            </div>
+            <span className="font-mono text-[11px] text-gray-500 tracking-widest">REF · {activeProduct.id.toUpperCase()}</span>
+          </div>
+
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={activeProduct.id}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.3 }}
+              className="grid grid-cols-1 lg:grid-cols-2"
+            >
+              {/* Blueprint */}
+              <Blueprint product={activeProduct} figNo={activeFigNo} />
+
+              {/* Spec column */}
+              <div className="p-6 md:p-8 flex flex-col">
+                <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-emerald-600 font-bold">
+                  {activeProduct.categoryLabel}
+                </span>
+                <h2 className="font-sans text-2xl md:text-3xl font-black text-gray-950 tracking-tight leading-tight mt-2">
+                  {activeProduct.name}
+                </h2>
+                <p className="font-sans text-sm text-emerald-800 italic font-medium mt-1.5">{activeProduct.catchphrase}</p>
+                <p className="font-sans text-xs text-gray-500 leading-relaxed font-light mt-3">{activeProduct.description}</p>
+
+                {/* Spec table */}
+                <div className="mt-5 flex flex-col divide-y divide-gray-200/70 border-y border-gray-200/70">
+                  {activeProduct.specs.map((spec) => (
+                    <div key={spec.label} className="flex items-start justify-between gap-4 py-2">
+                      <span className="font-mono text-[10px] text-gray-400 uppercase tracking-wider shrink-0 pt-0.5">{spec.label}</span>
+                      <span className="font-sans text-xs font-semibold text-gray-900 text-right leading-snug">{spec.value}</span>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Features */}
+                <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-1.5">
+                  {activeProduct.features.slice(0, 4).map((feat, i) => (
+                    <div key={i} className="flex gap-1.5 items-start text-[11px] text-gray-600">
+                      <Check className="w-3 h-3 text-emerald-500 shrink-0 mt-0.5" />
+                      <span className="font-sans font-light leading-snug">{feat}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </motion.div>
           </AnimatePresence>
-        </motion.div>
+
+          {/* Buy bar */}
+          <div className="border-t border-emerald-100 px-6 md:px-8 py-4 bg-white/60 flex flex-col sm:flex-row sm:items-center gap-4">
+            <div className="flex items-baseline gap-2">
+              <span className="font-mono text-2xl font-black text-emerald-600">{activeProduct.price}</span>
+              <span className="font-sans text-[11px] text-gray-400">/ unit</span>
+            </div>
+
+            {/* Quantity stepper */}
+            <div className="flex items-center gap-1.5 sm:ml-auto">
+              <button
+                onClick={() => setQty((q) => Math.max(1, q - 1))}
+                className="w-9 h-9 rounded-lg bg-white border border-gray-200 hover:border-emerald-300 flex items-center justify-center text-gray-600 transition-colors"
+                aria-label="Decrease quantity"
+              >
+                <Minus className="w-3.5 h-3.5" />
+              </button>
+              <span className="font-mono text-sm font-bold w-10 text-center text-gray-900">{qty}</span>
+              <button
+                onClick={() => setQty((q) => q + 1)}
+                className="w-9 h-9 rounded-lg bg-white border border-gray-200 hover:border-emerald-300 flex items-center justify-center text-gray-600 transition-colors"
+                aria-label="Increase quantity"
+              >
+                <Plus className="w-3.5 h-3.5" />
+              </button>
+            </div>
+
+            <div className="flex items-center gap-2">
+              <button
+                id={`shop-btn-add-to-cart-${activeProduct.id}`}
+                onClick={() => handleAddToCart(activeProduct, qty)}
+                className="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl text-xs transition-colors flex items-center justify-center gap-1.5"
+              >
+                <Plus className="w-3.5 h-3.5" /> Add {qty > 1 ? `${qty} ` : ''}· LKR {(unitPrice * qty).toLocaleString()}
+              </button>
+              <button
+                id={`shop-btn-enquire-${activeProduct.id}`}
+                onClick={() => handleEnquireProduct(activeProduct)}
+                className="px-4 py-2.5 bg-white text-gray-700 border border-gray-200 hover:border-gray-300 font-semibold rounded-xl text-xs transition-colors"
+              >
+                Quote
+              </button>
+            </div>
+          </div>
+        </div>
 
         {/* INFO BOX */}
-        <div className="mt-16 glass-green rounded-3xl p-6 md:p-8 flex flex-col md:flex-row gap-6 items-center">
+        <div className="mt-10 glass-green rounded-3xl p-6 md:p-8 flex flex-col md:flex-row gap-6 items-center">
           <div className="w-12 h-12 rounded-2xl bg-white/60 flex items-center justify-center text-emerald-600 shrink-0">
             <Info className="w-6 h-6" />
           </div>
@@ -373,7 +441,6 @@ export default function ShopView({ onNavigate, onSelectProductForEnquiry }: Shop
               onClick={(e) => e.stopPropagation()}
               className="w-full max-w-md bg-white h-full shadow-2xl flex flex-col justify-between"
             >
-              {/* Header */}
               <div className="px-6 py-5 border-b border-gray-100 flex items-center justify-between">
                 <div className="flex items-center gap-2.5 text-gray-900">
                   <ShoppingBag className="w-5 h-5 text-emerald-600" />
@@ -388,7 +455,6 @@ export default function ShopView({ onNavigate, onSelectProductForEnquiry }: Shop
                 </button>
               </div>
 
-              {/* Body */}
               <div className="grow overflow-y-auto px-6 py-4 flex flex-col gap-4">
                 {cart.length === 0 ? (
                   <div className="flex flex-col items-center justify-center h-64 text-center gap-4">
@@ -460,7 +526,6 @@ export default function ShopView({ onNavigate, onSelectProductForEnquiry }: Shop
                 )}
               </div>
 
-              {/* Footer */}
               {cart.length > 0 && (
                 <div className="px-6 py-6 border-t border-gray-100 flex flex-col gap-4">
                   <div className="flex justify-between items-center text-sm">
