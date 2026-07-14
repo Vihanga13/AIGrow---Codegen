@@ -38,7 +38,7 @@ export default function ProductCategoryPage({
 
   return (
     <div className="min-h-screen py-12 px-6">
-      <div className="w-full mx-auto">
+      <div className="max-w-7xl mx-auto">
 
         {/* Back navigation */}
         <div className="mb-8">

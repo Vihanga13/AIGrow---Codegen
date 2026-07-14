@@ -35,7 +35,7 @@ export default function ServicesView({ onNavigate }: ServicesViewProps) {
 
   return (
     <div className="min-h-screen text-[#1F2321] py-12 px-6">
-      <div className="max-w-6xl mx-auto">
+      <div className="max-w-7xl mx-auto">
 
         {/* Header */}
         <Reveal className="max-w-3xl mb-12">

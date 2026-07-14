@@ -283,7 +283,7 @@ export default function HomeView({
 
       {/* 2. INTRODUCTION */}
       <section className="py-20 px-6">
-        <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-center">
+        <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-center">
           <Reveal className="lg:col-span-7">
             <div className="text-emerald-600 font-mono text-xs uppercase tracking-wider font-semibold mb-4">
               Corporate Overview
@@ -327,7 +327,7 @@ export default function HomeView({
         </div>
 
         {/* Capability keywords */}
-        <div className="max-w-6xl mx-auto mt-12 flex flex-wrap justify-center gap-2.5">
+        <div className="max-w-7xl mx-auto mt-12 flex flex-wrap justify-center gap-2.5">
           {keywords.map((k) => (
             <span key={k} className="inline-flex items-center gap-2 rounded-full glass px-4 py-2 font-sans text-sm font-semibold text-gray-700">
               <Leaf className="h-3.5 w-3.5 text-emerald-500" />
@@ -339,7 +339,7 @@ export default function HomeView({
 
       {/* 3. OUR MISSION */}
       <section className="py-20 px-6 bg-emerald-50/30">
-        <div className="max-w-6xl mx-auto">
+        <div className="max-w-7xl mx-auto">
           <Reveal className="max-w-3xl mb-12">
             <div className="text-emerald-600 font-mono text-xs uppercase tracking-wider font-semibold mb-3">
               Our True North
@@ -371,7 +371,7 @@ export default function HomeView({
 
       {/* 4. SERVICES */}
       <section className="py-20 px-6">
-        <div className="max-w-6xl mx-auto">
+        <div className="max-w-7xl mx-auto">
           <Reveal className="max-w-3xl mb-12">
             <div className="text-emerald-600 font-mono text-xs uppercase tracking-wider font-semibold mb-3">
               What We Deliver
@@ -432,7 +432,7 @@ export default function HomeView({
 
       {/* 5. TECHNOLOGY HIGHLIGHTS */}
       <section className="py-20 px-6 bg-emerald-50/30">
-        <div className="max-w-6xl mx-auto">
+        <div className="max-w-7xl mx-auto">
           <Reveal className="max-w-3xl mb-12">
             <div className="flex items-center gap-2 text-emerald-600 font-mono text-xs uppercase tracking-wider font-semibold mb-3">
               <span className="h-px w-8 bg-emerald-400" />
@@ -468,7 +468,7 @@ export default function HomeView({
 
       {/* 6. ADVANTAGES */}
       <section className="py-20 px-6">
-        <div className="max-w-6xl mx-auto">
+        <div className="max-w-7xl mx-auto">
           <Reveal className="max-w-3xl mb-12">
             <div className="text-emerald-600 font-mono text-xs uppercase tracking-wider font-semibold mb-3">
               The AiGROW Edge
@@ -506,7 +506,7 @@ export default function HomeView({
 
       {/* 7. STATS BAR */}
       <section className="py-16 px-6 bg-emerald-50/30 border-y border-emerald-100/60">
-        <div className="max-w-6xl mx-auto grid grid-cols-2 lg:grid-cols-4 gap-8">
+        <div className="max-w-7xl mx-auto grid grid-cols-2 lg:grid-cols-4 gap-8">
           {[
             { target: 85, suffix: '%', label: 'Remote Monitoring', sub: 'Real-time IoT coverage' },
             { target: 70, suffix: '%', prefix: '-', label: 'Operation Costs', sub: 'Resource utilization drop' },
@@ -524,7 +524,7 @@ export default function HomeView({
 
       {/* 8. PROJECTS */}
       <section className="py-20 px-6">
-        <div className="max-w-6xl mx-auto">
+        <div className="max-w-7xl mx-auto">
           <Reveal className="max-w-3xl mb-12">
             <div className="text-emerald-600 font-mono text-xs uppercase tracking-wider font-semibold mb-3">
               Our Harvest of Success
@@ -581,7 +581,7 @@ export default function HomeView({
 
       {/* 9. PRICE CALCULATOR */}
       <section className="py-20 px-6 bg-emerald-50/30 border-y border-emerald-100/60">
-        <div className="max-w-6xl mx-auto">
+        <div className="max-w-7xl mx-auto">
           <Reveal className="text-center max-w-3xl mx-auto mb-14">
             <span className="font-mono text-xs text-emerald-600 font-bold uppercase tracking-widest block mb-2">
               Cost Estimation Tool
@@ -763,7 +763,7 @@ export default function HomeView({
 
       {/* 10. AWARDS */}
       <section className="py-20 px-6">
-        <div className="max-w-6xl mx-auto">
+        <div className="max-w-7xl mx-auto">
           <Reveal className="max-w-3xl mb-12">
             <div className="text-emerald-600 font-mono text-xs uppercase tracking-wider font-semibold mb-3">
               Awards &amp; Recognition
@@ -802,7 +802,7 @@ export default function HomeView({
 
       {/* 11. CLOSING CTA */}
       <section className="px-6 pb-16">
-        <Reveal className="max-w-6xl mx-auto rounded-3xl bg-emerald-950 text-white p-10 md:p-16">
+        <Reveal className="max-w-7xl mx-auto rounded-3xl bg-emerald-950 text-white p-10 md:p-16">
           <div className="max-w-2xl flex flex-col gap-6">
             <span className="font-mono text-xs text-emerald-400 font-bold uppercase tracking-widest">A CodeGen Initiative</span>
             <h2 className="font-sans text-3xl md:text-5xl font-extrabold tracking-tight">

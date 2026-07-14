@@ -49,7 +49,7 @@ export default function ProductPageLayout({
 
   return (
     <div className="min-h-screen px-6 py-12 text-[#1F2321]">
-      <div className="max-w-5xl mx-auto">
+      <div className="max-w-7xl mx-auto">
 
         {/* Breadcrumb */}
         <div className="mb-8 flex items-center gap-1.5 font-mono text-[11px] uppercase tracking-wider text-gray-400">

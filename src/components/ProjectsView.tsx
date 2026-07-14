@@ -117,7 +117,7 @@ export default function ProjectsView({
           />
           <div className="absolute inset-0 bg-gradient-to-t from-emerald-950 via-emerald-950/70 to-emerald-950/20" />
 
-          <div className="relative z-10 max-w-6xl mx-auto w-full px-6 pb-14 pt-28">
+          <div className="relative z-10 max-w-7xl mx-auto w-full px-6 pb-14 pt-28">
             <button
               onClick={handleCloseProject}
               className="flex items-center gap-2 text-sm text-white/70 hover:text-white transition-colors font-medium group mb-10"
@@ -156,7 +156,7 @@ export default function ProjectsView({
           </div>
         </section>
 
-        <div className="max-w-6xl mx-auto px-6">
+        <div className="max-w-7xl mx-auto px-6">
           {/* Stat band */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-px bg-emerald-100 rounded-3xl overflow-hidden -mt-10 relative z-20 shadow-xl shadow-emerald-900/10 border border-emerald-100">
             {activeProject.stats.map((stat, idx) => (

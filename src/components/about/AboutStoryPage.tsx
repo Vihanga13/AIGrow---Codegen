@@ -48,7 +48,7 @@ const TIMELINE = [
 export default function AboutStoryPage({ onNavigate }: AboutStoryPageProps) {
   return (
     <div className="min-h-screen text-[#1F2321] px-6 py-12">
-      <div className="max-w-4xl mx-auto">
+      <div className="max-w-7xl mx-auto">
 
         {/* Breadcrumb */}
         <button

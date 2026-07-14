@@ -69,7 +69,7 @@ export default function ContactView({ selectedProductName, onClearSelectedProduc
 
   return (
     <div className="min-h-screen text-[#1F2321] px-6 py-12 lg:py-16">
-      <div className="max-w-6xl mx-auto">
+      <div className="max-w-7xl mx-auto">
 
         {/* Header */}
         <div className="max-w-2xl mb-10">
