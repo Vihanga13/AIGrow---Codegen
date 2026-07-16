@@ -86,7 +86,7 @@ export default function ShopView({ onNavigate, onSelectProductForEnquiry }: Shop
 
   return (
     <div className="min-h-screen text-[#1F2321] px-6 py-12 relative">
-      <div className="max-w-7xl mx-auto">
+      <div className="max-w-[96rem] mx-auto">
 
         {/* HEADER */}
         <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-8">

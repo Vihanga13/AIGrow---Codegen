@@ -34,7 +34,7 @@ export default function AboutNewsPage({ onNavigate }: AboutNewsPageProps) {
 
   return (
     <div className="min-h-screen text-[#1F2321] py-12 px-6">
-      <div className="max-w-7xl mx-auto">
+      <div className="max-w-[96rem] mx-auto">
 
         {/* Breadcrumb */}
         <button

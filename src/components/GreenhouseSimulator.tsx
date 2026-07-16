@@ -80,7 +80,7 @@ export default function GreenhouseSimulator({ onNavigate }: GreenhouseSimulatorP
 
   return (
     <section className="py-20 px-6 border-b border-gray-100">
-      <div className="max-w-7xl mx-auto">
+      <div className="max-w-[96rem] mx-auto">
         {/* Heading */}
         <div className="max-w-3xl mb-10">
           <div className="flex items-center gap-2 text-emerald-600 font-mono text-xs uppercase tracking-wider font-semibold mb-3">
