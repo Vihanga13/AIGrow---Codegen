@@ -1,8 +1,41 @@
 import { useState } from 'react';
 import { Info, Cpu, Activity, Droplet, ArrowRight } from 'lucide-react';
 import { PageId, Product } from '../types';
-import { PRODUCTS_DATA } from '../data';
+import { PRODUCTS_DATA, GREENHOUSE_PARTS, FRESH_PRODUCE, CatalogItem } from '../data';
 import Reveal from './Reveal';
+
+/* Simple catalog grid — image, name, price only (for the DB-synced sections) */
+function CatalogGrid({ title, subtitle, items }: { title: string; subtitle: string; items: CatalogItem[] }) {
+  return (
+    <section className="mb-16">
+      <Reveal className="mb-6">
+        <h2 className="font-sans text-2xl md:text-3xl font-bold tracking-tight text-gray-950">{title}</h2>
+        <p className="font-sans text-sm text-gray-500 font-light mt-1">{subtitle}</p>
+      </Reveal>
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+        {items.map((item, idx) => (
+          <Reveal key={item.id} delay={(idx % 4) * 0.05}>
+            <div className="group glass rounded-2xl overflow-hidden h-full flex flex-col transition-all duration-300 hover:shadow-lg hover:shadow-emerald-900/5">
+              <div className="relative h-32 sm:h-36 overflow-hidden bg-emerald-50">
+                <img
+                  src={item.image}
+                  alt={item.name}
+                  loading="lazy"
+                  referrerPolicy="no-referrer"
+                  className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                />
+              </div>
+              <div className="p-4 flex flex-col gap-1.5 flex-1">
+                <h3 className="font-sans text-sm font-bold text-gray-950 leading-snug">{item.name}</h3>
+                <span className="mt-auto font-mono text-sm font-bold text-emerald-600">{item.price}</span>
+              </div>
+            </div>
+          </Reveal>
+        ))}
+      </div>
+    </section>
+  );
+}
 
 interface ProductsViewProps {
   onNavigate: (pageId: PageId) => void;
@@ -105,6 +138,20 @@ export default function ProductsView({ onNavigate }: ProductsViewProps) {
             );
           })}
         </div>
+
+        {/* NEW: Greenhouse & Irrigation Parts */}
+        <CatalogGrid
+          title="Greenhouse & Irrigation Parts"
+          subtitle="Individual components for custom builds — polythene, nets, fans, rollups and more. The full list syncs automatically from our system."
+          items={GREENHOUSE_PARTS}
+        />
+
+        {/* NEW: Fresh Product */}
+        <CatalogGrid
+          title="Fresh Product"
+          subtitle="Locally grown, pesticide-free produce priced per kilo. Live pricing updates automatically from the AiGROW database."
+          items={FRESH_PRODUCE}
+        />
 
         {/* Info box */}
         <div className="glass rounded-2xl p-6 border border-emerald-100/50 flex items-start gap-4 max-w-4xl mx-auto">

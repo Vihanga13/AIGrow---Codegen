@@ -24,7 +24,7 @@ import {
   Star
 } from 'lucide-react';
 import { PageId } from '../types';
-import { SERVICES_DATA, PROJECTS_DATA } from '../data';
+import { SERVICES_DATA, PROJECTS_DATA, FERTIGATION_MODELS, CLIMATE_MODELS, GREENHOUSE_PACKAGES } from '../data';
 import StatsCounter from './StatsCounter';
 import Reveal from './Reveal';
 import GreenhouseSimulator from './GreenhouseSimulator';
@@ -79,9 +79,10 @@ export default function HomeView({
   // Price calculator state
   const [calcType, setCalcType] = useState<'greenhouse' | 'vertical' | 'domestic'>('greenhouse');
   const [calcSize, setCalcSize] = useState<number>(5000);
+  const [hasExistingGreenhouse, setHasExistingGreenhouse] = useState(false);
+  const [climateModel, setClimateModel] = useState<string>('mini-8');
+  const [fertigationModel, setFertigationModel] = useState<string>('MFG-8CH500-SLSD');
   const [calcAddons, setCalcAddons] = useState({
-    climate: true,
-    fertigation: true,
     humidifier: false,
     moisture: true,
     growLights: false
@@ -114,9 +115,14 @@ export default function HomeView({
       sizeStep = 50;
     }
 
-    const baseCost = calcSize * baseRate;
-    const climateCost = calcAddons.climate ? 185000 : 0;
-    const fertigationCost = calcAddons.fertigation ? 840000 : 0;
+    // Pre-existing greenhouse: keep sq-ft for equipment sizing but drop structure cost to 0
+    const structureFree = calcType === 'greenhouse' && hasExistingGreenhouse;
+    const baseCost = structureFree ? 0 : calcSize * baseRate;
+
+    const climateSel = CLIMATE_MODELS.find((m) => m.id === climateModel);
+    const fertigationSel = FERTIGATION_MODELS.find((m) => m.id === fertigationModel);
+    const climateCost = climateSel ? climateSel.price : 0;
+    const fertigationCost = fertigationSel ? fertigationSel.price : 0;
     const humidifierCost = calcAddons.humidifier ? 64000 : 0;
     const moistureCost = calcAddons.moisture ? 28000 : 0;
     const lightsNeeded = calcType === 'vertical' ? Math.ceil(calcSize / 50) : Math.ceil(calcSize / 200);
@@ -124,27 +130,37 @@ export default function HomeView({
     const addonsCost = climateCost + fertigationCost + humidifierCost + moistureCost + growLightsCost;
     const totalCost = baseCost + addonsCost;
 
-    return { baseRate, label, sizeMin, sizeMax, sizeStep, baseCost, climateCost, fertigationCost, humidifierCost, moistureCost, growLightsCost, addonsCost, totalCost, lightsNeeded };
+    // Itemised solution package for the exact greenhouse sizes documented
+    const packageGroups = calcType === 'greenhouse' ? GREENHOUSE_PACKAGES[calcSize] ?? null : null;
+    const packageTotal = packageGroups
+      ? packageGroups.reduce((sum, g) => sum + g.items.reduce((a, i) => a + i.cost, 0), 0)
+      : 0;
+
+    return {
+      baseRate, label, sizeMin, sizeMax, sizeStep, baseCost, climateSel, fertigationSel,
+      climateCost, fertigationCost, humidifierCost, moistureCost, growLightsCost, addonsCost,
+      totalCost, lightsNeeded, structureFree, packageGroups, packageTotal
+    };
   };
 
   const calcDetails = getCalcDetails();
 
   const handleInquireEstimate = () => {
     const typeLabel = calcType === 'greenhouse' ? 'Turnkey Greenhouse' : calcType === 'vertical' ? 'Indoor Vertical Farming' : 'Home Gardening';
-    const activeAddonsText = Object.entries(calcAddons)
-      .filter(([, val]) => val)
-      .map(([key]) => {
-        if (key === 'climate') return 'Smart Climate Control (LKR 185,000)';
-        if (key === 'fertigation') return 'Precision Fertigation System (LKR 840,000)';
-        if (key === 'humidifier') return 'Automated Humidifier (LKR 64,000)';
-        if (key === 'moisture') return 'Soil Moisture Sensor Pack (LKR 28,000)';
-        if (key === 'growLights') return `Smart LED Grow Lights (${calcDetails.lightsNeeded} units - LKR ${calcDetails.growLightsCost.toLocaleString()})`;
-        return key;
-      })
-      .join(', ');
+    const addonParts: string[] = [];
+    if (calcDetails.climateSel) addonParts.push(`Smart Climate Unit — ${calcDetails.climateSel.label} (LKR ${calcDetails.climateCost.toLocaleString()})`);
+    if (calcDetails.fertigationSel) addonParts.push(`Precision Fertigation — ${calcDetails.fertigationSel.label} (LKR ${calcDetails.fertigationCost.toLocaleString()})`);
+    if (calcAddons.humidifier) addonParts.push('Automated Humidifier (LKR 64,000)');
+    if (calcAddons.moisture) addonParts.push('Soil Moisture Sensor Pack (LKR 28,000)');
+    if (calcAddons.growLights) addonParts.push(`Smart LED Grow Lights (${calcDetails.lightsNeeded} units - LKR ${calcDetails.growLightsCost.toLocaleString()})`);
+    const activeAddonsText = addonParts.join(', ');
+
+    const structureLine = calcDetails.structureFree
+      ? 'Base Structural Cost: LKR 0 (client already owns a greenhouse/polytunnel)'
+      : `Base Structural Cost: LKR ${calcDetails.baseCost.toLocaleString()} (at LKR ${calcDetails.baseRate}/sq ft)`;
 
     const quoteDetails = `Project Estimate: ${typeLabel} (${calcSize.toLocaleString()} sq ft)
-- Base Structural Cost: LKR ${calcDetails.baseCost.toLocaleString()} (at LKR ${calcDetails.baseRate}/sq ft)
+- ${structureLine}
 - Selected Equipment Add-ons: ${activeAddonsText || 'None'}
 - Equipment Cost Total: LKR ${calcDetails.addonsCost.toLocaleString()}
 - Estimated Setup Investment: LKR ${calcDetails.totalCost.toLocaleString()} (approximate setup, subject to physical site audit)`;
@@ -623,6 +639,21 @@ export default function HomeView({
                 </div>
               </div>
 
+              {calcType === 'greenhouse' && (
+                <label className="flex gap-3 items-start p-3 -mt-4 bg-emerald-50/50 rounded-xl border border-emerald-100 cursor-pointer hover:bg-emerald-50 transition-all select-none">
+                  <input
+                    type="checkbox"
+                    checked={hasExistingGreenhouse}
+                    onChange={(e) => setHasExistingGreenhouse(e.target.checked)}
+                    className="accent-emerald-600 w-4 h-4 rounded-sm border-gray-200 mt-0.5"
+                  />
+                  <div>
+                    <span className="font-sans text-xs font-bold text-gray-800 block">I already have a greenhouse / polytunnel</span>
+                    <span className="font-sans text-[10px] text-gray-400 block mt-0.5">Drops the base structure cost to LKR 0 — equipment is still sized to your area.</span>
+                  </div>
+                </label>
+              )}
+
               <div className="flex flex-col gap-3">
                 <div className="flex justify-between items-baseline">
                   <span className="font-mono text-[10px] text-gray-400 font-bold uppercase tracking-wider">02. Choose Cultivation Area</span>
@@ -647,13 +678,58 @@ export default function HomeView({
 
               <div className="flex flex-col gap-4">
                 <span className="font-mono text-[10px] text-gray-400 font-bold uppercase tracking-wider">03. Smart Equipment Add-ons (Optional)</span>
+
+                {/* Precision Fertigation — model dropdown */}
+                <div className="p-3.5 bg-gray-50/40 rounded-xl border border-gray-100 flex flex-col gap-2">
+                  <div className="flex items-center justify-between">
+                    <span className="font-sans text-xs font-bold text-gray-800">Precision Fertigation</span>
+                    {calcDetails.fertigationSel && (
+                      <span className="font-mono text-[11px] font-bold text-emerald-600">LKR {calcDetails.fertigationCost.toLocaleString()}</span>
+                    )}
+                  </div>
+                  <select
+                    value={fertigationModel}
+                    onChange={(e) => setFertigationModel(e.target.value)}
+                    className="w-full px-3 py-2 bg-white border border-gray-200 rounded-lg text-xs font-sans text-gray-800 focus:outline-none focus:border-emerald-500"
+                  >
+                    <option value="">None</option>
+                    {FERTIGATION_MODELS.map((m) => (
+                      <option key={m.id} value={m.id}>{m.label} — LKR {m.price.toLocaleString()}</option>
+                    ))}
+                  </select>
+                  {calcDetails.fertigationSel?.sublabel && (
+                    <span className="font-sans text-[10px] text-gray-400 leading-relaxed">{calcDetails.fertigationSel.sublabel}</span>
+                  )}
+                </div>
+
+                {/* Smart Climate Unit — channel dropdown */}
+                <div className="p-3.5 bg-gray-50/40 rounded-xl border border-gray-100 flex flex-col gap-2">
+                  <div className="flex items-center justify-between">
+                    <span className="font-sans text-xs font-bold text-gray-800">Smart Climate Unit</span>
+                    {calcDetails.climateSel && (
+                      <span className="font-mono text-[11px] font-bold text-emerald-600">LKR {calcDetails.climateCost.toLocaleString()}</span>
+                    )}
+                  </div>
+                  <select
+                    value={climateModel}
+                    onChange={(e) => setClimateModel(e.target.value)}
+                    className="w-full px-3 py-2 bg-white border border-gray-200 rounded-lg text-xs font-sans text-gray-800 focus:outline-none focus:border-emerald-500"
+                  >
+                    <option value="">None</option>
+                    {CLIMATE_MODELS.map((m) => (
+                      <option key={m.id} value={m.id}>{m.label} — LKR {m.price.toLocaleString()}</option>
+                    ))}
+                  </select>
+                  {calcDetails.climateSel?.sublabel && (
+                    <span className="font-sans text-[10px] text-gray-400 leading-relaxed">{calcDetails.climateSel.sublabel}</span>
+                  )}
+                </div>
+
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  {[
-                    { key: 'climate' as const, name: 'Smart Climate Unit', sub: 'LKR 185,000 / flat' },
-                    { key: 'fertigation' as const, name: 'Precision Fertigation', sub: 'LKR 840,000 / injector' },
+                  {([
                     { key: 'humidifier' as const, name: 'Automated Humidifier', sub: 'LKR 64,000 / unit' },
                     { key: 'moisture' as const, name: 'Moisture Sensor Pack', sub: 'LKR 28,000 / 5 probes' }
-                  ].map((a) => (
+                  ]).map((a) => (
                     <label key={a.key} className="flex gap-3 items-start p-3 bg-gray-50/40 rounded-xl border border-gray-100 cursor-pointer hover:bg-gray-50 transition-all select-none">
                       <input
                         type="checkbox"
@@ -702,19 +778,21 @@ export default function HomeView({
                 <div className="flex flex-col gap-3.5 text-xs">
                   <div className="flex justify-between items-baseline">
                     <span className="font-sans text-gray-500 font-light">
-                      {calcDetails.label} ({calcSize.toLocaleString()} sq ft at LKR {calcDetails.baseRate}/sq ft)
+                      {calcDetails.structureFree
+                        ? `${calcDetails.label} — existing structure (client-owned)`
+                        : `${calcDetails.label} (${calcSize.toLocaleString()} sq ft at LKR ${calcDetails.baseRate}/sq ft)`}
                     </span>
                     <span className="font-mono text-gray-800 font-semibold shrink-0">LKR {calcDetails.baseCost.toLocaleString()}</span>
                   </div>
-                  {calcAddons.climate && (
+                  {calcDetails.climateSel && (
                     <div className="flex justify-between items-baseline">
-                      <span className="font-sans text-gray-500 font-light">Smart Climate Control Unit</span>
+                      <span className="font-sans text-gray-500 font-light">Smart Climate Unit — {calcDetails.climateSel.label}</span>
                       <span className="font-mono text-gray-800 shrink-0">LKR {calcDetails.climateCost.toLocaleString()}</span>
                     </div>
                   )}
-                  {calcAddons.fertigation && (
+                  {calcDetails.fertigationSel && (
                     <div className="flex justify-between items-baseline">
-                      <span className="font-sans text-gray-500 font-light">Precision Fertigation Injector</span>
+                      <span className="font-sans text-gray-500 font-light">Precision Fertigation — {calcDetails.fertigationSel.label}</span>
                       <span className="font-mono text-gray-800 shrink-0">LKR {calcDetails.fertigationCost.toLocaleString()}</span>
                     </div>
                   )}
@@ -755,11 +833,63 @@ export default function HomeView({
                   Submit Estimate for Technical Proposal
                   <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
                 </button>
+
+                {/* Terms & Conditions — permanently visible */}
+                <div className="flex flex-col gap-2 pt-1 border-t border-gray-100">
+                  <p className="font-sans text-[10px] text-gray-500 leading-relaxed font-light flex gap-1.5 pt-3">
+                    <span className="text-emerald-600 font-bold shrink-0">•</span>
+                    Before placing an order for the construction of a tunnel, please contact us for availability, otherwise some latency can happen.
+                  </p>
+                  <p className="font-sans text-[10px] text-gray-500 leading-relaxed font-light flex gap-1.5">
+                    <span className="text-emerald-600 font-bold shrink-0">•</span>
+                    The above prices are valid only for 2 weeks from the quotation date. To confirm the order, a 50% payment is necessary.
+                  </p>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </section>
+
+      {/* 9b. GREENHOUSE SOLUTION PACKAGE BREAKDOWN (shown at exact package sizes) */}
+      {calcDetails.packageGroups && (
+        <section className="px-6 pb-20 bg-emerald-50/30">
+          <div className="max-w-[96rem] mx-auto">
+            <div className="glass rounded-3xl p-6 md:p-8">
+              <div className="flex flex-wrap items-end justify-between gap-3 mb-6">
+                <div>
+                  <span className="font-mono text-[10px] text-emerald-600 font-bold uppercase tracking-widest block mb-1">Included in this solution</span>
+                  <h3 className="font-sans text-xl font-bold text-gray-950">{calcSize.toLocaleString()} sq ft greenhouse package</h3>
+                </div>
+                <div className="text-right">
+                  <span className="font-mono text-[10px] text-gray-400 uppercase tracking-wider block">Itemised solution total</span>
+                  <span className="font-mono text-xl font-black text-emerald-600">LKR {calcDetails.packageTotal.toLocaleString()}</span>
+                </div>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
+                {calcDetails.packageGroups.map((g) => (
+                  <div key={g.group}>
+                    <h4 className="font-sans text-xs font-bold text-emerald-800 uppercase tracking-wide mb-2 pb-2 border-b border-emerald-100">{g.group}</h4>
+                    <div className="flex flex-col gap-1.5">
+                      {g.items.map((it, i) => (
+                        <div key={i} className="flex justify-between gap-3 text-xs">
+                          <span className="font-sans text-gray-600 font-light">
+                            {it.label} <span className="text-gray-400">({it.detail})</span>
+                          </span>
+                          <span className="font-mono text-gray-800 shrink-0">LKR {it.cost.toLocaleString()}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <p className="font-sans text-[10px] text-gray-400 mt-6 font-light">
+                Reference bill of materials for the {calcSize.toLocaleString()} sq ft solution. Final scope confirmed after a physical site audit.
+              </p>
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* 10. AWARDS */}
       <section className="py-20 px-6">

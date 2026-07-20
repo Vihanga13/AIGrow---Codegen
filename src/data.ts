@@ -452,3 +452,231 @@ export const NEWS_DATA: NewsItem[] = [
     image: 'https://images.unsplash.com/photo-1500937386664-56d1dfef3854?auto=format&fit=crop&q=80&w=800'
   }
 ];
+
+/* ================================================================== */
+/* PRICE CALCULATOR — dynamic equipment configuration options         */
+/* ================================================================== */
+export interface CalcOption {
+  id: string;
+  label: string;
+  sublabel?: string;
+  price: number; // LKR (pre-VAT base price)
+}
+
+// Precision Fertigation models (base price, LKR)
+export const FERTIGATION_MODELS: CalcOption[] = [
+  { id: 'MFG-8CH500-SLSD', label: 'MFG-8CH500-SLSD', sublabel: 'Single line · Single dosing · ½ HP · 8 ch · 350–700 plants', price: 264500 },
+  { id: 'MFG-8CH1000-SLSD', label: 'MFG-8CH1000-SLSD', sublabel: 'Single line · Single dosing · 1 HP · 8 ch · 650–1350 plants', price: 269900 },
+  { id: 'MFG-8CH500-DLSD', label: 'MFG-8CH500-DLSD', sublabel: 'Dual line · Single dosing · ½ HP · 8 ch · 350–700 plants', price: 274500 },
+  { id: 'MFG-8CH1000-DLSD', label: 'MFG-8CH1000-DLSD', sublabel: 'Dual line · Single dosing · 1 HP · 8 ch · 1000–2500 plants', price: 279900 },
+  { id: 'MFG-8CH1000-DLDD', label: 'MFG-8CH1000-DLDD', sublabel: 'Dual line · Dual dosing · 1 HP · 8 ch · 1000–2500 plants', price: 319900 }
+];
+
+// Smart Climate Unit channel configurations (LKR)
+export const CLIMATE_MODELS: CalcOption[] = [
+  { id: 'mini-2', label: 'Mini Climate 2 Channel', sublabel: 'Humidity & Temp included · plug and play', price: 87000 },
+  { id: 'mini-4', label: 'Mini Climate 4 Channel', sublabel: 'Humidity & Temp included · plug and play', price: 119000 },
+  { id: 'mini-8', label: 'Mini Climate 8 Channel', sublabel: 'Humidity & Temp included · plug and play', price: 179000 },
+  { id: 'smart-12', label: 'Smart Climate Controllers', sublabel: '12 channels · display', price: 299000 }
+];
+
+/* ================================================================== */
+/* GREENHOUSE STRUCTURE PACKAGES — itemised BOM per solution size     */
+/* Shown when the sq-ft slider is exactly 1000/2000/2500/4000/5000    */
+/* ================================================================== */
+export interface PackageLine { label: string; detail: string; cost: number; }
+export interface PackageGroup { group: string; items: PackageLine[]; }
+
+export const GREENHOUSE_PACKAGES: Record<number, PackageGroup[]> = {
+  1000: [
+    { group: 'Greenhouse Structure', items: [
+      { label: '“Saw tooth” Poly Tunnel structure with roof', detail: '1000 sqft × 850', cost: 850000 }
+    ]},
+    { group: 'Floor Preparation', items: [
+      { label: 'Weed mat', detail: '1000 sqft × 40', cost: 40000 },
+      { label: 'Weed mat installation', detail: '1000 sqft × 20', cost: 20000 }
+    ]},
+    { group: 'Irrigation & Trellising', items: [
+      { label: 'Drip Irrigation System', detail: '2 × 100,000', cost: 200000 },
+      { label: 'Drip Irrigation wiring & installation', detail: '1 × 100,000', cost: 100000 },
+      { label: 'Trellis', detail: '1000 × 85', cost: 85000 }
+    ]},
+    { group: 'Growing Medium', items: [
+      { label: 'Grow bags', detail: '240 × 350', cost: 84000 }
+    ]},
+    { group: 'Cooling System', items: [
+      { label: 'Automated Side Curtains', detail: '2 × 100,000', cost: 200000 },
+      { label: 'Rollup Motor & Climber', detail: '2 × 48,000', cost: 96000 },
+      { label: 'Shade net', detail: '5 × 16,900', cost: 84500 },
+      { label: 'Manual Shade Net System & installation', detail: '1 × 100,000', cost: 100000 },
+      { label: 'Roof ventilation fan', detail: '2 × 120,000', cost: 240000 },
+      { label: 'Installation of fans', detail: '2 × 20,000', cost: 40000 },
+      { label: 'Circulation fans', detail: '4 × 60,000', cost: 240000 },
+      { label: 'Circulation fans installation', detail: '4 × 4,000', cost: 16000 },
+      { label: 'Wiring & installation', detail: '1 × 150,000', cost: 150000 }
+    ]},
+    { group: 'Automation Devices', items: [
+      { label: 'Mini Climate 8-Channel', detail: '1 × 210,000', cost: 210000 },
+      { label: 'Switch gear', detail: '1 × 180,000', cost: 180000 }
+    ]}
+  ],
+  2000: [
+    { group: 'Greenhouse Structure', items: [
+      { label: 'Tunnel structure with roof', detail: '2000 sqft × 750', cost: 1500000 }
+    ]},
+    { group: 'Floor Preparation', items: [
+      { label: 'Weed mat', detail: '2000 sqft × 35', cost: 70000 },
+      { label: 'Weed mat installation', detail: '2000 sqft × 10', cost: 20000 }
+    ]},
+    { group: 'Irrigation & Trellising', items: [
+      { label: 'Drip Irrigation System', detail: '2 × 100,000', cost: 200000 },
+      { label: 'Drip Irrigation installation', detail: '1 × 100,000', cost: 100000 },
+      { label: 'Trellis', detail: '2000 × 80', cost: 160000 }
+    ]},
+    { group: 'Growing Medium', items: [
+      { label: 'Grow bags', detail: '450 × 350', cost: 157500 }
+    ]},
+    { group: 'Cooling System', items: [
+      { label: 'Misting System', detail: '1 × 250,000', cost: 250000 },
+      { label: 'Automated Side Curtain system', detail: '2 × 150,000', cost: 300000 },
+      { label: 'Rollup motor & Climber', detail: '2 × 48,000', cost: 96000 },
+      { label: 'Shade net', detail: '8 × 16,900', cost: 135200 },
+      { label: 'Manual Shade Net System & installation', detail: '1 × 200,000', cost: 200000 },
+      { label: 'Roof ventilation fan', detail: '2 × 100,000', cost: 200000 },
+      { label: 'Installation of fans', detail: '2 × 20,000', cost: 40000 },
+      { label: 'Circulation fans', detail: '4 × 60,000', cost: 240000 },
+      { label: 'Circulation fans installation', detail: '4 × 4,000', cost: 16000 },
+      { label: 'Wiring & installation', detail: '1 × 192,000', cost: 192000 }
+    ]},
+    { group: 'Automation Devices', items: [
+      { label: 'Climate & Fertilizer automatic controller with installation', detail: '1 × 280,000', cost: 280000 }
+    ]}
+  ],
+  2500: [
+    { group: 'Greenhouse Structure', items: [
+      { label: 'Tunnel structure with roof', detail: '2500 sqft × 720', cost: 1800000 }
+    ]},
+    { group: 'Floor Preparation', items: [
+      { label: 'Weed mat', detail: '2500 sqft × 30', cost: 75000 },
+      { label: 'Weed mat installation', detail: '2500 sqft × 10', cost: 25000 }
+    ]},
+    { group: 'Irrigation & Trellising', items: [
+      { label: 'Drip Irrigation System & installation', detail: '2500 sqft × 80', cost: 200000 },
+      { label: 'Trellis', detail: '2500 sqft × 60', cost: 150000 }
+    ]},
+    { group: 'Growing Medium', items: [
+      { label: 'Grow bags', detail: '500 × 320', cost: 160000 }
+    ]},
+    { group: 'Cooling System', items: [
+      { label: 'Weather Station', detail: '1 × 180,000', cost: 180000 },
+      { label: 'Automated Side Curtains', detail: '2 × 110,000', cost: 220000 },
+      { label: 'Rollup Motor & Climber', detail: '2 × 48,000', cost: 96000 },
+      { label: 'Shade net', detail: '7 × 16,900', cost: 118300 },
+      { label: 'Manual Shade Net System & installation', detail: '1 × 200,000', cost: 200000 },
+      { label: 'Roof ventilation fan', detail: '2 × 110,000', cost: 220000 },
+      { label: 'Installation of fans', detail: '2 × 10,000', cost: 20000 },
+      { label: 'Circulation fans', detail: '4 × 55,000', cost: 220000 },
+      { label: 'Circulation fans installation', detail: '4 × 2,500', cost: 10000 },
+      { label: 'Wiring & installation', detail: '1 × 200,000', cost: 200000 }
+    ]},
+    { group: 'Automation Devices', items: [
+      { label: 'Switch Gear Box', detail: '1 × 198,000', cost: 198000 },
+      { label: 'Climate & Fertilizer automatic controller with installation', detail: '1 × 280,000', cost: 280000 }
+    ]}
+  ],
+  4000: [
+    { group: 'Greenhouse Structure', items: [
+      { label: 'Poly Tunnel structure with roof', detail: '4000 sqft × 750', cost: 3000000 }
+    ]},
+    { group: 'Floor Preparation', items: [
+      { label: 'Weed mat', detail: '4000 sqft × 35', cost: 140000 },
+      { label: 'Weed mat installation', detail: '4000 sqft × 10', cost: 40000 }
+    ]},
+    { group: 'Irrigation & Trellising', items: [
+      { label: 'Drip Irrigation System & installation', detail: '4000 sqft × 75', cost: 300000 },
+      { label: 'Trellis', detail: '4000 sqft × 80', cost: 320000 }
+    ]},
+    { group: 'Growing Medium', items: [
+      { label: 'Grow bags', detail: '350 × 930', cost: 325500 }
+    ]},
+    { group: 'Cooling System', items: [
+      { label: 'Weather Station', detail: '1 × 180,000', cost: 180000 },
+      { label: 'Automated Side Curtains', detail: '2 × 160,000', cost: 320000 },
+      { label: 'Rollup Motor & Climber', detail: '2 × 48,000', cost: 96000 },
+      { label: 'Shade net', detail: '14 × 16,900', cost: 236600 },
+      { label: 'Manual Shade Net System & installation', detail: '1 × 250,000', cost: 250000 },
+      { label: 'Roof ventilation fan', detail: '2 × 140,000', cost: 280000 },
+      { label: 'Installation of fans', detail: '2 × 10,000', cost: 20000 },
+      { label: 'Circulation fans', detail: '8 × 55,000', cost: 440000 },
+      { label: 'Circulation fans installation', detail: '8 × 2,000', cost: 16000 },
+      { label: 'Wiring & installation', detail: '1 × 300,000', cost: 300000 }
+    ]},
+    { group: 'Automation Devices', items: [
+      { label: 'Switch Gear Box', detail: '1 × 198,000', cost: 198000 },
+      { label: 'Climate & Fertilizer automatic controller with installation', detail: '1 × 300,000', cost: 300000 }
+    ]}
+  ],
+  5000: [
+    { group: 'Greenhouse Structure', items: [
+      { label: 'Tunnel structure with roof', detail: '5000 sqft × 700', cost: 3500000 }
+    ]},
+    { group: 'Floor Preparation', items: [
+      { label: 'Weed mat', detail: '5000 sqft × 25', cost: 125000 },
+      { label: 'Weed mat installation', detail: '5000 sqft × 50', cost: 250000 }
+    ]},
+    { group: 'Irrigation & Trellising', items: [
+      { label: 'Drip Irrigation System', detail: '5000 sqft × 60', cost: 300000 },
+      { label: 'Drip Irrigation installation', detail: '1 × 40,000', cost: 40000 },
+      { label: 'Trellis', detail: '5000 × 40', cost: 200000 }
+    ]},
+    { group: 'Growing Medium', items: [
+      { label: 'Grow bags', detail: '1150 × 320', cost: 368000 }
+    ]},
+    { group: 'Cooling System', items: [
+      { label: 'Weather Station', detail: '1 × 180,000', cost: 180000 },
+      { label: 'Automated Side Curtain system', detail: '2 × 150,000', cost: 300000 },
+      { label: 'Rollup motor & Climber', detail: '2 × 48,000', cost: 96000 },
+      { label: 'Shade net', detail: '14 × 16,900', cost: 236600 },
+      { label: 'Manual Shade Net System & installation', detail: '1 × 250,000', cost: 250000 },
+      { label: 'Roof ventilation fan', detail: '2 × 140,000', cost: 280000 },
+      { label: 'Installation of fans', detail: '2 × 10,000', cost: 20000 },
+      { label: 'Circulation fans', detail: '8 × 55,000', cost: 440000 },
+      { label: 'Circulation fans installation', detail: '8 × 2,000', cost: 16000 },
+      { label: 'Wiring & installation', detail: '1 × 350,000', cost: 350000 }
+    ]},
+    { group: 'Automation Devices', items: [
+      { label: 'Climate & Fertilizer automatic controller with installation', detail: '1 × 280,000', cost: 280000 },
+      { label: 'Switch Gear', detail: '1 × 180,000', cost: 180000 }
+    ]}
+  ]
+};
+
+/* ================================================================== */
+/* PRODUCT DATABASE — new catalog sections (simple image/name/price)  */
+/* Demo subset; the live list syncs automatically from the AiGROW DB. */
+/* ================================================================== */
+export interface CatalogItem { id: string; name: string; price: string; image: string; }
+
+export const GREENHOUSE_PARTS: CatalogItem[] = [
+  { id: 'polythene-10x50', name: 'Polythene (Ginegar) 10m × 50m', price: 'LKR 185,000', image: 'https://images.unsplash.com/photo-1620200423727-8127f75d7f53?auto=format&fit=crop&q=80&w=600' },
+  { id: 'insect-net-4025', name: 'Insect Proof Net (40×25) 3.2m × 100m', price: 'LKR 75,000', image: 'https://images.unsplash.com/photo-1585486088652-1c6b6c1f2b1a?auto=format&fit=crop&q=80&w=600' },
+  { id: 'weed-mat', name: 'Weed Mat (Ground Cover) 3.0m × 100m', price: 'LKR 45,000', image: 'https://images.unsplash.com/photo-1416879595882-3373a0480b5b?auto=format&fit=crop&q=80&w=600' },
+  { id: 'shade-net-alu', name: 'Shade Net (Aluminum) 4.0m × 100m', price: 'LKR 136,000', image: 'https://images.unsplash.com/photo-1530836369250-ef72a3f5cda8?auto=format&fit=crop&q=80&w=600' },
+  { id: 'exhaust-fan-45', name: 'Exhaust Fan 4.5" (Hammer Type)', price: 'LKR 140,000', image: 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&q=80&w=600' },
+  { id: 'circulation-fan', name: 'Circulation Fan (500mm, 6000 CMH)', price: 'LKR 60,000', image: 'https://images.unsplash.com/photo-1621905251189-08b45d6a269e?auto=format&fit=crop&q=80&w=600' },
+  { id: 'cooling-pad', name: 'Cooling Pad Set (1800×3000×150mm)', price: 'LKR 110,000', image: 'https://images.unsplash.com/photo-1558449028-b53a39d100fc?auto=format&fit=crop&q=80&w=600' },
+  { id: 'rollup-motor', name: 'Roll-Up Motor & Climber (220V, 1-Phase)', price: 'LKR 48,000', image: 'https://images.unsplash.com/photo-1504328345606-18bbc8c9d7d1?auto=format&fit=crop&q=80&w=600' }
+];
+
+export const FRESH_PRODUCE: CatalogItem[] = [
+  { id: 'bell-pepper-red', name: 'Bell Pepper Red', price: 'LKR 1,944.19', image: 'https://images.unsplash.com/photo-1563565375-f3fdfdbefa83?auto=format&fit=crop&q=80&w=600' },
+  { id: 'broccoli', name: 'Broccoli', price: 'LKR 1,281.29', image: 'https://images.unsplash.com/photo-1459411621453-7b03977f4bfc?auto=format&fit=crop&q=80&w=600' },
+  { id: 'cherry-tomato', name: 'Cherry Tomato', price: 'LKR 1,284.75', image: 'https://images.unsplash.com/photo-1592841200221-a6898f307baa?auto=format&fit=crop&q=80&w=600' },
+  { id: 'lettuce', name: 'Lettuce', price: 'LKR 1,574.55', image: 'https://images.unsplash.com/photo-1622206151226-18ca2c9ab4a1?auto=format&fit=crop&q=80&w=600' },
+  { id: 'cucumber', name: 'Cucumber', price: 'LKR 290.30', image: 'https://images.unsplash.com/photo-1568584711075-3d021a7c3ca3?auto=format&fit=crop&q=80&w=600' },
+  { id: 'beef-tomato', name: 'Beef Tomato', price: 'LKR 480.34', image: 'https://images.unsplash.com/photo-1546470427-f5b2f4f60b57?auto=format&fit=crop&q=80&w=600' },
+  { id: 'shiitake', name: 'Shiitake Mushroom', price: 'LKR 1,657.14', image: 'https://images.unsplash.com/photo-1607301405390-d831c242f59b?auto=format&fit=crop&q=80&w=600' },
+  { id: 'carrot', name: 'Carrot', price: 'LKR 289.23', image: 'https://images.unsplash.com/photo-1598170845058-32b9d6a5da37?auto=format&fit=crop&q=80&w=600' },
+  { id: 'cabbage', name: 'Cabbage', price: 'LKR 199.69', image: 'https://images.unsplash.com/photo-1594282486552-05b4d80fbb9f?auto=format&fit=crop&q=80&w=600' },
+  { id: 'zucchini', name: 'Zucchini', price: 'LKR 250.00', image: 'https://images.unsplash.com/photo-1583687355032-89b902b7335f?auto=format&fit=crop&q=80&w=600' }
+];
