@@ -655,28 +655,404 @@ export const GREENHOUSE_PACKAGES: Record<number, PackageGroup[]> = {
 /* PRODUCT DATABASE — new catalog sections (simple image/name/price)  */
 /* Demo subset; the live list syncs automatically from the AiGROW DB. */
 /* ================================================================== */
-export interface CatalogItem { id: string; name: string; price: string; image: string; }
+export interface CatalogVariant {
+  label: string;
+  price: string;
+  note?: string;
+}
+
+export interface CatalogItem {
+  id: string;
+  name: string;
+  price: string;          // headline price ("from" price when the item has variants)
+  group: string;          // filter bucket within its section
+  image?: string;         // omitted items fall back to a lettered tile
+  spec?: string;          // technical description shown on the card
+  unitRate?: string;      // e.g. "LKR 380 / sqm" or "per kg"
+  variants?: CatalogVariant[];
+}
+
+export const GREENHOUSE_PART_GROUPS = [
+  'Covering Films',
+  'Netting & Shade',
+  'Ground Cover',
+  'Ventilation & Cooling',
+  'Rollup Systems',
+  'Fixings & Accessories',
+  'Pest Management'
+] as const;
 
 export const GREENHOUSE_PARTS: CatalogItem[] = [
-  { id: 'polythene-10x50', name: 'Polythene (Ginegar) 10m × 50m', price: 'LKR 185,000', image: 'https://images.unsplash.com/photo-1620200423727-8127f75d7f53?auto=format&fit=crop&q=80&w=600' },
-  { id: 'insect-net-4025', name: 'Insect Proof Net (40×25) 3.2m × 100m', price: 'LKR 75,000', image: 'https://images.unsplash.com/photo-1585486088652-1c6b6c1f2b1a?auto=format&fit=crop&q=80&w=600' },
-  { id: 'weed-mat', name: 'Weed Mat (Ground Cover) 3.0m × 100m', price: 'LKR 45,000', image: 'https://images.unsplash.com/photo-1416879595882-3373a0480b5b?auto=format&fit=crop&q=80&w=600' },
-  { id: 'shade-net-alu', name: 'Shade Net (Aluminum) 4.0m × 100m', price: 'LKR 136,000', image: 'https://images.unsplash.com/photo-1530836369250-ef72a3f5cda8?auto=format&fit=crop&q=80&w=600' },
-  { id: 'exhaust-fan-45', name: 'Exhaust Fan 4.5" (Hammer Type)', price: 'LKR 140,000', image: 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&q=80&w=600' },
-  { id: 'circulation-fan', name: 'Circulation Fan (500mm, 6000 CMH)', price: 'LKR 60,000', image: 'https://images.unsplash.com/photo-1621905251189-08b45d6a269e?auto=format&fit=crop&q=80&w=600' },
-  { id: 'cooling-pad', name: 'Cooling Pad Set (1800×3000×150mm)', price: 'LKR 110,000', image: 'https://images.unsplash.com/photo-1558449028-b53a39d100fc?auto=format&fit=crop&q=80&w=600' },
-  { id: 'rollup-motor', name: 'Roll-Up Motor & Climber (220V, 1-Phase)', price: 'LKR 48,000', image: 'https://images.unsplash.com/photo-1504328345606-18bbc8c9d7d1?auto=format&fit=crop&q=80&w=600' }
+  /* ---- Covering Films ---- */
+  {
+    id: 'polythene-ginegar',
+    name: 'Polythene (Ginegar)',
+    group: 'Covering Films',
+    price: 'From LKR 110,000',
+    unitRate: 'LKR 380 / sqm',
+    spec: 'UV treated, 200 micron, drip lock diffused greenhouse film.',
+    image: 'https://images.unsplash.com/photo-1620200423727-8127f75d7f53?auto=format&fit=crop&q=80&w=600',
+    variants: [
+      { label: '6m × 50m', price: 'LKR 110,000' },
+      { label: '8m × 50m', price: 'LKR 145,000' },
+      { label: '10m × 50m', price: 'LKR 185,000' }
+    ]
+  },
+  {
+    id: 'mulch-film',
+    name: 'Mulch Film',
+    group: 'Covering Films',
+    price: 'LKR 9,250',
+    unitRate: 'LKR 38.54 / sqm',
+    spec: 'Ground mulch film for weed suppression and moisture retention.',
+    variants: [{ label: '1.2m × 200m', price: 'LKR 9,250' }]
+  },
+  {
+    id: 'polythene-repair-tape',
+    name: 'Polythene Repair Tape',
+    group: 'Covering Films',
+    price: 'LKR 2,500',
+    spec: '10cm × 10m, 200 microns — patches tears without re-skinning the tunnel.'
+  },
+
+  /* ---- Netting & Shade ---- */
+  {
+    id: 'insect-net-40x25',
+    name: 'Insect Proof Net (40 × 25 Mesh)',
+    group: 'Netting & Shade',
+    price: 'LKR 75,000',
+    unitRate: 'LKR 240 / sqm',
+    spec: '40 × 25 mesh screening for side walls and vents.',
+    image: 'https://images.unsplash.com/photo-1585486088652-1c6b6c1f2b1a?auto=format&fit=crop&q=80&w=600',
+    variants: [{ label: '3.2m × 100m', price: 'LKR 75,000' }]
+  },
+  {
+    id: 'insect-net-40x40',
+    name: 'Insect Proof Net (40 × 40 Mesh)',
+    group: 'Netting & Shade',
+    price: 'LKR 80,000',
+    unitRate: 'LKR 250 / sqm',
+    spec: 'Finer 40 × 40 mesh for whitefly and thrips exclusion.',
+    variants: [{ label: '3.5m × 100m', price: 'LKR 80,000' }]
+  },
+  {
+    id: 'shade-net-aluminum',
+    name: 'Shade Net (Aluminum, Outside)',
+    group: 'Netting & Shade',
+    price: 'LKR 136,000',
+    unitRate: 'LKR 340 / sqm',
+    spec: '50% shade, 70 GSM — external reflective shading.',
+    image: 'https://images.unsplash.com/photo-1530836369250-ef72a3f5cda8?auto=format&fit=crop&q=80&w=600',
+    variants: [{ label: '4.0m × 100m', price: 'LKR 136,000' }]
+  },
+  {
+    id: 'thermal-shade-net',
+    name: 'Thermal Shade Net (Aluminet, Inside)',
+    group: 'Netting & Shade',
+    price: 'LKR 124,700',
+    unitRate: 'LKR 290 / sqm',
+    spec: '65% shade — internal thermal screen for day cooling and night heat retention.',
+    variants: [{ label: '4.3m × 100m', price: 'LKR 124,700' }]
+  },
+
+  /* ---- Ground Cover ---- */
+  {
+    id: 'weed-mat',
+    name: 'Weed Mat (Ground Cover)',
+    group: 'Ground Cover',
+    price: 'LKR 45,000',
+    unitRate: 'LKR 150 / sqm',
+    spec: 'Woven black ground cover for floor preparation.',
+    image: 'https://images.unsplash.com/photo-1416879595882-3373a0480b5b?auto=format&fit=crop&q=80&w=600',
+    variants: [{ label: '3.0m × 100m', price: 'LKR 45,000' }]
+  },
+  {
+    id: 'white-weed-mat',
+    name: 'White Weed Mat (Ground Cover)',
+    group: 'Ground Cover',
+    price: 'LKR 49,000',
+    unitRate: 'LKR 163.33 / sqm',
+    spec: 'Light-reflective white ground cover — lifts canopy light levels.',
+    variants: [{ label: '3.0m × 100m', price: 'LKR 49,000' }]
+  },
+
+  /* ---- Ventilation & Cooling ---- */
+  {
+    id: 'exhaust-fan',
+    name: 'Exhaust Fan (Hammer Type)',
+    group: 'Ventilation & Cooling',
+    price: 'From LKR 80,000',
+    spec: 'Stainless steel blades with aluminum frame. Five airflow ratings.',
+    image: 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&q=80&w=600',
+    variants: [
+      { label: '4.5"', price: 'LKR 140,000', note: '1380×1380×400mm · 44,000 m³/h · 1.1kW · 220V 3-Phase' },
+      { label: '3.6"', price: 'LKR 110,000', note: '1100×1100×400mm · 36,000 m³/h · 0.75kW · 220V 1-Phase' },
+      { label: '3.2"', price: 'LKR 100,000', note: '1000×1000×400mm · 30,000 m³/h · 0.55kW · 220V 1-Phase' },
+      { label: '2.6"', price: 'LKR 90,000', note: '800×800×400mm · 22,000 m³/h · 0.37kW · 220V 1-Phase' },
+      { label: '2"', price: 'LKR 80,000', note: '600×600×400mm · 6,000 m³/h · 0.37kW · 220V 1-Phase' }
+    ]
+  },
+  {
+    id: 'circulation-fan',
+    name: 'Circulation Fan',
+    group: 'Ventilation & Cooling',
+    price: 'LKR 60,000',
+    spec: '500mm diameter · 6,000 CMH · 0.18kW 1-Phase.',
+    image: 'https://images.unsplash.com/photo-1621905251189-08b45d6a269e?auto=format&fit=crop&q=80&w=600'
+  },
+  {
+    id: 'cooling-pad-set',
+    name: 'Cooling Pad Set',
+    group: 'Ventilation & Cooling',
+    price: 'LKR 110,000',
+    spec: '1800×3000×150mm. Includes frames, pipe and gutters.',
+    image: 'https://images.unsplash.com/photo-1558449028-b53a39d100fc?auto=format&fit=crop&q=80&w=600'
+  },
+
+  /* ---- Rollup Systems ---- */
+  {
+    id: 'manual-handle-rollup',
+    name: 'Manual Handle Rollup',
+    group: 'Rollup Systems',
+    price: 'LKR 17,000',
+    spec: '3m cable · 100m winding.'
+  },
+  {
+    id: 'manual-chain-rollup',
+    name: 'Manual Chain Rollup',
+    group: 'Rollup Systems',
+    price: 'LKR 19,500',
+    spec: '3m chain · 100m winding.'
+  },
+  {
+    id: 'rollup-motor',
+    name: 'Roll-Up Motor & Climber',
+    group: 'Rollup Systems',
+    price: 'LKR 48,000',
+    spec: '220V · 1-Phase · 100m winding.',
+    image: 'https://images.unsplash.com/photo-1504328345606-18bbc8c9d7d1?auto=format&fit=crop&q=80&w=600'
+  },
+
+  /* ---- Fixings & Accessories ---- */
+  {
+    id: 'film-lock-aluminum',
+    name: 'Film Lock Channel (Aluminum)',
+    group: 'Fixings & Accessories',
+    price: 'LKR 1,550',
+    spec: '4m channel with wriggle wire (2m × 2pc).'
+  },
+  {
+    id: 'film-lock-steel',
+    name: 'Film Lock Channel (Galvanized Steel)',
+    group: 'Fixings & Accessories',
+    price: 'LKR 1,100',
+    spec: '4m channel with wriggle wire (2m × 2pc).'
+  },
+  {
+    id: 'wind-belt-roll',
+    name: 'Wind Belt Roll (100m)',
+    group: 'Fixings & Accessories',
+    price: 'From LKR 3,000',
+    spec: 'Volume pricing per piece — the rate drops as the order size rises.',
+    variants: [
+      { label: '1 pc', price: 'LKR 4,500', note: 'per pc' },
+      { label: '5 pc', price: 'LKR 3,500', note: 'per pc' },
+      { label: '10 pc', price: 'LKR 3,000', note: 'per pc' }
+    ]
+  },
+  {
+    id: 'film-clip-25mm',
+    name: 'Film Clip 25mm (3/4 inch)',
+    group: 'Fixings & Accessories',
+    price: 'LKR 60'
+  },
+  {
+    id: 'film-clip-32mm',
+    name: 'Film Clip 32mm (1 inch)',
+    group: 'Fixings & Accessories',
+    price: 'LKR 80'
+  },
+  {
+    id: 'trellis-clip',
+    name: 'Trellis Clip',
+    group: 'Fixings & Accessories',
+    price: 'From LKR 800',
+    spec: 'Sold in packs — larger packs carry a lower unit rate.',
+    variants: [
+      { label: '100 pc', price: 'LKR 800' },
+      { label: '500 pc', price: 'LKR 3,200' },
+      { label: '1000 pc', price: 'LKR 4,900' }
+    ]
+  },
+  {
+    id: 'trellis-hook',
+    name: 'Trellis Hook',
+    group: 'Fixings & Accessories',
+    price: 'LKR 95'
+  },
+  {
+    id: 'roller-hook',
+    name: 'Roller Hook',
+    group: 'Fixings & Accessories',
+    price: 'LKR 380'
+  },
+
+  /* ---- Pest Management ---- */
+  {
+    id: 'yellow-sticky-cards',
+    name: 'Yellow Sticky Cards',
+    group: 'Pest Management',
+    price: 'From LKR 800',
+    spec: '20 × 25cm monitoring traps for flying pests.',
+    variants: [
+      { label: '10 pcs', price: 'LKR 800' },
+      { label: '100 pcs', price: 'LKR 6,500' }
+    ]
+  },
+  {
+    id: 'yellow-sticky-rolls',
+    name: 'Yellow Sticky Rolls',
+    group: 'Pest Management',
+    price: 'LKR 17,500',
+    spec: '15cm × 50m continuous roll for row-length coverage.'
+  },
+  {
+    id: 'pheromone-trap',
+    name: 'Pheromone Trap Box & Tablet',
+    group: 'Pest Management',
+    price: 'LKR 2,900',
+    spec: 'Trap box supplied with pheromone tablet.'
+  }
 ];
 
-export const FRESH_PRODUCE: CatalogItem[] = [
-  { id: 'bell-pepper-red', name: 'Bell Pepper Red', price: 'LKR 1,944.19', image: 'https://images.unsplash.com/photo-1563565375-f3fdfdbefa83?auto=format&fit=crop&q=80&w=600' },
-  { id: 'broccoli', name: 'Broccoli', price: 'LKR 1,281.29', image: 'https://images.unsplash.com/photo-1459411621453-7b03977f4bfc?auto=format&fit=crop&q=80&w=600' },
-  { id: 'cherry-tomato', name: 'Cherry Tomato', price: 'LKR 1,284.75', image: 'https://images.unsplash.com/photo-1592841200221-a6898f307baa?auto=format&fit=crop&q=80&w=600' },
-  { id: 'lettuce', name: 'Lettuce', price: 'LKR 1,574.55', image: 'https://images.unsplash.com/photo-1622206151226-18ca2c9ab4a1?auto=format&fit=crop&q=80&w=600' },
-  { id: 'cucumber', name: 'Cucumber', price: 'LKR 290.30', image: 'https://images.unsplash.com/photo-1568584711075-3d021a7c3ca3?auto=format&fit=crop&q=80&w=600' },
-  { id: 'beef-tomato', name: 'Beef Tomato', price: 'LKR 480.34', image: 'https://images.unsplash.com/photo-1546470427-f5b2f4f60b57?auto=format&fit=crop&q=80&w=600' },
-  { id: 'shiitake', name: 'Shiitake Mushroom', price: 'LKR 1,657.14', image: 'https://images.unsplash.com/photo-1607301405390-d831c242f59b?auto=format&fit=crop&q=80&w=600' },
-  { id: 'carrot', name: 'Carrot', price: 'LKR 289.23', image: 'https://images.unsplash.com/photo-1598170845058-32b9d6a5da37?auto=format&fit=crop&q=80&w=600' },
-  { id: 'cabbage', name: 'Cabbage', price: 'LKR 199.69', image: 'https://images.unsplash.com/photo-1594282486552-05b4d80fbb9f?auto=format&fit=crop&q=80&w=600' },
-  { id: 'zucchini', name: 'Zucchini', price: 'LKR 250.00', image: 'https://images.unsplash.com/photo-1583687355032-89b902b7335f?auto=format&fit=crop&q=80&w=600' }
+/* ---- Fresh Produce — live prices per kilo ---- */
+export const FRESH_PRODUCE_GROUPS = [
+  'Leafy Greens',
+  'Peppers & Chillies',
+  'Tomatoes',
+  'Mushrooms',
+  'Roots & Bulbs',
+  'Beans & Pods',
+  'Fruits & Gourds',
+  'Herbs & Spices',
+  'Other'
+] as const;
+
+const PRODUCE_IMAGES: Record<string, string> = {
+  'Bell Pepper Red': 'https://images.unsplash.com/photo-1563565375-f3fdfdbefa83?auto=format&fit=crop&q=80&w=600',
+  Broccoli: 'https://images.unsplash.com/photo-1459411621453-7b03977f4bfc?auto=format&fit=crop&q=80&w=600',
+  'Cherry Tomato': 'https://images.unsplash.com/photo-1592841200221-a6898f307baa?auto=format&fit=crop&q=80&w=600',
+  Lettuce: 'https://images.unsplash.com/photo-1622206151226-18ca2c9ab4a1?auto=format&fit=crop&q=80&w=600',
+  Cucumber: 'https://images.unsplash.com/photo-1568584711075-3d021a7c3ca3?auto=format&fit=crop&q=80&w=600',
+  'Beef Tomato': 'https://images.unsplash.com/photo-1546470427-f5b2f4f60b57?auto=format&fit=crop&q=80&w=600',
+  'Shiitake Mushroom': 'https://images.unsplash.com/photo-1607301405390-d831c242f59b?auto=format&fit=crop&q=80&w=600',
+  Carrot: 'https://images.unsplash.com/photo-1598170845058-32b9d6a5da37?auto=format&fit=crop&q=80&w=600',
+  Cabbage: 'https://images.unsplash.com/photo-1594282486552-05b4d80fbb9f?auto=format&fit=crop&q=80&w=600',
+  Zucchini: 'https://images.unsplash.com/photo-1583687355032-89b902b7335f?auto=format&fit=crop&q=80&w=600'
+};
+
+/* [name, price (LKR/kg), group] — synced from the AiGROW produce database. */
+const PRODUCE_ROWS: [string, string, string][] = [
+  ['Abalone', '975.00', 'Mushrooms'],
+  ['Abalone Mushroom', '683.06', 'Mushrooms'],
+  ['African Eggplant', '600.00', 'Fruits & Gourds'],
+  ['Ambarella', '250.00', 'Fruits & Gourds'],
+  ['American Oyster', '140.00', 'Mushrooms'],
+  ['American Oyster - Fresh', '447.82', 'Mushrooms'],
+  ['American Oyster - Fresh (Budget)', '54.00', 'Mushrooms'],
+  ['Basil', '542.45', 'Herbs & Spices'],
+  ['Beans', '365.38', 'Beans & Pods'],
+  ['Beef Tomato', '480.34', 'Tomatoes'],
+  ['Beet Root', '265.00', 'Roots & Bulbs'],
+  ['Bell Pepper Red', '1,944.19', 'Peppers & Chillies'],
+  ['Bell Pepper Yellow', '1,893.75', 'Peppers & Chillies'],
+  ['Bell Pepper', '1,355.14', 'Peppers & Chillies'],
+  ['Bell Pepper', '558.33', 'Peppers & Chillies'],
+  ['Bell Pepper - Orange', '1,300.00', 'Peppers & Chillies'],
+  ['Bell Pepper - Yellow', '1,350.00', 'Peppers & Chillies'],
+  ['Bhutan Oyster', '857.14', 'Mushrooms'],
+  ['Bitter Gourd', '250.00', 'Fruits & Gourds'],
+  ['Breadfruit', '150.00', 'Fruits & Gourds'],
+  ['Bringal', '200.00', 'Fruits & Gourds'],
+  ['Broccoli', '1,281.29', 'Leafy Greens'],
+  ['Butter Head', '396.41', 'Leafy Greens'],
+  ['Cabbage', '199.69', 'Leafy Greens'],
+  ['Cabbage Leaves', '215.83', 'Leafy Greens'],
+  ['Capsicum', '527.84', 'Peppers & Chillies'],
+  ['Cardamom', '16,000.00', 'Herbs & Spices'],
+  ['Carrot', '289.23', 'Roots & Bulbs'],
+  ['Cauliflower', '455.72', 'Leafy Greens'],
+  ['Cherry Tomato', '1,284.75', 'Tomatoes'],
+  ['Chilli', '900.00', 'Peppers & Chillies'],
+  ['Chinese Kale', '450.00', 'Leafy Greens'],
+  ['Chives', '160.00', 'Herbs & Spices'],
+  ['Cone (Corn)', '800.00', 'Other'],
+  ['Crystal', '668.57', 'Leafy Greens'],
+  ['Cucumber', '290.30', 'Fruits & Gourds'],
+  ['Dehydrated Oyster', '385.00', 'Mushrooms'],
+  ['Drumstick Leaves', '400.00', 'Leafy Greens'],
+  ['Eggplant', '400.00', 'Fruits & Gourds'],
+  ['Frillice', '1,168.18', 'Leafy Greens'],
+  ['Ginger', '1,500.00', 'Roots & Bulbs'],
+  ['Gotukola', '125.63', 'Leafy Greens'],
+  ['Green Beans', '600.00', 'Beans & Pods'],
+  ['Green Bell Pepper', '750.00', 'Peppers & Chillies'],
+  ['Green Chilli', '519.22', 'Peppers & Chillies'],
+  ['Green Oak', '375.01', 'Leafy Greens'],
+  ['Honeydew Melon', '123.33', 'Fruits & Gourds'],
+  ['Iceberg', '300.00', 'Leafy Greens'],
+  ['Kale', '747.14', 'Leafy Greens'],
+  ['Kan Kung', '229.58', 'Leafy Greens'],
+  ['Kathuru Murunga', '190.00', 'Leafy Greens'],
+  ['Kathuru Murunga Flowers', '100.00', 'Leafy Greens'],
+  ['Kno Khol', '150.00', 'Roots & Bulbs'],
+  ['Kochchi', '1,200.00', 'Peppers & Chillies'],
+  ['Kohila', '300.00', 'Roots & Bulbs'],
+  ['Kol Khol', '80.00', 'Roots & Bulbs'],
+  ['Ladies Finger', '272.00', 'Beans & Pods'],
+  ['Lady Finger', '550.00', 'Beans & Pods'],
+  ['Leafy Cabbage', '210.00', 'Leafy Greens'],
+  ['Leeks', '119.00', 'Roots & Bulbs'],
+  ['Lemon', '532.69', 'Fruits & Gourds'],
+  ['Lemon Grass', '558.33', 'Herbs & Spices'],
+  ['Lettuce', '1,574.55', 'Leafy Greens'],
+  ['Lollo Bionda', '503.31', 'Leafy Greens'],
+  ['Lollo Rosso', '639.03', 'Leafy Greens'],
+  ['Long Beans', '268.75', 'Beans & Pods'],
+  ['Loofa', '300.00', 'Fruits & Gourds'],
+  ['Mint', '399.68', 'Herbs & Spices'],
+  ['Okra', '245.94', 'Beans & Pods'],
+  ['Packchoi', '496.38', 'Leafy Greens'],
+  ['Pak Choy', '250.00', 'Leafy Greens'],
+  ['Paneer', '2,590.91', 'Other'],
+  ['Parsley', '136.50', 'Herbs & Spices'],
+  ['Pink Oyster', '1,000.00', 'Mushrooms'],
+  ['Radish', '112.70', 'Roots & Bulbs'],
+  ['Red Oak', '523.51', 'Leafy Greens'],
+  ['Red Onion', '500.00', 'Roots & Bulbs'],
+  ['Romaine', '436.59', 'Leafy Greens'],
+  ['Rosemary', '1,030.67', 'Herbs & Spices'],
+  ['Salad Cucumber', '390.75', 'Fruits & Gourds'],
+  ['Scotch Bonnet', '1,155.81', 'Peppers & Chillies'],
+  ['Seeni Banana', '90.00', 'Fruits & Gourds'],
+  ['Shiitake Mushroom', '1,657.14', 'Mushrooms'],
+  ['Shitaki Mushroom', '2,175.00', 'Mushrooms'],
+  ['Spinach', '129.34', 'Leafy Greens'],
+  ['Sweet Potato', '80.00', 'Roots & Bulbs'],
+  ['Thampola (Green)', '200.00', 'Fruits & Gourds'],
+  ['Thampola (Red)', '200.00', 'Fruits & Gourds'],
+  ['Thibatu', '300.00', 'Fruits & Gourds'],
+  ['Tomato', '314.25', 'Tomatoes'],
+  ['Turmeric', '1,452.00', 'Herbs & Spices'],
+  ['Turnip', '225.00', 'Roots & Bulbs'],
+  ['Zucchini', '250.00', 'Fruits & Gourds']
 ];
+
+export const FRESH_PRODUCE: CatalogItem[] = PRODUCE_ROWS.map(([name, price, group], idx) => ({
+  id: `${name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')}-${idx}`,
+  name,
+  price: `LKR ${price}`,
+  unitRate: 'per kg',
+  group,
+  image: PRODUCE_IMAGES[name]
+}));
