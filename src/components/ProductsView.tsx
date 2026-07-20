@@ -131,6 +131,7 @@ export default function ProductsView({ onNavigate }: ProductsViewProps) {
           groups={FRESH_PRODUCE_GROUPS}
           initialCount={16}
           searchable
+          attribution="Crop photography sourced from Wikimedia Commons under CC BY-SA / public domain licences. Replace with AiGROW's own product photography when the catalog syncs from the internal database."
         />
 
         {/* Info box */}

@@ -12,6 +12,8 @@ interface CatalogSectionProps {
   initialCount?: number;
   /** Renders a name search box — worth it once the list runs long. */
   searchable?: boolean;
+  /** Image credit line, required by the licence of any sourced photography. */
+  attribution?: string;
 }
 
 /** Lettered tile for items the database has no photograph for yet. */
@@ -97,7 +99,8 @@ export default function CatalogSection({
   items,
   groups,
   initialCount = 12,
-  searchable = false
+  searchable = false,
+  attribution
 }: CatalogSectionProps) {
   const [group, setGroup] = useState('all');
   const [query, setQuery] = useState('');
@@ -187,6 +190,12 @@ export default function CatalogSection({
             Show all {filtered.length} items
           </button>
         </div>
+      )}
+
+      {attribution && (
+        <p className="mt-6 font-sans text-[10px] text-gray-400 font-light leading-relaxed">
+          {attribution}
+        </p>
       )}
     </section>
   );
