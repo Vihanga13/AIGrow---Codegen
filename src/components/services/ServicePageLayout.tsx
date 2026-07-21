@@ -113,15 +113,8 @@ export default function ServicePageLayout({
     return [<Sprout className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />, <Sparkles className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />, <Activity className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />][dIdx] ?? <Leaf className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />;
   };
 
-  const getServiceImage = (id: string) => {
-    switch (id) {
-      case 'greenhouse': return 'https://images.unsplash.com/photo-1585320806297-9794b3e4eeae?auto=format&fit=crop&q=80&w=1400';
-      case 'indoor-farming': return 'https://images.unsplash.com/photo-1530595467537-0b5996c41f2d?auto=format&fit=crop&q=80&w=1400';
-      case 'home-gardening': return 'https://images.unsplash.com/photo-1466692476868-aef1dfb1e735?auto=format&fit=crop&q=80&w=1400';
-      case 'fresh-produce': return 'https://images.unsplash.com/photo-1610348725531-843dff163e2c?auto=format&fit=crop&q=80&w=1400';
-      default: return 'https://images.unsplash.com/photo-1585320806297-9794b3e4eeae?auto=format&fit=crop&q=80&w=1400';
-    }
-  };
+  /* Extra shots beyond the hero — only some services have a full set. */
+  const extraShots = (service.gallery ?? []).filter((src) => src !== service.image);
 
   const handleEnquire = () => {
     onSelectProductForEnquiry(`Service: ${service.title}`);
@@ -173,9 +166,26 @@ export default function ServicePageLayout({
 
         {/* Hero image */}
         <div className="relative aspect-video rounded-3xl overflow-hidden shadow-xl shadow-emerald-900/5 mb-6">
-          <img src={getServiceImage(service.id)} alt={service.title} referrerPolicy="no-referrer" className="h-full w-full object-cover" />
+          <img src={service.image} alt={service.title} referrerPolicy="no-referrer" className="h-full w-full object-cover" />
           <div className="absolute inset-0 bg-gradient-to-t from-emerald-950/40 to-transparent" />
         </div>
+
+        {/* Supporting photography */}
+        {extraShots.length > 0 && (
+          <div className={`grid gap-3 mb-6 ${extraShots.length > 1 ? 'grid-cols-2' : 'grid-cols-1'}`}>
+            {extraShots.map((src, i) => (
+              <div key={src} className="relative aspect-[4/3] rounded-2xl overflow-hidden shadow-sm">
+                <img
+                  src={src}
+                  alt={`${service.title} — view ${i + 2}`}
+                  loading="lazy"
+                  referrerPolicy="no-referrer"
+                  className="h-full w-full object-cover transition-transform duration-500 hover:scale-105"
+                />
+              </div>
+            ))}
+          </div>
+        )}
 
         {/* Quick facts */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-14">

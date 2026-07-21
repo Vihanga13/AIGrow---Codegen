@@ -13,6 +13,11 @@ export const SERVICES_DATA: Service[] = [
       'Fully integrated fertigation & micro-irrigation systems',
       'Remote monitoring and cloud-based climate control panels'
     ],
+    image: '/Tumkey%20Greenhouse%20Solutions01.webp',
+    gallery: [
+      '/Tumkey%20Greenhouse%20Solutions01.webp',
+      '/Tumkey%20Greenhouse%20Solutions02.jpeg'
+    ],
     subCategories: [
       {
         name: 'Commercial Tiers',
@@ -53,6 +58,11 @@ export const SERVICES_DATA: Service[] = [
       'Precision temperature and humidity fogging systems',
       'Zero soil requirement - pure clean growth mediums'
     ],
+    image: '/Indoor%20Farming%20Solutions01.png',
+    gallery: [
+      '/Indoor%20Farming%20Solutions01.png',
+      '/Indoor%20Farming%20Solutions02.JPG'
+    ],
     subCategories: [
       {
         name: 'Mushroom Farming Solutions',
@@ -86,6 +96,8 @@ export const SERVICES_DATA: Service[] = [
       'Aesthetic timber and steel-framed raised beds for home growing',
       'Low-maintenance app-connected drip irrigation systems'
     ],
+    image: '/Home%20Gardening%20%26%20Landscaping.png',
+    gallery: ['/Home%20Gardening%20%26%20Landscaping.png'],
     subCategories: [
       {
         name: 'Residential Smart Gardens',
@@ -116,6 +128,12 @@ export const SERVICES_DATA: Service[] = [
       'Grown using premium organic nutrients and mineral-rich pure water',
       'Traceable QR codes on every package showing harvest date and grower logs',
       'Cold-chain managed logistics to prevent nutrient degradation'
+    ],
+    image: '/Premium%20Fresh%20Produce02.jpg',
+    gallery: [
+      '/Premium%20Fresh%20Produce02.jpg',
+      '/Premium%20Fresh%20Produce01.png',
+      '/Premium%20Fresh%20Produce03.JPG'
     ],
     subCategories: [
       {

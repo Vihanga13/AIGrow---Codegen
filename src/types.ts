@@ -37,6 +37,10 @@ export interface Service {
   fullDesc: string;
   iconName: string; // lucide icon name
   features: string[];
+  /** Primary hero shot, used on the service card, detail hero, and home page. */
+  image?: string;
+  /** Full photo set for the detail page, including the primary shot. */
+  gallery?: string[];
   subCategories?: {
     name: string;
     description: string;

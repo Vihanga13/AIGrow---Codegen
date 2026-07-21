@@ -53,13 +53,6 @@ const HERO_SLIDES = [
   }
 ];
 
-const SERVICE_IMAGES: Record<string, string> = {
-  greenhouse: 'https://images.unsplash.com/photo-1585320806297-9794b3e4eeae?auto=format&fit=crop&q=80&w=1200',
-  'indoor-farming': 'https://images.unsplash.com/photo-1516253593875-bd7ba052fbc5?auto=format&fit=crop&q=80&w=1200',
-  'home-gardening': 'https://images.unsplash.com/photo-1466692476868-aef1dfb1e735?auto=format&fit=crop&q=80&w=1200',
-  'fresh-produce': 'https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&q=80&w=1200'
-};
-
 interface HomeViewProps {
   onNavigate: (pageId: PageId) => void;
   onSelectService: (serviceId: string) => void;
@@ -410,7 +403,7 @@ export default function HomeView({
                 >
                   <div className="relative h-44 overflow-hidden">
                     <img
-                      src={SERVICE_IMAGES[service.id]}
+                      src={service.image}
                       alt={service.title}
                       referrerPolicy="no-referrer"
                       className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"

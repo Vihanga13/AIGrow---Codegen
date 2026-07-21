@@ -10,13 +10,6 @@ interface ServicesViewProps {
   onSelectServiceId: (id: string) => void;
 }
 
-const SERVICE_IMAGES: Record<string, string> = {
-  greenhouse: 'https://images.unsplash.com/photo-1585320806297-9794b3e4eeae?auto=format&fit=crop&q=80&w=1400',
-  'indoor-farming': 'https://images.unsplash.com/photo-1530595467537-0b5996c41f2d?auto=format&fit=crop&q=80&w=1400',
-  'home-gardening': 'https://images.unsplash.com/photo-1466692476868-aef1dfb1e735?auto=format&fit=crop&q=80&w=1400',
-  'fresh-produce': 'https://images.unsplash.com/photo-1610348725531-843dff163e2c?auto=format&fit=crop&q=80&w=1400'
-};
-
 export default function ServicesView({ onNavigate }: ServicesViewProps) {
   const getIcon = (iconName: string, cls = 'w-5 h-5') => {
     switch (iconName) {
@@ -60,7 +53,7 @@ export default function ServicesView({ onNavigate }: ServicesViewProps) {
               >
                 <div className="relative h-52 overflow-hidden">
                   <img
-                    src={SERVICE_IMAGES[service.id]}
+                    src={service.image}
                     alt={service.title}
                     referrerPolicy="no-referrer"
                     className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
