@@ -113,8 +113,12 @@ export default function ServicePageLayout({
     return [<Sprout className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />, <Sparkles className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />, <Activity className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />][dIdx] ?? <Leaf className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />;
   };
 
-  /* Extra shots beyond the hero — only some services have a full set. */
-  const extraShots = (service.gallery ?? []).filter((src) => src !== service.image);
+  /* Full photo set, hero first. Falls back to the single hero shot. */
+  const shots = service.gallery?.length
+    ? service.gallery
+    : service.image
+      ? [service.image]
+      : [];
 
   const handleEnquire = () => {
     onSelectProductForEnquiry(`Service: ${service.title}`);
@@ -141,51 +145,67 @@ export default function ServicePageLayout({
           Back to Services
         </button>
 
-        {/* Header */}
-        <div className="flex flex-col gap-5 mb-10">
-          <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-emerald-500 text-white shadow-lg shadow-emerald-600/25">
-            {getIcon(service.iconName, 'w-7 h-7')}
-          </div>
-          <div>
-            <span className="font-mono text-[11px] font-bold uppercase tracking-widest text-emerald-600">AiGROW Service</span>
-            <h1 className="font-sans text-4xl md:text-5xl font-extrabold tracking-tight text-gray-950 leading-tight mt-1">
-              {service.title}
-            </h1>
-          </div>
-          <p className="font-sans text-lg italic font-medium text-emerald-800 leading-relaxed max-w-2xl">
-            {service.shortDesc}
-          </p>
-          <button
-            onClick={handleEnquire}
-            className="w-fit flex items-center justify-center gap-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-semibold px-6 py-3.5 text-sm transition-all shadow-md shadow-emerald-600/15 group"
-          >
-            Enquire About This Service
-            <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
-          </button>
-        </div>
+        {/* Split hero — copy on the left, photo mosaic on the right so the imagery
+            reads as a composition instead of one oversized banner. */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-14 items-center mb-14 max-w-7xl">
 
-        {/* Hero image */}
-        <div className="relative aspect-video rounded-3xl overflow-hidden shadow-xl shadow-emerald-900/5 mb-6">
-          <img src={service.image} alt={service.title} referrerPolicy="no-referrer" className="h-full w-full object-cover" />
-          <div className="absolute inset-0 bg-gradient-to-t from-emerald-950/40 to-transparent" />
-        </div>
+          {/* Copy */}
+          <div className="flex flex-col gap-5">
+            <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-emerald-500 text-white shadow-lg shadow-emerald-600/25">
+              {getIcon(service.iconName, 'w-7 h-7')}
+            </div>
+            <div>
+              <span className="font-mono text-[11px] font-bold uppercase tracking-widest text-emerald-600">AiGROW Service</span>
+              <h1 className="font-sans text-4xl md:text-5xl font-extrabold tracking-tight text-gray-950 leading-tight mt-1">
+                {service.title}
+              </h1>
+            </div>
+            <p className="font-sans text-lg italic font-medium text-emerald-800 leading-relaxed">
+              {service.shortDesc}
+            </p>
+            <button
+              onClick={handleEnquire}
+              className="w-fit flex items-center justify-center gap-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-semibold px-6 py-3.5 text-sm transition-all shadow-md shadow-emerald-600/15 group"
+            >
+              Enquire About This Service
+              <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+            </button>
+          </div>
 
-        {/* Supporting photography */}
-        {extraShots.length > 0 && (
-          <div className={`grid gap-3 mb-6 ${extraShots.length > 1 ? 'grid-cols-2' : 'grid-cols-1'}`}>
-            {extraShots.map((src, i) => (
-              <div key={src} className="relative aspect-[4/3] rounded-2xl overflow-hidden shadow-sm">
+          {/* Photography — one calm lead image, supporting shots as an even
+              thumbnail row. No overlays or captions competing with the copy. */}
+          {shots.length > 0 && (
+            <div className="flex flex-col gap-3">
+              <div className="aspect-[3/2] overflow-hidden rounded-2xl border border-gray-200/70 bg-gray-50">
                 <img
-                  src={src}
-                  alt={`${service.title} — view ${i + 2}`}
-                  loading="lazy"
+                  src={shots[0]}
+                  alt={service.title}
                   referrerPolicy="no-referrer"
-                  className="h-full w-full object-cover transition-transform duration-500 hover:scale-105"
+                  className="h-full w-full object-cover"
                 />
               </div>
-            ))}
-          </div>
-        )}
+
+              {shots.length > 1 && (
+                <div className="grid grid-cols-3 gap-3">
+                  {shots.slice(1).map((src, i) => (
+                    <div
+                      key={src}
+                      className="aspect-[4/3] overflow-hidden rounded-xl border border-gray-200/70 bg-gray-50"
+                    >
+                      <img
+                        src={src}
+                        alt={`${service.title} — view ${i + 2}`}
+                        loading="lazy"
+                        referrerPolicy="no-referrer"
+                        className="h-full w-full object-cover"
+                      />
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
+        </div>
 
         {/* Quick facts */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-14">

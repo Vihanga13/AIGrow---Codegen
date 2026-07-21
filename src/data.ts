@@ -96,8 +96,8 @@ export const SERVICES_DATA: Service[] = [
       'Aesthetic timber and steel-framed raised beds for home growing',
       'Low-maintenance app-connected drip irrigation systems'
     ],
-    image: '/Home%20Gardening%20%26%20Landscaping.png',
-    gallery: ['/Home%20Gardening%20%26%20Landscaping.png'],
+    image: '/home-gardening-landscaping.png',
+    gallery: ['/home-gardening-landscaping.png'],
     subCategories: [
       {
         name: 'Residential Smart Gardens',
