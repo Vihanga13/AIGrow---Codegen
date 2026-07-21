@@ -368,7 +368,7 @@ export const PROJECTS_DATA: Project[] = [
     type: 'Commercial Turnkey Greenhouse',
     summary: 'A multi-span sawtooth greenhouse facility deployed to cultivate premium bell peppers and tomatoes, integrated with advanced micro-climate controls and drip irrigation.',
     fullDescription: 'Completed in partnership with a leading local exporter, this 20,000 sq ft sawtooth greenhouse facility was designed to withstand high rainfall and heavy wind speeds of the Kegalle hills. Deployed with premium heavy-duty plastic cladding and specialized insect-proof netting, the project incorporates automated shade screens and a high-accuracy fertigation system, allowing the grower to manage nutrient formulations remotely from Colombo.',
-    image: '/src/assets/images/greenhouse_hero_1782916632662.jpg',
+    image: '/kegalle%20green%20house.jpg',
     stats: [
       { label: 'Yield Increase', value: '180%' },
       { label: 'Water Conserved', value: '45%' },
@@ -388,7 +388,7 @@ export const PROJECTS_DATA: Project[] = [
     type: 'Naturally Ventilated Multi-Span Greenhouse',
     summary: 'An eco-farming community initiative optimized to cultivate gourmet greens, herbs, and leafy greens for premium culinary establishments.',
     fullDescription: 'Nestled in the Galaha hills of Kandy, the Rise Bellwood project is a community-centric agritech initiative. AiGROW fabricated a custom naturally ventilated multi-span structure utilizing natural thermal buoyancy currents. Integrated with soil moisture monitoring arrays and local weather sensors, the farm delivers high-end greens directly to boutique hotels and organic supermarkets, increasing farmers income tenfold.',
-    image: 'https://images.unsplash.com/photo-1585320806297-9794b3e4eeae?auto=format&fit=crop&q=80&w=1200',
+    image: '/bellwood.jpg',
     stats: [
       { label: 'Water Savings', value: '55%' },
       { label: 'Income Growth', value: '3x' },
@@ -408,7 +408,7 @@ export const PROJECTS_DATA: Project[] = [
     type: 'High-Tech Urban Indoor Vertical Farming',
     summary: 'An automated high-yield indoor oyster mushroom grow facility using advanced ultrasonic humidification, automatic fresh-air exchanges, and CO2 sensor monitoring.',
     fullDescription: 'Demonstrating urban agriculture, this specialized mushroom cultivation facility was converted from a vacant ground-floor warehouse in Rajagiriya. AiGROW installed high-efficiency vertical grow racks paired with digital sensor hubs monitoring temperature, relative humidity, and CO2 concentration. Automated climate sequences trigger high-pressure mist systems and air intake fans to maintain flawless ambient flush parameters, harvesting hundreds of kilos of fresh mushrooms every single week.',
-    image: '/src/assets/images/mushroom_farm_1782916652005.jpg',
+    image: '/rajagiriya.jpeg',
     stats: [
       { label: 'Monthly Output', value: '1,200 Kg' },
       { label: 'Humidity Rate', value: '92% (Avg)' },
