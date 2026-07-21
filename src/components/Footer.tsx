@@ -66,11 +66,15 @@ export default function Footer({ onNavigate }: FooterProps) {
           {/* Brand / identity */}
           <div className="flex flex-col gap-6">
             <div className="flex cursor-pointer items-center gap-3 group" onClick={() => handleLinkClick('home')}>
-              <div className="flex h-12 w-12 items-center justify-center rounded-2xl border border-emerald-400/20 bg-emerald-400/10 text-emerald-400 transition-colors group-hover:bg-emerald-400/20">
-                <Leaf className="h-6 w-6" />
-              </div>
+              {/* White logo variant — the footer sits on emerald-950 */}
+              <img
+                src="/logo3.png"
+                alt="AiGROW"
+                width={386}
+                height={378}
+                className="h-24 sm:h-28 w-auto shrink-0 transition-transform duration-300 group-hover:scale-105"
+              />
               <div>
-                <span className="block text-2xl font-bold tracking-tight text-white">AiGROW</span>
                 <span className="font-mono text-[10px] uppercase tracking-[0.28em] text-emerald-400/70">CodeGen Subsidiary</span>
               </div>
             </div>

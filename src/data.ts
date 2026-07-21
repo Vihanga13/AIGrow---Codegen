@@ -672,6 +672,200 @@ export interface CatalogItem {
   variants?: CatalogVariant[];
 }
 
+/* Verified catalog imagery. Every URL below returned HTTP 200 at time of writing.
+   Most resolve to Wikimedia Commons files (CC BY-SA / public domain — see the credit
+   line rendered under the Fresh Produce grid); a handful are curated Unsplash shots.
+   All of this is placeholder photography: once the catalog syncs from the AiGROW
+   database its own product images should take over. */
+const CATALOG_IMAGES: Record<string, string> = {
+  Abalone:
+    'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d3/Pleurotus_cystidiosus_144580000.jpg/960px-Pleurotus_cystidiosus_144580000.jpg',
+  'Abalone Mushroom':
+    'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d3/Pleurotus_cystidiosus_144580000.jpg/960px-Pleurotus_cystidiosus_144580000.jpg',
+  'African Eggplant':
+    'https://upload.wikimedia.org/wikipedia/commons/thumb/9/98/Solanum_aethiopicum.jpg/960px-Solanum_aethiopicum.jpg',
+  Ambarella:
+    'https://upload.wikimedia.org/wikipedia/commons/thumb/0/08/Starr_980529-4218_Spondias_dulcis.jpg/960px-Starr_980529-4218_Spondias_dulcis.jpg',
+  'American Oyster':
+    'https://upload.wikimedia.org/wikipedia/commons/thumb/f/f6/Pleurotus_ostreatus_JPG7.jpg/960px-Pleurotus_ostreatus_JPG7.jpg',
+  'American Oyster - Fresh':
+    'https://upload.wikimedia.org/wikipedia/commons/thumb/f/f6/Pleurotus_ostreatus_JPG7.jpg/960px-Pleurotus_ostreatus_JPG7.jpg',
+  'American Oyster - Fresh (Budget)':
+    'https://upload.wikimedia.org/wikipedia/commons/thumb/f/f6/Pleurotus_ostreatus_JPG7.jpg/960px-Pleurotus_ostreatus_JPG7.jpg',
+  Basil:
+    'https://upload.wikimedia.org/wikipedia/commons/thumb/9/97/Ocimum_basilicum_8zz.jpg/960px-Ocimum_basilicum_8zz.jpg',
+  Beans:
+    'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a0/Heaps_of_beans.jpg/960px-Heaps_of_beans.jpg',
+  'Beef Tomato':
+    'https://upload.wikimedia.org/wikipedia/commons/thumb/8/8e/Diversit%C3%A9_taille_tomates.jpg/960px-Diversit%C3%A9_taille_tomates.jpg',
+  'Beet Root':
+    'https://upload.wikimedia.org/wikipedia/commons/thumb/a/ae/Detroitdarkredbeets.png/960px-Detroitdarkredbeets.png',
+  'Bell Pepper':
+    'https://upload.wikimedia.org/wikipedia/commons/thumb/8/85/Green-Yellow-Red-Pepper-2009.jpg/960px-Green-Yellow-Red-Pepper-2009.jpg',
+  'Bell Pepper - Orange':
+    'https://upload.wikimedia.org/wikipedia/commons/thumb/8/85/Green-Yellow-Red-Pepper-2009.jpg/960px-Green-Yellow-Red-Pepper-2009.jpg',
+  'Bell Pepper - Yellow':
+    'https://upload.wikimedia.org/wikipedia/commons/thumb/8/85/Green-Yellow-Red-Pepper-2009.jpg/960px-Green-Yellow-Red-Pepper-2009.jpg',
+  'Bell Pepper Yellow':
+    'https://upload.wikimedia.org/wikipedia/commons/thumb/8/85/Green-Yellow-Red-Pepper-2009.jpg/960px-Green-Yellow-Red-Pepper-2009.jpg',
+  'Bhutan Oyster':
+    'https://upload.wikimedia.org/wikipedia/commons/9/94/Oyster_mushoom_fells.jpg',
+  'Bitter Gourd':
+    'https://upload.wikimedia.org/wikipedia/commons/thumb/0/0d/Momordica_charantia_fruit%2C_cultivated.jpg/960px-Momordica_charantia_fruit%2C_cultivated.jpg',
+  Breadfruit:
+    'https://upload.wikimedia.org/wikipedia/commons/thumb/5/57/Artocarpus_altilis_%28fruit%29.jpg/960px-Artocarpus_altilis_%28fruit%29.jpg',
+  Bringal:
+    'https://upload.wikimedia.org/wikipedia/commons/thumb/7/76/Solanum_melongena_24_08_2012_%281%29.JPG/960px-Solanum_melongena_24_08_2012_%281%29.JPG',
+  'Butter Head':
+    'https://upload.wikimedia.org/wikipedia/commons/thumb/7/7f/Lettuce_Mini_Heads_%287331119710%29.jpg/960px-Lettuce_Mini_Heads_%287331119710%29.jpg',
+  'Cabbage Leaves':
+    'https://upload.wikimedia.org/wikipedia/commons/thumb/6/6f/Cabbage_and_cross_section_on_white.jpg/960px-Cabbage_and_cross_section_on_white.jpg',
+  Capsicum:
+    'https://upload.wikimedia.org/wikipedia/commons/thumb/d/da/Red_capsicum_and_cross_section.jpg/960px-Red_capsicum_and_cross_section.jpg',
+  Cardamom:
+    'https://upload.wikimedia.org/wikipedia/commons/thumb/6/69/Cardamom_pods_-_Green_BNC.jpg/960px-Cardamom_pods_-_Green_BNC.jpg',
+  Cauliflower:
+    'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/Chou-fleur_02.jpg/960px-Chou-fleur_02.jpg',
+  Chilli:
+    'https://upload.wikimedia.org/wikipedia/commons/thumb/5/50/Madame_Jeanette_and_other_chillies.jpg/960px-Madame_Jeanette_and_other_chillies.jpg',
+  'Chinese Kale':
+    'https://upload.wikimedia.org/wikipedia/commons/9/90/Gailan.jpg',
+  Chives:
+    'https://upload.wikimedia.org/wikipedia/commons/thumb/4/49/Allium_schoenoprasum_-_Bombus_lapidarius_-_Tootsi.jpg/960px-Allium_schoenoprasum_-_Bombus_lapidarius_-_Tootsi.jpg',
+  'Cone (Corn)':
+    'https://upload.wikimedia.org/wikipedia/commons/7/79/VegCorn.jpg',
+  Crystal:
+    'https://upload.wikimedia.org/wikipedia/commons/thumb/7/7f/Lettuce_Mini_Heads_%287331119710%29.jpg/960px-Lettuce_Mini_Heads_%287331119710%29.jpg',
+  'Dehydrated Oyster':
+    'https://upload.wikimedia.org/wikipedia/commons/thumb/f/f6/Pleurotus_ostreatus_JPG7.jpg/960px-Pleurotus_ostreatus_JPG7.jpg',
+  'Drumstick Leaves':
+    'https://upload.wikimedia.org/wikipedia/commons/a/a8/Sonjna_%28Moringa_oleifera%29_leaves_with_flowers_at_Kolkata_W_IMG_2125.jpg',
+  Eggplant:
+    'https://upload.wikimedia.org/wikipedia/commons/thumb/7/76/Solanum_melongena_24_08_2012_%281%29.JPG/960px-Solanum_melongena_24_08_2012_%281%29.JPG',
+  Frillice:
+    'https://upload.wikimedia.org/wikipedia/commons/thumb/7/7f/Lettuce_Mini_Heads_%287331119710%29.jpg/960px-Lettuce_Mini_Heads_%287331119710%29.jpg',
+  Ginger:
+    'https://upload.wikimedia.org/wikipedia/commons/thumb/d/db/Zingiber_officinale_fresh_rhizome.JPG/960px-Zingiber_officinale_fresh_rhizome.JPG',
+  Gotukola:
+    'https://upload.wikimedia.org/wikipedia/commons/thumb/c/cc/Centella_asiatica_%28%E0%A6%A5%E0%A6%BE%E0%A6%A8%E0%A6%95%E0%A7%81%E0%A6%A8%E0%A6%BF%29_%283%29.jpg/960px-Centella_asiatica_%28%E0%A6%A5%E0%A6%BE%E0%A6%A8%E0%A6%95%E0%A7%81%E0%A6%A8%E0%A6%BF%29_%283%29.jpg',
+  'Green Beans':
+    'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a0/Heaps_of_beans.jpg/960px-Heaps_of_beans.jpg',
+  'Green Bell Pepper':
+    'https://upload.wikimedia.org/wikipedia/commons/thumb/8/85/Green-Yellow-Red-Pepper-2009.jpg/960px-Green-Yellow-Red-Pepper-2009.jpg',
+  'Green Chilli':
+    'https://upload.wikimedia.org/wikipedia/commons/thumb/5/50/Madame_Jeanette_and_other_chillies.jpg/960px-Madame_Jeanette_and_other_chillies.jpg',
+  'Green Oak':
+    'https://upload.wikimedia.org/wikipedia/commons/thumb/8/85/Green_Oak_Leaf_lettuce_J1.jpg/960px-Green_Oak_Leaf_lettuce_J1.jpg',
+  'Honeydew Melon':
+    'https://upload.wikimedia.org/wikipedia/commons/thumb/f/f5/Honeydew.jpg/960px-Honeydew.jpg',
+  Iceberg:
+    'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/Iceberg_lettuce_%28IJssla_krop%29.jpg/960px-Iceberg_lettuce_%28IJssla_krop%29.jpg',
+  Kale:
+    'https://upload.wikimedia.org/wikipedia/commons/thumb/2/20/Boerenkool.jpg/960px-Boerenkool.jpg',
+  'Kan Kung':
+    'https://upload.wikimedia.org/wikipedia/commons/thumb/1/10/N_Ipoa_D1600.JPG/960px-N_Ipoa_D1600.JPG',
+  'Kathuru Murunga':
+    'https://upload.wikimedia.org/wikipedia/commons/thumb/7/74/Starr_050518-1632_Sesbania_grandiflora.jpg/960px-Starr_050518-1632_Sesbania_grandiflora.jpg',
+  'Kathuru Murunga Flowers':
+    'https://upload.wikimedia.org/wikipedia/commons/thumb/7/74/Starr_050518-1632_Sesbania_grandiflora.jpg/960px-Starr_050518-1632_Sesbania_grandiflora.jpg',
+  'Kno Khol':
+    'https://upload.wikimedia.org/wikipedia/commons/thumb/9/98/Brassica_oleracea_var._gongylodes_%28kohlrabi%29.jpg/960px-Brassica_oleracea_var._gongylodes_%28kohlrabi%29.jpg',
+  Kochchi:
+    'https://upload.wikimedia.org/wikipedia/commons/6/62/Tabasco_peppers.JPG',
+  'Kol Khol':
+    'https://upload.wikimedia.org/wikipedia/commons/thumb/9/98/Brassica_oleracea_var._gongylodes_%28kohlrabi%29.jpg/960px-Brassica_oleracea_var._gongylodes_%28kohlrabi%29.jpg',
+  'Ladies Finger':
+    'https://upload.wikimedia.org/wikipedia/commons/thumb/9/95/Hong_Kong_Okra_Aug_25_2012.JPG/960px-Hong_Kong_Okra_Aug_25_2012.JPG',
+  'Lady Finger':
+    'https://upload.wikimedia.org/wikipedia/commons/thumb/9/95/Hong_Kong_Okra_Aug_25_2012.JPG/960px-Hong_Kong_Okra_Aug_25_2012.JPG',
+  'Leafy Cabbage':
+    'https://upload.wikimedia.org/wikipedia/commons/thumb/6/6f/Cabbage_and_cross_section_on_white.jpg/960px-Cabbage_and_cross_section_on_white.jpg',
+  Leeks:
+    'https://upload.wikimedia.org/wikipedia/commons/thumb/6/63/Leek_on_white_background_-_0947.jpg/960px-Leek_on_white_background_-_0947.jpg',
+  Lemon:
+    'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e4/P1030323.JPG/960px-P1030323.JPG',
+  'Lemon Grass':
+    'https://upload.wikimedia.org/wikipedia/commons/b/bd/YosriNov04Pokok_Serai.JPG',
+  Lettuce:
+    'https://upload.wikimedia.org/wikipedia/commons/thumb/7/7f/Lettuce_Mini_Heads_%287331119710%29.jpg/960px-Lettuce_Mini_Heads_%287331119710%29.jpg',
+  'Lollo Bionda':
+    'https://upload.wikimedia.org/wikipedia/commons/thumb/0/00/Lollo_Bionda_lettuce_J1.jpg/960px-Lollo_Bionda_lettuce_J1.jpg',
+  'Lollo Rosso':
+    'https://upload.wikimedia.org/wikipedia/commons/b/b2/Lollo_Rosso_Lollo_Bianco_4880.jpg',
+  'Long Beans':
+    'https://upload.wikimedia.org/wikipedia/commons/thumb/3/38/Yardlong_bean_and_Carrot.jpg/960px-Yardlong_bean_and_Carrot.jpg',
+  Loofa:
+    'https://upload.wikimedia.org/wikipedia/commons/7/7d/Luffa_aegyptica.jpg',
+  Mint:
+    'https://upload.wikimedia.org/wikipedia/commons/thumb/4/4d/Mentha_spicata-IMG_6186.jpg/960px-Mentha_spicata-IMG_6186.jpg',
+  'Mulch Film':
+    'https://upload.wikimedia.org/wikipedia/commons/thumb/f/fa/20110829-FSA-XX-0029_-_Flickr_-_USDAgov.jpg/960px-20110829-FSA-XX-0029_-_Flickr_-_USDAgov.jpg',
+  Okra:
+    'https://upload.wikimedia.org/wikipedia/commons/thumb/9/95/Hong_Kong_Okra_Aug_25_2012.JPG/960px-Hong_Kong_Okra_Aug_25_2012.JPG',
+  Packchoi:
+    'https://upload.wikimedia.org/wikipedia/commons/thumb/9/99/Bok_Choy_%2849553125456%29.jpg/960px-Bok_Choy_%2849553125456%29.jpg',
+  'Pak Choy':
+    'https://upload.wikimedia.org/wikipedia/commons/thumb/9/99/Bok_Choy_%2849553125456%29.jpg/960px-Bok_Choy_%2849553125456%29.jpg',
+  Paneer:
+    'https://upload.wikimedia.org/wikipedia/commons/thumb/3/36/Panir_Paneer_Indian_cheese_fresh.jpg/960px-Panir_Paneer_Indian_cheese_fresh.jpg',
+  Parsley:
+    'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e4/Petroselinum.jpg/960px-Petroselinum.jpg',
+  'Pheromone Trap Box & Tablet':
+    'https://upload.wikimedia.org/wikipedia/commons/b/b0/K7779-1.jpg',
+  'Pink Oyster':
+    'https://upload.wikimedia.org/wikipedia/commons/thumb/2/21/Pleurotus_djamor_crop.jpg/960px-Pleurotus_djamor_crop.jpg',
+  Radish:
+    'https://upload.wikimedia.org/wikipedia/commons/thumb/0/0c/Radish_3371103037_4ab07db0bf_o.jpg/960px-Radish_3371103037_4ab07db0bf_o.jpg',
+  'Red Oak':
+    'https://upload.wikimedia.org/wikipedia/commons/thumb/9/9e/Starr-081031-0390-Lactuca_sativa-red_oak_leaf_lettuce-Makawao-Maui_%2824631209520%29.jpg/960px-Starr-081031-0390-Lactuca_sativa-red_oak_leaf_lettuce-Makawao-Maui_%2824631209520%29.jpg',
+  'Red Onion':
+    'https://upload.wikimedia.org/wikipedia/commons/thumb/8/8f/Red_onions_11.jpg/960px-Red_onions_11.jpg',
+  Romaine:
+    'https://upload.wikimedia.org/wikipedia/commons/thumb/5/5c/Starr_070730-7911_Lactuca_sativa.jpg/960px-Starr_070730-7911_Lactuca_sativa.jpg',
+  Rosemary:
+    'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a3/Rosemary_in_bloom.JPG/960px-Rosemary_in_bloom.JPG',
+  'Salad Cucumber':
+    'https://upload.wikimedia.org/wikipedia/commons/thumb/9/96/ARS_cucumber.jpg/960px-ARS_cucumber.jpg',
+  'Scotch Bonnet':
+    'https://upload.wikimedia.org/wikipedia/commons/thumb/9/97/Scotch_bonnet_chili_pepper.jpg/960px-Scotch_bonnet_chili_pepper.jpg',
+  'Seeni Banana':
+    'https://upload.wikimedia.org/wikipedia/commons/d/de/Bananavarieties.jpg',
+  'Shitaki Mushroom':
+    'https://upload.wikimedia.org/wikipedia/commons/thumb/6/64/Shiitakegrowing.jpg/960px-Shiitakegrowing.jpg',
+  Spinach:
+    'https://upload.wikimedia.org/wikipedia/commons/thumb/5/56/Fresh_Spinach_leaves.jpg/960px-Fresh_Spinach_leaves.jpg',
+  'Sweet Potato':
+    'https://upload.wikimedia.org/wikipedia/commons/thumb/5/58/Ipomoea_batatas_006.JPG/960px-Ipomoea_batatas_006.JPG',
+  'Thampola (Green)':
+    'https://upload.wikimedia.org/wikipedia/commons/9/91/Amaranthus_tricolor0.jpg',
+  'Thampola (Red)':
+    'https://upload.wikimedia.org/wikipedia/commons/0/05/Amaranthus_cruentus1.jpg',
+  Thibatu:
+    'https://upload.wikimedia.org/wikipedia/commons/thumb/f/ff/Solanum_violaceum_02.JPG/960px-Solanum_violaceum_02.JPG',
+  Tomato:
+    'https://upload.wikimedia.org/wikipedia/commons/thumb/8/89/Tomato_je.jpg/960px-Tomato_je.jpg',
+  Turmeric:
+    'https://upload.wikimedia.org/wikipedia/commons/thumb/0/0d/Turmeric_rhizome.jpg/960px-Turmeric_rhizome.jpg',
+  Turnip:
+    'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d3/Turnip_2622027.jpg/960px-Turnip_2622027.jpg',
+  'Bell Pepper Red':
+    'https://images.unsplash.com/photo-1563565375-f3fdfdbefa83?auto=format&fit=crop&q=80&w=600',
+  Broccoli:
+    'https://images.unsplash.com/photo-1459411621453-7b03977f4bfc?auto=format&fit=crop&q=80&w=600',
+  'Cherry Tomato':
+    'https://images.unsplash.com/photo-1592841200221-a6898f307baa?auto=format&fit=crop&q=80&w=600',
+  Cucumber:
+    'https://images.unsplash.com/photo-1568584711075-3d021a7c3ca3?auto=format&fit=crop&q=80&w=600',
+  'Shiitake Mushroom':
+    'https://images.unsplash.com/photo-1607301405390-d831c242f59b?auto=format&fit=crop&q=80&w=600',
+  Carrot:
+    'https://images.unsplash.com/photo-1598170845058-32b9d6a5da37?auto=format&fit=crop&q=80&w=600',
+  Cabbage:
+    'https://images.unsplash.com/photo-1594282486552-05b4d80fbb9f?auto=format&fit=crop&q=80&w=600',
+  Zucchini:
+    'https://images.unsplash.com/photo-1583687355032-89b902b7335f?auto=format&fit=crop&q=80&w=600',
+};
+
 export const GREENHOUSE_PART_GROUPS = [
   'Covering Films',
   'Netting & Shade',
@@ -705,6 +899,7 @@ export const GREENHOUSE_PARTS: CatalogItem[] = [
     price: 'LKR 9,250',
     unitRate: 'LKR 38.54 / sqm',
     spec: 'Ground mulch film for weed suppression and moisture retention.',
+    image: CATALOG_IMAGES['Mulch Film'],
     variants: [{ label: '1.2m × 200m', price: 'LKR 9,250' }]
   },
   {
@@ -723,7 +918,6 @@ export const GREENHOUSE_PARTS: CatalogItem[] = [
     price: 'LKR 75,000',
     unitRate: 'LKR 240 / sqm',
     spec: '40 × 25 mesh screening for side walls and vents.',
-    image: 'https://images.unsplash.com/photo-1585486088652-1c6b6c1f2b1a?auto=format&fit=crop&q=80&w=600',
     variants: [{ label: '3.2m × 100m', price: 'LKR 75,000' }]
   },
   {
@@ -921,7 +1115,8 @@ export const GREENHOUSE_PARTS: CatalogItem[] = [
     name: 'Pheromone Trap Box & Tablet',
     group: 'Pest Management',
     price: 'LKR 2,900',
-    spec: 'Trap box supplied with pheromone tablet.'
+    spec: 'Trap box supplied with pheromone tablet.',
+    image: CATALOG_IMAGES['Pheromone Trap Box & Tablet']
   }
 ];
 
@@ -938,18 +1133,7 @@ export const FRESH_PRODUCE_GROUPS = [
   'Other'
 ] as const;
 
-const PRODUCE_IMAGES: Record<string, string> = {
-  'Bell Pepper Red': 'https://images.unsplash.com/photo-1563565375-f3fdfdbefa83?auto=format&fit=crop&q=80&w=600',
-  Broccoli: 'https://images.unsplash.com/photo-1459411621453-7b03977f4bfc?auto=format&fit=crop&q=80&w=600',
-  'Cherry Tomato': 'https://images.unsplash.com/photo-1592841200221-a6898f307baa?auto=format&fit=crop&q=80&w=600',
-  Lettuce: 'https://images.unsplash.com/photo-1622206151226-18ca2c9ab4a1?auto=format&fit=crop&q=80&w=600',
-  Cucumber: 'https://images.unsplash.com/photo-1568584711075-3d021a7c3ca3?auto=format&fit=crop&q=80&w=600',
-  'Beef Tomato': 'https://images.unsplash.com/photo-1546470427-f5b2f4f60b57?auto=format&fit=crop&q=80&w=600',
-  'Shiitake Mushroom': 'https://images.unsplash.com/photo-1607301405390-d831c242f59b?auto=format&fit=crop&q=80&w=600',
-  Carrot: 'https://images.unsplash.com/photo-1598170845058-32b9d6a5da37?auto=format&fit=crop&q=80&w=600',
-  Cabbage: 'https://images.unsplash.com/photo-1594282486552-05b4d80fbb9f?auto=format&fit=crop&q=80&w=600',
-  Zucchini: 'https://images.unsplash.com/photo-1583687355032-89b902b7335f?auto=format&fit=crop&q=80&w=600'
-};
+
 
 /* [name, price (LKR/kg), group] — synced from the AiGROW produce database. */
 const PRODUCE_ROWS: [string, string, string][] = [
@@ -1054,5 +1238,5 @@ export const FRESH_PRODUCE: CatalogItem[] = PRODUCE_ROWS.map(([name, price, grou
   price: `LKR ${price}`,
   unitRate: 'per kg',
   group,
-  image: PRODUCE_IMAGES[name]
+  image: CATALOG_IMAGES[name]
 }));

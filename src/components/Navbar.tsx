@@ -242,27 +242,22 @@ export default function Navbar({ currentPage, onNavigate }: NavbarProps) {
         <div
           onClick={() => handleNavClick('home')}
           id="nav-logo-container"
-          className={`${islandShell} flex items-center gap-3 cursor-pointer group select-none px-4 py-2.5`}
+          className={`${islandShell} flex items-center gap-3 cursor-pointer group select-none px-4 py-2`}
         >
-          <div className={`w-9 h-9 rounded-xl flex items-center justify-center transition-colors ${
-            isDarkTheme
-              ? 'bg-white/10 text-emerald-300 group-hover:bg-white/20'
-              : 'bg-emerald-50 text-emerald-600 group-hover:bg-emerald-100'
-          }`}>
-            <motion.div
-              animate={{ rotate: [0, -10, 0, 8, 0] }}
-              transition={{ repeat: Infinity, duration: 6, ease: 'easeInOut' }}
-            >
-              <Leaf className="w-5 h-5" />
-            </motion.div>
-          </div>
+          {/* Brand lockup already contains the AiGROW wordmark, so no separate text mark.
+              logo3 is the white variant — used wherever the island sits on a dark surface. */}
+          <motion.img
+            src={isDarkTheme ? '/logo3.png' : '/logo1.png'}
+            alt="AiGROW"
+            width={450}
+            height={450}
+            className="h-16 sm:h-20 w-auto shrink-0"
+            animate={{ rotate: [0, -4, 0, 3, 0] }}
+            transition={{ repeat: Infinity, duration: 6, ease: 'easeInOut' }}
+          />
           <div className="pr-1">
-            <div className="flex items-baseline gap-1">
-              <span className={`font-sans text-lg font-bold tracking-tight leading-none transition-colors ${isDarkTheme ? 'text-white' : 'text-gray-900'}`}>AiGROW</span>
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
-            </div>
-            <p className={`font-mono text-[8px] tracking-[0.2em] uppercase leading-none mt-1 transition-colors ${isDarkTheme ? 'text-gray-300' : 'text-gray-400'}`}>
-              CodeGen International
+            <p className={`font-mono text-[9px] tracking-[0.2em] uppercase leading-relaxed transition-colors ${isDarkTheme ? 'text-gray-300' : 'text-gray-400'}`}>
+              CodeGen<br />International
             </p>
           </div>
         </div>
