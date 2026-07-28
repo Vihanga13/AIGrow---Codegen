@@ -1,18 +1,12 @@
 import { Leaf, Sparkles, ShieldCheck, ArrowRight } from 'lucide-react';
 import { PageId } from '../types';
-import { FRESH_PRODUCE, CatalogItem } from '../data';
+import { FRESH_PRODUCE, FRESH_PRODUCE_GROUPS } from '../data';
 import Reveal from './Reveal';
+import CatalogSection from './products/CatalogSection';
 
 interface FreshProductsViewProps {
   onNavigate: (pageId: PageId) => void;
 }
-
-/* The curated line-up for this tab. First match wins for duplicated names. */
-const FEATURED = ['Lettuce', 'Cherry Tomato', 'Bell Pepper', 'Salad Cucumber', 'Cardamom'];
-
-const items: CatalogItem[] = FEATURED.map(
-  (name) => FRESH_PRODUCE.find((p) => p.name === name)!
-).filter(Boolean);
 
 export default function FreshProductsView({ onNavigate }: FreshProductsViewProps) {
   const go = (pageId: PageId) => {
@@ -39,32 +33,6 @@ export default function FreshProductsView({ onNavigate }: FreshProductsViewProps
           </p>
         </Reveal>
 
-        {/* Featured produce grid */}
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-5 mb-12">
-          {items.map((item, idx) => (
-            <Reveal key={item.id} delay={(idx % 5) * 0.05}>
-              <div className="group glass rounded-3xl overflow-hidden h-full flex flex-col transition-all duration-300 hover:shadow-xl hover:shadow-emerald-900/5">
-                <div className="relative aspect-square overflow-hidden bg-emerald-50">
-                  <img
-                    src={item.image}
-                    alt={item.name}
-                    loading="lazy"
-                    referrerPolicy="no-referrer"
-                    className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-                  />
-                  <span className="absolute top-3 left-3 rounded-md bg-white/85 backdrop-blur-sm px-2 py-0.5 font-mono text-[10px] font-bold text-emerald-700">
-                    per kg
-                  </span>
-                </div>
-                <div className="p-4 flex flex-col gap-1 flex-1">
-                  <h3 className="font-sans text-sm font-bold text-gray-950 leading-snug">{item.name}</h3>
-                  <span className="mt-auto pt-1 font-mono text-sm font-bold text-emerald-600">{item.price}</span>
-                </div>
-              </div>
-            </Reveal>
-          ))}
-        </div>
-
         {/* Trust strip */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-12">
           {[
@@ -84,13 +52,24 @@ export default function FreshProductsView({ onNavigate }: FreshProductsViewProps
           ))}
         </div>
 
-        {/* CTA to full produce list */}
+        {/* Full produce list — every item, with type filters and search */}
+        <CatalogSection
+          title="All Fresh Produce"
+          subtitle="Every variety we grow, priced per kilo. Filter by type or search by name."
+          items={FRESH_PRODUCE}
+          groups={FRESH_PRODUCE_GROUPS}
+          initialCount={FRESH_PRODUCE.length}
+          searchable
+          attribution="Produce photography sourced from Wikimedia Commons under CC BY-SA / public domain licences. Replace with AiGROW's own product photography when the catalog syncs from the internal database."
+        />
+
+        {/* CTA */}
         <div className="text-center">
           <button
-            onClick={() => go('products')}
+            onClick={() => go('contact')}
             className="inline-flex items-center gap-2 px-6 py-3.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl text-sm transition-all shadow-md shadow-emerald-600/15 group"
           >
-            See the full fresh produce range
+            Order fresh produce
             <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
           </button>
         </div>
