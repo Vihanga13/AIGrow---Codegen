@@ -5,7 +5,6 @@ import {
   Cpu,
   Activity,
   Droplet,
-  Settings,
   CheckCircle,
   ShoppingBag,
   Info
@@ -13,6 +12,7 @@ import {
 import { PageId, Product } from '../../types';
 import { PRODUCTS_DATA } from '../../data';
 import Reveal from '../Reveal';
+import ProductVideo from './ProductVideo';
 
 interface ProductPageLayoutProps {
   product: Product;
@@ -133,47 +133,48 @@ export default function ProductPageLayout({
         </div>
 
         {/* Content */}
-        <div className="flex flex-col gap-14">
+        <div className="flex flex-col gap-12">
           {/* Overview */}
           <section>
             <h2 className="font-sans text-2xl md:text-3xl font-bold text-gray-950 tracking-tight mb-4">Overview</h2>
             <p className="font-sans text-lg text-gray-600 font-light leading-relaxed">{product.description}</p>
           </section>
 
-          {/* Capabilities */}
+          {/* Product video (only when one is set) */}
+          {product.video && <ProductVideo src={product.video} title={product.name} />}
+
+          {/* Key features — plain scannable checklist */}
           <section>
-            <h2 className="font-sans text-2xl md:text-3xl font-bold text-gray-950 tracking-tight mb-6">Key Capabilities</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {product.features.map((feat, idx) => (
-                <Reveal key={idx} delay={(idx % 2) * 0.06} className="glass rounded-2xl p-5 flex items-start gap-3 h-full">
-                  <span className="font-mono text-lg font-black text-emerald-500/70 tabular-nums shrink-0">{String(idx + 1).padStart(2, '0')}</span>
-                  <div className="flex items-start gap-2">
-                    <CheckCircle className="mt-0.5 h-4 w-4 shrink-0 text-emerald-500" />
-                    <span className="font-sans text-sm text-gray-700 font-light leading-relaxed">{feat}</span>
-                  </div>
-                </Reveal>
-              ))}
-            </div>
+            <h2 className="font-sans text-2xl md:text-3xl font-bold text-gray-950 tracking-tight mb-5">Key Features</h2>
+            <Reveal>
+              <ul className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-3.5">
+                {product.features.map((feat, idx) => (
+                  <li key={idx} className="flex items-start gap-2.5">
+                    <CheckCircle className="mt-0.5 h-5 w-5 shrink-0 text-emerald-500" />
+                    <span className="font-sans text-[15px] text-gray-700 leading-relaxed">{feat}</span>
+                  </li>
+                ))}
+              </ul>
+            </Reveal>
           </section>
 
-          {/* Full specifications */}
-          <section className="glass rounded-3xl p-8 shadow-sm">
-            <div className="flex items-center gap-2 mb-6 border-b border-gray-200/70 pb-3">
-              <Settings className="h-5 w-5 text-emerald-600" />
-              <h3 className="font-sans text-sm font-bold uppercase tracking-wider text-gray-900">Full Technical Specifications</h3>
+          {/* Specifications — simple two-column table */}
+          <section>
+            <h2 className="font-sans text-2xl md:text-3xl font-bold text-gray-950 tracking-tight mb-5">Specifications</h2>
+            <div className="glass rounded-2xl overflow-hidden">
+              <dl className="grid grid-cols-1 sm:grid-cols-2">
+                {product.specs.map((spec, sIdx) => (
+                  <div key={sIdx} className="flex items-baseline justify-between gap-4 px-5 py-3.5 border-b border-gray-100">
+                    <dt className="font-sans text-sm text-gray-500">{spec.label}</dt>
+                    <dd className="font-sans text-sm font-semibold text-gray-900 text-right">{spec.value}</dd>
+                  </div>
+                ))}
+              </dl>
             </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-10 gap-y-1">
-              {product.specs.map((spec, sIdx) => (
-                <div key={sIdx} className="flex items-baseline justify-between gap-4 border-b border-gray-200/50 py-3">
-                  <span className="font-sans text-xs font-bold uppercase tracking-wide text-gray-400">{spec.label}</span>
-                  <span className="font-mono text-xs font-medium text-gray-800 text-right">{spec.value}</span>
-                </div>
-              ))}
-            </div>
-            <div className="mt-8 flex items-start gap-2 rounded-xl border border-emerald-100/50 bg-emerald-50/50 p-4 text-xs font-light leading-relaxed text-emerald-800">
+            <p className="mt-4 flex items-start gap-2 text-sm font-light leading-relaxed text-gray-500">
               <Info className="mt-0.5 h-4 w-4 shrink-0 text-emerald-600" />
-              <p>All hardware includes a 2-year warranty, CodeGen software integrations, and Colombo-based technical field support.</p>
-            </div>
+              Every unit includes a 2-year warranty, AiGROW software integration, and Colombo-based field support.
+            </p>
           </section>
 
           {/* More in this category */}

@@ -69,6 +69,8 @@ export interface Product {
   price?: string; // For the Shop page
   image?: string;         // primary product photo (studio render)
   gallery?: string[];     // full shot set for the detail page, hero first
+  /** Product demo video: a local /public path (.mp4/.webm) or a YouTube/Vimeo link. */
+  video?: string;
 }
 
 export interface Project {
