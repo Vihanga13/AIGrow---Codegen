@@ -27,7 +27,6 @@ import { PageId } from '../types';
 import { SERVICES_DATA, PROJECTS_DATA, FERTIGATION_MODELS, CLIMATE_MODELS, GREENHOUSE_PACKAGES } from '../data';
 import StatsCounter from './StatsCounter';
 import Reveal from './Reveal';
-import GreenhouseSimulator from './GreenhouseSimulator';
 
 const HERO_SLIDES = [
   {
@@ -471,9 +470,6 @@ export default function HomeView({
           </div>
         </div>
       </section>
-
-      {/* 5b. INTERACTIVE GREENHOUSE SIMULATOR */}
-      <GreenhouseSimulator onNavigate={onNavigate} />
 
       {/* 6. ADVANTAGES */}
       <section className="py-20 px-6">
