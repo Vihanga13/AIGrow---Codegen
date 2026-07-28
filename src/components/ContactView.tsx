@@ -1,5 +1,4 @@
-import { useState, useEffect, FormEvent } from 'react';
-import { Send, CheckCircle2, AlertCircle, MapPin, Phone, Mail, ShieldCheck, Calendar, Sparkles } from 'lucide-react';
+import { MapPin, Phone, Mail, ShieldCheck, Calendar, Sparkles, Facebook, ArrowUpRight } from 'lucide-react';
 import { PageId } from '../types';
 
 interface ContactViewProps {
@@ -8,64 +7,35 @@ interface ContactViewProps {
   onClearSelectedProductName: () => void;
 }
 
-export default function ContactView({ selectedProductName, onClearSelectedProductName }: ContactViewProps) {
-  const [fullName, setFullName] = useState('');
-  const [email, setEmail] = useState('');
-  const [phone, setPhone] = useState('');
-  const [interest, setInterest] = useState('Greenhouse Construction');
-  const [message, setMessage] = useState('');
+const WHATSAPP_NUMBER = '94769487184'; // 94 76 948 7184
+const WHATSAPP_DISPLAY = '+94 76 948 7184';
+const FACEBOOK_URL = 'https://facebook.com/AiGROW';
 
-  const [errors, setErrors] = useState<{ [key: string]: string }>({});
-  const [isSubmitted, setIsSubmitted] = useState(false);
+/** Official WhatsApp glyph (lucide has no WhatsApp brand mark). */
+function WhatsAppIcon({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" fill="currentColor" className={className} aria-hidden="true">
+      <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51l-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.885-9.885 9.885M20.52 3.449C18.24 1.245 15.24 0 12.045 0 5.463 0 .104 5.334.101 11.892c0 2.096.549 4.14 1.595 5.945L0 24l6.335-1.652a12.062 12.062 0 005.71 1.447h.006c6.585 0 11.946-5.335 11.949-11.896 0-3.176-1.24-6.165-3.487-8.413" />
+    </svg>
+  );
+}
 
-  // Prefill from a product "Enquire" click or the project estimator
-  useEffect(() => {
+export default function ContactView({ selectedProductName }: ContactViewProps) {
+  // Build a prefilled WhatsApp message, carrying any product/estimate enquiry context.
+  const buildWhatsAppText = () => {
+    if (selectedProductName.startsWith('Project Estimate:')) {
+      return `Hi AiGROW, I calculated a setup estimate on your Price Calculator:\n\n${selectedProductName.replace('Project Estimate: ', '')}\n\nCould you review my configuration and send a technical proposal?`;
+    }
+    if (selectedProductName.startsWith('Service:')) {
+      return `Hi AiGROW, I'd like to enquire about your ${selectedProductName.replace('Service: ', '')} service.`;
+    }
     if (selectedProductName) {
-      if (selectedProductName.startsWith('Project Estimate:')) {
-        setInterest('Greenhouse Construction');
-        setMessage(
-          `I have calculated a project estimation on the AiGROW Price Calculator:\n\n${selectedProductName.replace('Project Estimate: ', '')}\n\nPlease review my configuration and provide a final technical design proposal.`
-        );
-      } else {
-        setInterest('Equipment');
-        setMessage(`I would like to enquire about pricing, delivery, and setup details for the "${selectedProductName}". Please provide a full technical quote.`);
-      }
+      return `Hi AiGROW, I'd like to enquire about the "${selectedProductName}" — pricing, delivery and setup details please.`;
     }
-  }, [selectedProductName]);
-
-  const validate = () => {
-    const e: { [key: string]: string } = {};
-    if (!fullName.trim()) e.fullName = 'Full Name is required';
-    if (!email.trim()) e.email = 'Email Address is required';
-    else if (!/\S+@\S+\.\S+/.test(email)) e.email = 'Please provide a valid email (e.g. name@domain.com)';
-    if (!phone.trim()) e.phone = 'Contact Number is required';
-    else if (!/^[+0-9\s-]{8,20}$/.test(phone)) e.phone = 'Please enter a valid phone number';
-    if (!message.trim()) e.message = 'Message content cannot be empty';
-    setErrors(e);
-    return Object.keys(e).length === 0;
+    return 'Hi AiGROW, I would like to learn more about your smart agriculture solutions.';
   };
 
-  const handleSubmit = (e: FormEvent) => {
-    e.preventDefault();
-    if (validate()) {
-      setIsSubmitted(true);
-      onClearSelectedProductName();
-    }
-  };
-
-  const resetForm = () => {
-    setIsSubmitted(false);
-    setFullName('');
-    setEmail('');
-    setPhone('');
-    setInterest('Greenhouse Construction');
-    setMessage('');
-    setErrors({});
-  };
-
-  const inputBase =
-    'px-4 py-3 bg-gray-50 border rounded-xl text-sm font-sans text-gray-800 focus:outline-none focus:bg-white transition-all w-full';
-  const errClass = (k: string) => (errors[k] ? 'border-red-400 focus:border-red-500' : 'border-gray-200 focus:border-emerald-500');
+  const whatsappHref = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(buildWhatsAppText())}`;
 
   return (
     <div className="min-h-screen text-[#1F2321] px-6 py-12 lg:py-16">
@@ -80,148 +50,61 @@ export default function ContactView({ selectedProductName, onClearSelectedProduc
             Let’s Grow Together
           </h1>
           <p className="font-sans text-gray-500 font-light text-base md:text-lg">
-            Have a project in mind, need smart equipment quotes, or want to partner on export crops? Get in touch with
-            CodeGen’s agritech team.
+            Message us directly on WhatsApp or Facebook and our agritech team will get back to you right away.
           </p>
         </div>
 
+        {/* Enquiry context (from a product/service "Enquire" click) */}
+        {selectedProductName && (
+          <div className="mb-6 inline-flex items-center gap-2 rounded-xl bg-emerald-50 border border-emerald-100 px-4 py-2.5 text-sm text-emerald-800">
+            <Sparkles className="w-4 h-4 shrink-0" />
+            <span>Your enquiry about <strong>{selectedProductName.replace(/^(Project Estimate|Service): /, '')}</strong> is ready — it’ll be included in your message.</span>
+          </div>
+        )}
+
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
 
-          {/* FORM */}
-          <div className="lg:col-span-7 glass rounded-3xl p-7 md:p-9 shadow-xl shadow-emerald-900/5">
-            {isSubmitted ? (
-              <div className="flex flex-col items-center justify-center text-center gap-6 py-12">
-                <div className="w-16 h-16 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-600">
-                  <CheckCircle2 className="w-10 h-10" />
-                </div>
-                <div className="flex flex-col gap-2 max-w-md">
-                  <h2 className="font-sans text-2xl font-bold text-gray-950">Inquiry Submitted!</h2>
-                  <p className="font-sans text-sm text-gray-500 leading-relaxed font-light">
-                    Thank you, <strong className="text-gray-800">{fullName}</strong>. Your inquiry regarding{' '}
-                    <strong>{interest}</strong> has been received by our central engineering panel in Colombo.
-                  </p>
-                  <p className="font-sans text-xs text-emerald-700 bg-emerald-50 px-4 py-2.5 rounded-xl border border-emerald-100 mt-2 font-medium">
-                    A CodeGen agritech engineer will review your specifications and contact you at <strong>{email}</strong> within 24 business hours.
-                  </p>
-                </div>
-                <button
-                  onClick={resetForm}
-                  className="px-6 py-3 bg-gray-50 hover:bg-gray-100 text-gray-700 font-semibold rounded-xl text-xs transition-colors border border-gray-100"
-                >
-                  Submit Another Inquiry
-                </button>
+          {/* DIRECT CONTACT BUTTONS */}
+          <div className="lg:col-span-7 flex flex-col gap-5">
+            {/* WhatsApp */}
+            <a
+              href={whatsappHref}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group glass rounded-3xl p-6 md:p-7 flex items-center gap-5 transition-all duration-300 hover:shadow-xl hover:shadow-emerald-900/5"
+            >
+              <span className="flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl bg-[#25D366] text-white shadow-lg shadow-[#25D366]/25">
+                <WhatsAppIcon className="h-8 w-8" />
+              </span>
+              <div className="flex-1 min-w-0">
+                <h2 className="font-sans text-lg font-bold text-gray-950">Chat on WhatsApp</h2>
+                <p className="font-sans text-sm text-gray-500 font-light mt-0.5">Fastest way to reach us — usually replies within minutes.</p>
+                <span className="font-mono text-sm font-bold text-emerald-700 mt-1.5 block">{WHATSAPP_DISPLAY}</span>
               </div>
-            ) : (
-              <form onSubmit={handleSubmit} className="flex flex-col gap-5" id="contact-inquiry-form">
-                {/* Full name */}
-                <div className="flex flex-col gap-1.5">
-                  <label htmlFor="fullName" className="font-sans text-xs font-bold text-gray-700 uppercase tracking-wider">
-                    Full Name <span className="text-red-500">*</span>
-                  </label>
-                  <input
-                    type="text"
-                    id="fullName"
-                    value={fullName}
-                    onChange={(e) => setFullName(e.target.value)}
-                    placeholder="Enter your first and last name"
-                    className={`${inputBase} ${errClass('fullName')}`}
-                  />
-                  {errors.fullName && (
-                    <span className="text-red-500 text-[11px] font-semibold flex items-center gap-1 mt-0.5">
-                      <AlertCircle className="w-3.5 h-3.5" />{errors.fullName}
-                    </span>
-                  )}
-                </div>
+              <ArrowUpRight className="w-5 h-5 text-gray-300 shrink-0 transition-all group-hover:text-emerald-600 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+            </a>
 
-                {/* Email + Phone */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                  <div className="flex flex-col gap-1.5">
-                    <label htmlFor="email" className="font-sans text-xs font-bold text-gray-700 uppercase tracking-wider">
-                      Email Address <span className="text-red-500">*</span>
-                    </label>
-                    <input
-                      type="email"
-                      id="email"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      placeholder="name@company.com"
-                      className={`${inputBase} ${errClass('email')}`}
-                    />
-                    {errors.email && (
-                      <span className="text-red-500 text-[11px] font-semibold flex items-center gap-1 mt-0.5">
-                        <AlertCircle className="w-3.5 h-3.5" />{errors.email}
-                      </span>
-                    )}
-                  </div>
+            {/* Facebook */}
+            <a
+              href={FACEBOOK_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group glass rounded-3xl p-6 md:p-7 flex items-center gap-5 transition-all duration-300 hover:shadow-xl hover:shadow-emerald-900/5"
+            >
+              <span className="flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl bg-[#1877F2] text-white shadow-lg shadow-[#1877F2]/25">
+                <Facebook className="h-8 w-8" />
+              </span>
+              <div className="flex-1 min-w-0">
+                <h2 className="font-sans text-lg font-bold text-gray-950">Message us on Facebook</h2>
+                <p className="font-sans text-sm text-gray-500 font-light mt-0.5">Follow our latest builds and send us a message.</p>
+                <span className="font-mono text-sm font-bold text-emerald-700 mt-1.5 block">@AiGROW</span>
+              </div>
+              <ArrowUpRight className="w-5 h-5 text-gray-300 shrink-0 transition-all group-hover:text-emerald-600 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+            </a>
 
-                  <div className="flex flex-col gap-1.5">
-                    <label htmlFor="phone" className="font-sans text-xs font-bold text-gray-700 uppercase tracking-wider">
-                      Contact No <span className="text-red-500">*</span>
-                    </label>
-                    <input
-                      type="text"
-                      id="phone"
-                      value={phone}
-                      onChange={(e) => setPhone(e.target.value)}
-                      placeholder="+94 77 XXXXXXX"
-                      className={`${inputBase} ${errClass('phone')}`}
-                    />
-                    {errors.phone && (
-                      <span className="text-red-500 text-[11px] font-semibold flex items-center gap-1 mt-0.5">
-                        <AlertCircle className="w-3.5 h-3.5" />{errors.phone}
-                      </span>
-                    )}
-                  </div>
-                </div>
-
-                {/* Interest */}
-                <div className="flex flex-col gap-1.5">
-                  <label htmlFor="interest" className="font-sans text-xs font-bold text-gray-700 uppercase tracking-wider">
-                    Primary Area of Interest <span className="text-red-500">*</span>
-                  </label>
-                  <select
-                    id="interest"
-                    value={interest}
-                    onChange={(e) => setInterest(e.target.value)}
-                    className={`${inputBase} border-gray-200 focus:border-emerald-500`}
-                  >
-                    <option value="Greenhouse Construction">Greenhouse Construction / Engineering</option>
-                    <option value="Fresh Produce">Premium Fresh Produce Retail</option>
-                    <option value="Equipment">Smart Hardware / Equipment Buying</option>
-                    <option value="Services">Consultation & General Services</option>
-                  </select>
-                </div>
-
-                {/* Message */}
-                <div className="flex flex-col gap-1.5">
-                  <label htmlFor="message" className="font-sans text-xs font-bold text-gray-700 uppercase tracking-wider">
-                    Tell Us About Your Project <span className="text-red-500">*</span>
-                  </label>
-                  <textarea
-                    id="message"
-                    rows={6}
-                    value={message}
-                    onChange={(e) => setMessage(e.target.value)}
-                    placeholder="Provide details such as farm location, crop types, scale (e.g., number of acres or sq ft), and automation desires."
-                    className={`${inputBase} leading-relaxed resize-none ${errClass('message')}`}
-                  />
-                  {errors.message && (
-                    <span className="text-red-500 text-[11px] font-semibold flex items-center gap-1 mt-0.5">
-                      <AlertCircle className="w-3.5 h-3.5" />{errors.message}
-                    </span>
-                  )}
-                </div>
-
-                <button
-                  type="submit"
-                  id="contact-btn-submit"
-                  className="mt-2 w-full py-4 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold rounded-xl text-sm transition-all shadow-md shadow-emerald-600/10 flex items-center justify-center gap-2"
-                >
-                  Submit Project Specifications
-                  <Send className="w-4 h-4" />
-                </button>
-              </form>
-            )}
+            <p className="font-sans text-xs text-gray-400 font-light px-1">
+              Prefer email? Write to <a href="mailto:info@aigrow.lk" className="text-emerald-700 font-medium hover:underline">info@aigrow.lk</a> or call the office below.
+            </p>
           </div>
 
           {/* SIDEBAR */}
@@ -233,14 +116,14 @@ export default function ContactView({ selectedProductName, onClearSelectedProduc
                   <MapPin className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
                   <span>Trace Expert City, Bay 15 & 16, Maradana Rd, Colombo 10, Sri Lanka</span>
                 </div>
-                <div className="flex gap-2 items-center">
+                <a href="tel:+94112024700" className="flex gap-2 items-center hover:text-emerald-700 transition-colors">
                   <Phone className="w-4 h-4 text-emerald-600 shrink-0" />
                   <span>+94 11 202 4700</span>
-                </div>
-                <div className="flex gap-2 items-center">
+                </a>
+                <a href="mailto:info@aigrow.lk" className="flex gap-2 items-center hover:text-emerald-700 transition-colors">
                   <Mail className="w-4 h-4 text-emerald-600 shrink-0" />
                   <span>info@aigrow.lk</span>
-                </div>
+                </a>
               </div>
             </div>
 
