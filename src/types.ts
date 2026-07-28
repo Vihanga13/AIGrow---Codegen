@@ -73,19 +73,23 @@ export interface Product {
   video?: string;
 }
 
+export type ProjectCategory = 'greenhouse' | 'mushroom' | 'coconut';
+
 export interface Project {
   id: string;
   title: string;
   location: string;
   type: string;
-  summary: string;
-  fullDescription: string;
-  image: string;
-  stats: {
+  category: ProjectCategory;
+  // Rich case-study fields — present only for fully-documented projects.
+  summary?: string;
+  fullDescription?: string;
+  image?: string;
+  stats?: {
     label: string;
     value: string;
   }[];
-  outcomes: string[];
+  outcomes?: string[];
 }
 
 export interface NewsItem {

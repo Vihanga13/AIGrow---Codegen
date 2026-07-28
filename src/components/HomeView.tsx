@@ -543,7 +543,7 @@ export default function HomeView({
           </Reveal>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {PROJECTS_DATA.map((proj, index) => (
+            {PROJECTS_DATA.filter((p) => p.image && p.stats?.length).slice(0, 3).map((proj, index) => (
               <Reveal key={proj.id} delay={(index % 3) * 0.08}>
                 <button
                   onClick={() => onSelectProject(proj.id)}
@@ -565,7 +565,7 @@ export default function HomeView({
                     <h3 className="font-sans text-base font-bold text-gray-950 leading-snug">{proj.title}</h3>
                     <p className="font-sans text-xs text-gray-500 font-light leading-relaxed">{proj.summary}</p>
                     <div className="flex flex-wrap gap-2 mt-1">
-                      {proj.stats.slice(0, 3).map((stat, i) => (
+                      {(proj.stats ?? []).slice(0, 3).map((stat, i) => (
                         <div key={i} className="rounded-lg bg-emerald-50 px-2.5 py-1.5">
                           <span className="block font-mono text-sm font-black text-emerald-600 leading-none">{stat.value}</span>
                           <span className="block font-sans text-[8px] text-gray-400 uppercase tracking-wide mt-0.5">{stat.label}</span>

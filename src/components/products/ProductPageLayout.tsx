@@ -66,7 +66,7 @@ export default function ProductPageLayout({
         </div>
 
         {/* Header */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-stretch mb-14">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-stretch mb-12">
           {/* Visual tile — product photo when we have one, gradient+icon otherwise */}
           <div className="flex flex-col gap-3">
             <div className="relative rounded-3xl overflow-hidden min-h-[240px] flex items-center justify-center border border-gray-200/70 bg-gradient-to-br from-emerald-50 to-gray-100">
@@ -112,7 +112,8 @@ export default function ProductPageLayout({
           <div className="flex flex-col justify-center gap-4">
             <span className="font-mono text-[11px] font-bold uppercase tracking-widest text-emerald-600">{product.categoryLabel}</span>
             <h1 className="font-sans text-3xl md:text-4xl font-extrabold tracking-tight text-gray-950 leading-tight">{product.name}</h1>
-            <p className="font-sans text-base italic font-medium text-emerald-800 leading-relaxed">"{product.catchphrase}"</p>
+            <p className="font-sans text-base font-medium text-emerald-800 leading-relaxed">{product.catchphrase}</p>
+            <p className="font-sans text-[15px] text-gray-600 font-light leading-relaxed">{product.description}</p>
             <div className="flex flex-wrap gap-3 mt-1">
               <button
                 onClick={handleEnquire}
@@ -134,12 +135,6 @@ export default function ProductPageLayout({
 
         {/* Content */}
         <div className="flex flex-col gap-12">
-          {/* Overview */}
-          <section>
-            <h2 className="font-sans text-2xl md:text-3xl font-bold text-gray-950 tracking-tight mb-4">Overview</h2>
-            <p className="font-sans text-lg text-gray-600 font-light leading-relaxed">{product.description}</p>
-          </section>
-
           {/* Product video (only when one is set) */}
           {product.video && <ProductVideo src={product.video} title={product.name} />}
 
