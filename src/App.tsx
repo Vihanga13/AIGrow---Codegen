@@ -23,6 +23,7 @@ import TermsView from './components/TermsView';
 
 // New Subpage Views
 import ProductCategoryPage from './components/ProductCategoryPage';
+import CatalogItemView from './components/products/CatalogItemView';
 
 // Individual service pages (one dedicated file/route per service)
 import GreenhousePage from './components/services/GreenhousePage';
@@ -52,6 +53,12 @@ export default function App() {
   const [selectedServiceId, setSelectedServiceId] = useState<string>('greenhouse');
   const [selectedProjectId, setSelectedProjectId] = useState<string>('');
   const [selectedProductName, setSelectedProductName] = useState<string>('');
+  const [selectedItemId, setSelectedItemId] = useState<string>('');
+
+  const handleOpenCatalogItem = (itemId: string) => {
+    setSelectedItemId(itemId);
+    handleNavigate('catalog-item');
+  };
 
   const handleNavigate = (pageId: PageId) => {
     setCurrentPage(pageId);
@@ -137,6 +144,14 @@ export default function App() {
         );
       case 'fresh-products':
         return <FreshProductsView onNavigate={handleNavigate} />;
+      case 'catalog-item':
+        return (
+          <CatalogItemView
+            itemId={selectedItemId}
+            onNavigate={handleNavigate}
+            onSelectProductForEnquiry={handleSelectProductForEnquiry}
+          />
+        );
 
       // ---- Individual product pages (one dedicated route each) ----
       case 'product-smart-climate':
@@ -225,7 +240,7 @@ export default function App() {
   return (
     <div className="flex flex-col min-h-screen bg-transparent">
       {/* Shared Navigation Header */}
-      <Navbar currentPage={currentPage} onNavigate={handleNavigate} />
+      <Navbar currentPage={currentPage} onNavigate={handleNavigate} onOpenCatalogItem={handleOpenCatalogItem} />
 
       {/* Main Active Page Stage with animated page-shifts */}
       <main className={`grow ${currentPage !== 'home' ? 'pt-28 lg:pt-32' : ''}`}>

@@ -1335,3 +1335,20 @@ export const FRESH_PRODUCE: CatalogItem[] = PRODUCE_ROWS.map(([name, price, grou
   group,
   image: CATALOG_IMAGES[name]
 }));
+
+/* ================================================================== */
+/* Catalog items referenced from the Products mega-menu that don't yet */
+/* have full data. Priced "on request" until the live DB provides it.  */
+/* ================================================================== */
+export const EXTRA_CATALOG_ITEMS: CatalogItem[] = [
+  { id: 'sprinklers', name: 'Sprinklers', price: 'Price on request', group: 'Irrigation Fittings', spec: 'Overhead and micro-sprinkler options for uniform greenhouse irrigation coverage.' },
+  { id: 'filters', name: 'Filters', price: 'Price on request', group: 'Irrigation Fittings', spec: 'Screen and disc filtration that protects drippers and fertigation lines from clogging.' },
+  { id: 'connectors-accessories', name: 'Connectors & Accessories', price: 'Price on request', group: 'Irrigation Fittings', spec: 'Fittings, joiners, valves and accessories for assembling drip and fertigation networks.' },
+  { id: 'mini-climate-controller', name: 'Mini Climate Controller', price: 'Price on request', group: 'Climate Control', spec: 'Compact plug-and-play climate controller with humidity & temperature control, available in 2, 4 and 8 channel configurations.' },
+  { id: 'weather-station', name: 'Weather Station', price: 'Price on request', group: 'Climate Control', spec: 'On-site weather monitoring — temperature, humidity, rainfall and wind — feeding the automation system.' }
+];
+
+/** Looks up any catalog item (parts, extras, or fresh produce) by id. */
+export function findCatalogItem(id: string): CatalogItem | undefined {
+  return [...GREENHOUSE_PARTS, ...EXTRA_CATALOG_ITEMS, ...FRESH_PRODUCE].find((i) => i.id === id);
+}

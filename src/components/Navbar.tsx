@@ -25,6 +25,7 @@ import { PageId } from '../types';
 interface NavbarProps {
   currentPage: PageId;
   onNavigate: (pageId: PageId) => void;
+  onOpenCatalogItem: (itemId: string) => void;
 }
 
 interface AgriZone {
@@ -75,7 +76,7 @@ const AGRI_ZONES: AgriZone[] = [
   }
 ];
 
-export default function Navbar({ currentPage, onNavigate }: NavbarProps) {
+export default function Navbar({ currentPage, onNavigate, onOpenCatalogItem }: NavbarProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [openDropdown, setOpenDropdown] = useState<'services' | 'products' | 'about' | null>(null);
 
@@ -155,34 +156,44 @@ export default function Navbar({ currentPage, onNavigate }: NavbarProps) {
     { id: 'about-news' as PageId, label: 'Latest News Room', desc: 'Announcements & innovation awards', icon: <Newspaper className="w-4 h-4 text-emerald-600 shrink-0" /> },
   ];
 
-  // Products mega-menu (Netafim-style multi-column). Leaf items route to the closest
-  // existing catalog route until each sub-category gets its own dedicated page.
+  // Products mega-menu (Netafim-style multi-column). A leaf is either:
+  //   • { label, to }   → a dedicated product detail page
+  //   • { label, item } → a generic catalog-item detail page (by id)
+  //   • a plain string  → falls back to its column's catalog route
+  type MegaLeaf = string | { label: string; to: PageId } | { label: string; item: string };
   const productsMega: {
     title: string;
     target: PageId;
     icon: ReactElement;
-    items?: string[];
-    groups?: { title: string; items: string[] }[];
+    items?: MegaLeaf[];
+    groups?: { title: string; items: MegaLeaf[] }[];
   }[] = [
     {
       title: 'Fertigation & Irrigation Equipment',
       target: 'products-irrigation',
       icon: <Droplet className="w-4 h-4 text-emerald-600 shrink-0" />,
-      items: ['Smart Fertigators', 'Water Meters', 'Drippers', 'Sprinklers', 'Filters', 'Connectors & Accessories']
+      items: [
+        { label: 'Smart Fertigators', to: 'product-fertigation-system' },
+        { label: 'Water Meters', to: 'product-water-meter' },
+        { label: 'Drippers', to: 'product-smart-dripper' },
+        { label: 'Sprinklers', item: 'sprinklers' },
+        { label: 'Filters', item: 'filters' },
+        { label: 'Connectors & Accessories', item: 'connectors-accessories' }
+      ]
     },
     {
       title: 'Greenhouse Equipment',
       target: 'products',
       icon: <Building2 className="w-4 h-4 text-emerald-600 shrink-0" />,
       groups: [
-        { title: 'Greenhouse Coverings', items: ['Greenhouse Polythene', 'Insect Proof Nets'] },
-        { title: 'Ground Covers', items: ['Mulch Film', 'Weed Mats', 'White Weed Mats'] },
-        { title: 'Shade & Thermal Screens', items: ['Shade Nets', 'Aluminet Thermal Screens'] },
-        { title: 'Ventilation & Cooling', items: ['Exhaust Fans', 'Circulation Fans', 'Cooling Pad Systems'] },
-        { title: 'Roll-Up Systems', items: ['Manual Roll-Up Systems', 'Motorized Roll-Up Systems'] },
-        { title: 'Installation Hardware', items: ['Film Lock Channels', 'Wriggle Wires', 'Film Clips', 'Wind Belts', 'Repair Tapes'] },
-        { title: 'Crop Support', items: ['Trellis Clips', 'Trellis Hooks', 'Roller Hooks'] },
-        { title: 'Pest Management', items: ['Sticky Traps', 'Sticky Rolls', 'Pheromone Traps', 'Pheromone Lures'] }
+        { title: 'Greenhouse Coverings', items: [{ label: 'Greenhouse Polythene', item: 'polythene-ginegar' }, { label: 'Insect Proof Nets', item: 'insect-net-40x25' }] },
+        { title: 'Ground Covers', items: [{ label: 'Mulch Film', item: 'mulch-film' }, { label: 'Weed Mats', item: 'weed-mat' }, { label: 'White Weed Mats', item: 'white-weed-mat' }] },
+        { title: 'Shade & Thermal Screens', items: [{ label: 'Shade Nets', item: 'shade-net-aluminum' }, { label: 'Aluminet Thermal Screens', item: 'thermal-shade-net' }] },
+        { title: 'Ventilation & Cooling', items: [{ label: 'Exhaust Fans', item: 'exhaust-fan' }, { label: 'Circulation Fans', item: 'circulation-fan' }, { label: 'Cooling Pad Systems', item: 'cooling-pad-set' }] },
+        { title: 'Roll-Up Systems', items: [{ label: 'Manual Roll-Up Systems', item: 'manual-handle-rollup' }, { label: 'Motorized Roll-Up Systems', item: 'rollup-motor' }] },
+        { title: 'Installation Hardware', items: [{ label: 'Film Lock Channels', item: 'film-lock-aluminum' }, { label: 'Wriggle Wires', item: 'film-lock-aluminum' }, { label: 'Film Clips', item: 'film-clip-25mm' }, { label: 'Wind Belts', item: 'wind-belt-roll' }, { label: 'Repair Tapes', item: 'polythene-repair-tape' }] },
+        { title: 'Crop Support', items: [{ label: 'Trellis Clips', item: 'trellis-clip' }, { label: 'Trellis Hooks', item: 'trellis-hook' }, { label: 'Roller Hooks', item: 'roller-hook' }] },
+        { title: 'Pest Management', items: [{ label: 'Sticky Traps', item: 'yellow-sticky-cards' }, { label: 'Sticky Rolls', item: 'yellow-sticky-rolls' }, { label: 'Pheromone Traps', item: 'pheromone-trap' }, { label: 'Pheromone Lures', item: 'pheromone-trap' }] }
       ]
     },
     {
@@ -190,8 +201,8 @@ export default function Navbar({ currentPage, onNavigate }: NavbarProps) {
       target: 'products-environmental',
       icon: <Cpu className="w-4 h-4 text-emerald-600 shrink-0" />,
       groups: [
-        { title: 'Ventilation & Cooling', items: ['Exhaust Fans', 'Circulation Fans', 'Cooling Pad Systems'] },
-        { title: 'Climate Controller', items: ['Smart Climate Controller', 'Mini Climate Controller', 'Weather Station'] }
+        { title: 'Ventilation & Cooling', items: [{ label: 'Exhaust Fans', item: 'exhaust-fan' }, { label: 'Circulation Fans', item: 'circulation-fan' }, { label: 'Cooling Pad Systems', item: 'cooling-pad-set' }] },
+        { title: 'Climate Controller', items: [{ label: 'Smart Climate Controller', to: 'product-smart-climate' }, { label: 'Mini Climate Controller', item: 'mini-climate-controller' }, { label: 'Weather Station', item: 'weather-station' }] }
       ]
     },
     {
@@ -289,6 +300,26 @@ export default function Navbar({ currentPage, onNavigate }: NavbarProps) {
     </div>
   );
 
+  const leafLabel = (l: MegaLeaf) => (typeof l === 'string' ? l : l.label);
+
+  // Open a generic catalog-item detail page, closing the menus first.
+  const handleOpenItem = (itemId: string) => {
+    cancelClose();
+    onOpenCatalogItem(itemId);
+    setIsOpen(false);
+    setOpenDropdown(null);
+    setIsTelemetryOpen(false);
+    setMobileExpanded(null);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  // Route a mega-menu leaf: dedicated page, catalog-item page, or column fallback.
+  const handleLeafClick = (leaf: MegaLeaf, fallback: PageId) => {
+    if (typeof leaf === 'string') handleNavClick(fallback);
+    else if ('to' in leaf) handleNavClick(leaf.to);
+    else handleOpenItem(leaf.item);
+  };
+
   // Wide Netafim-style mega-menu panel for the Products trigger.
   // Rendered as a DOM child of the trigger so the island's mouseleave doesn't fire while hovered.
   const renderProductsMegaPanel = () => (
@@ -318,13 +349,13 @@ export default function Navbar({ currentPage, onNavigate }: NavbarProps) {
             {/* Flat list of leaves */}
             {col.items && (
               <div className="flex flex-col gap-0.5">
-                {col.items.map((label) => (
+                {col.items.map((leaf) => (
                   <button
-                    key={label}
-                    onClick={() => handleNavClick(col.target)}
+                    key={leafLabel(leaf)}
+                    onClick={() => handleLeafClick(leaf, col.target)}
                     className="text-left font-sans text-[13px] text-gray-600 hover:text-emerald-700 py-1 transition-colors"
                   >
-                    {label}
+                    {leafLabel(leaf)}
                   </button>
                 ))}
               </div>
@@ -336,13 +367,13 @@ export default function Navbar({ currentPage, onNavigate }: NavbarProps) {
                 {col.groups.map((grp) => (
                   <div key={grp.title} className="flex flex-col gap-1 min-w-0">
                     <span className="font-sans text-[11px] font-bold text-emerald-800">{grp.title}</span>
-                    {grp.items.map((label) => (
+                    {grp.items.map((leaf) => (
                       <button
-                        key={label}
-                        onClick={() => handleNavClick(col.target)}
+                        key={leafLabel(leaf)}
+                        onClick={() => handleLeafClick(leaf, col.target)}
                         className="text-left font-sans text-[12px] text-gray-500 hover:text-emerald-700 py-0.5 leading-snug transition-colors truncate"
                       >
-                        {label}
+                        {leafLabel(leaf)}
                       </button>
                     ))}
                   </div>

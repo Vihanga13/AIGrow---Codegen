@@ -9,6 +9,7 @@ export type PageId =
   | 'products-environmental'
   | 'products-resource'
   | 'products-irrigation'
+  | 'catalog-item'
   | 'fresh-products'
   // Dedicated single-product detail pages (one route per product)
   | 'product-smart-climate'
