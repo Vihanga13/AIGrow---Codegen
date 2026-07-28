@@ -80,33 +80,44 @@ export default function ProductsView({ onNavigate }: ProductsViewProps) {
                 <button
                   id={`product-card-${p.id}`}
                   onClick={() => go(`product-${p.id}` as PageId)}
-                  className="group w-full h-full text-left glass rounded-3xl p-6 flex flex-col transition-all duration-300 hover:shadow-xl hover:shadow-emerald-900/5"
+                  className="group w-full h-full text-left glass rounded-3xl overflow-hidden flex flex-col transition-all duration-300 hover:shadow-xl hover:shadow-emerald-900/5"
                 >
-                  <div className="flex items-center justify-between mb-4">
-                    <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600">
-                      <Icon className="h-5 w-5" />
-                    </span>
+                  {/* Product photo, or an icon panel when there's no photo yet */}
+                  <div className="relative h-44 flex items-center justify-center border-b border-gray-100 bg-gradient-to-br from-emerald-50 to-gray-100">
+                    {p.image ? (
+                      <img
+                        src={p.image}
+                        alt={p.name}
+                        loading="lazy"
+                        referrerPolicy="no-referrer"
+                        className="h-full w-full object-contain p-5 transition-transform duration-500 group-hover:scale-105"
+                      />
+                    ) : (
+                      <Icon className="h-12 w-12 text-emerald-500/70" />
+                    )}
                     {p.price && (
-                      <span className="font-mono text-sm font-bold text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-lg">{p.price}</span>
+                      <span className="absolute top-3 right-3 font-mono text-sm font-bold text-emerald-700 bg-white/80 backdrop-blur-sm px-2.5 py-1 rounded-lg shadow-sm">{p.price}</span>
                     )}
                   </div>
 
-                  <h3 className="font-sans text-base font-bold text-gray-950 leading-snug">{p.name}</h3>
-                  <p className="font-sans text-xs italic text-emerald-700 font-medium mt-1">"{p.catchphrase}"</p>
+                  <div className="p-6 flex flex-col flex-1">
+                    <h3 className="font-sans text-base font-bold text-gray-950 leading-snug">{p.name}</h3>
+                    <p className="font-sans text-xs italic text-emerald-700 font-medium mt-1">"{p.catchphrase}"</p>
 
-                  <div className="mt-4 flex flex-col divide-y divide-gray-100 border-y border-gray-100">
-                    {p.specs.slice(0, 2).map((s, i) => (
-                      <div key={i} className="flex justify-between gap-2 py-2 text-[11px]">
-                        <span className="font-mono text-gray-400 uppercase tracking-wide truncate">{s.label}</span>
-                        <span className="font-mono text-gray-700 font-medium text-right truncate">{s.value}</span>
-                      </div>
-                    ))}
+                    <div className="mt-4 flex flex-col divide-y divide-gray-100 border-y border-gray-100">
+                      {p.specs.slice(0, 2).map((s, i) => (
+                        <div key={i} className="flex justify-between gap-2 py-2 text-[11px]">
+                          <span className="font-mono text-gray-400 uppercase tracking-wide truncate">{s.label}</span>
+                          <span className="font-mono text-gray-700 font-medium text-right truncate">{s.value}</span>
+                        </div>
+                      ))}
+                    </div>
+
+                    <span className="mt-auto pt-4 inline-flex items-center gap-1.5 text-xs font-bold text-emerald-700">
+                      View Details
+                      <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-1" />
+                    </span>
                   </div>
-
-                  <span className="mt-auto pt-4 inline-flex items-center gap-1.5 text-xs font-bold text-emerald-700">
-                    View Details
-                    <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-1" />
-                  </span>
                 </button>
               </Reveal>
             );

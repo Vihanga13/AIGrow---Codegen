@@ -13,6 +13,7 @@ import Footer from './components/Footer';
 import HomeView from './components/HomeView';
 import ServicesView from './components/ServicesView';
 import ProductsView from './components/ProductsView';
+import FreshProductsView from './components/FreshProductsView';
 import AboutView from './components/AboutView';
 import ProjectsView from './components/ProjectsView';
 import ContactView from './components/ContactView';
@@ -134,6 +135,8 @@ export default function App() {
             onSelectProductForEnquiry={handleSelectProductForEnquiry}
           />
         );
+      case 'fresh-products':
+        return <FreshProductsView onNavigate={handleNavigate} />;
 
       // ---- Individual product pages (one dedicated route each) ----
       case 'product-smart-climate':

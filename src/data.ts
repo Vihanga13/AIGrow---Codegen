@@ -165,6 +165,11 @@ export const PRODUCTS_DATA: Product[] = [
       'Custom scheduling and automated sunrise/sunset curve adjustments',
       'Immediate alert system via SMS, email, and mobile push notification'
     ],
+    image: '/products/Smart%20Climate%20Control%20Unit/ai%20grow.455%20(1).png',
+    gallery: [
+      '/products/Smart%20Climate%20Control%20Unit/ai%20grow.455%20(1).png',
+      '/products/Smart%20Climate%20Control%20Unit/devicess.447%20(1).png'
+    ],
     specs: [
       { label: 'Input Voltage', value: '220V AC / 50Hz' },
       { label: 'Control Capacity', value: '16 Channels (expandable)' },
@@ -186,6 +191,12 @@ export const PRODUCTS_DATA: Product[] = [
       '0-10V Dimming control with programmable ramp-up and ramp-down curves',
       'Passive cooling heat sink structure prevents heat stress without noisy fans',
       'Daisy-chain layout supporting up to 24 fixtures per single power point'
+    ],
+    image: '/products/AiGROW%20Smart%20LED%20Light/0502.png',
+    gallery: [
+      '/products/AiGROW%20Smart%20LED%20Light/0502.png',
+      '/products/AiGROW%20Smart%20LED%20Light/0369.png',
+      '/products/AiGROW%20Smart%20LED%20Light/03.png'
     ],
     specs: [
       { label: 'Power Consumption', value: '150 Watts' },
@@ -233,6 +244,11 @@ export const PRODUCTS_DATA: Product[] = [
       'High-grade stainless steel probes with robust weatherproof casing',
       'LoRa connectivity enabling transmitting over distances up to 3km'
     ],
+    image: '/products/Soil%20Moisture%20and%20Temp%20Sensor%20Unit/WhatsApp%20Image%202025-04-03%20at%2012.25.16%20PM.jpeg',
+    gallery: [
+      '/products/Soil%20Moisture%20and%20Temp%20Sensor%20Unit/WhatsApp%20Image%202025-04-03%20at%2012.25.16%20PM.jpeg',
+      '/products/Soil%20Moisture%20and%20Temp%20Sensor%20Unit/WhatsApp%20Image%202025-04-03%20at%2012.25.18%20PM.jpeg'
+    ],
     specs: [
       { label: 'VWC Range', value: '0% to 100% (Acc: ±2%)' },
       { label: 'EC Range', value: '0 to 20 mS/cm' },
@@ -254,6 +270,10 @@ export const PRODUCTS_DATA: Product[] = [
       'Automatic temperature compensation (ATC) ensuring reading accuracy',
       'Easy push-button digital calibration wizard',
       'RS485 Modbus interface supporting seamless industrial PLC integrations'
+    ],
+    image: '/products/In-Line%20ECpH%20Metering%20Hub/ff.png',
+    gallery: [
+      '/products/In-Line%20ECpH%20Metering%20Hub/ff.png'
     ],
     specs: [
       { label: 'pH Range', value: '0.00 to 14.00 pH (Acc: ±0.02)' },
@@ -277,6 +297,10 @@ export const PRODUCTS_DATA: Product[] = [
       'Tracks total power consumed in kWh with daily, weekly, and monthly trendlines',
       'Alerts for phase failure or voltage surges to protect expensive machinery'
     ],
+    image: '/products/Smart%20Energy%20Monitor/ENERGY%20METER.448%20(2).png',
+    gallery: [
+      '/products/Smart%20Energy%20Monitor/ENERGY%20METER.448%20(2).png'
+    ],
     specs: [
       { label: 'Phase Support', value: 'Single Phase / Three Phase' },
       { label: 'Current Capacity', value: 'Up to 100A per clamp (CT)' },
@@ -298,6 +322,10 @@ export const PRODUCTS_DATA: Product[] = [
       'Constructed with lead-free corrosion-resistant brass elements',
       'Detects micro-leaks or pipe bursts instantly, shutting down pumps wirelessly',
       'Long-term volume tracking for crop-specific consumption analytics'
+    ],
+    image: '/products/Smart%20Water%20Flow%20Meter/ENERGY%20METER.449%20(1)%20(1).png',
+    gallery: [
+      '/products/Smart%20Water%20Flow%20Meter/ENERGY%20METER.449%20(1)%20(1).png'
     ],
     specs: [
       { label: 'Pipe Diameter', value: '1" BSP Threaded (options for 2")' },
@@ -323,6 +351,11 @@ export const PRODUCTS_DATA: Product[] = [
       'Built-in safety limits prevent chemical over-concentration and leaf-scorch',
       'Compatible with both drip loops, nutrient film techniques, and sprayers'
     ],
+    image: '/products/AiGROW%20Precision%20Fertigation%20System/ai%20grow.454%20(2).png',
+    gallery: [
+      '/products/AiGROW%20Precision%20Fertigation%20System/ai%20grow.454%20(2).png',
+      '/products/AiGROW%20Precision%20Fertigation%20System/ai%20grow.4.6.jpg'
+    ],
     specs: [
       { label: 'Dosing Channels', value: '3 to 5 channels (Configurable)' },
       { label: 'Max Flow Capacity', value: '12 m³/Hour' },
@@ -345,6 +378,10 @@ export const PRODUCTS_DATA: Product[] = [
       'Includes fine-particle mesh filter preventing micro-dripper blockages',
       'Durable polypropylene frame resistant to chemicals'
     ],
+    image: '/products/Smart%20Automated%20Plant%20Feeder/Gemini_Generated_Image_xdpxnexdpxnexdpx.png',
+    gallery: [
+      '/products/Smart%20Automated%20Plant%20Feeder/Gemini_Generated_Image_xdpxnexdpxnexdpx.png'
+    ],
     specs: [
       { label: 'Feed Rate Range', value: '0.2% to 2% (adjustable ratio)' },
       { label: 'Operating Pressure', value: '0.15 - 0.45 MPa' },
@@ -366,6 +403,10 @@ export const PRODUCTS_DATA: Product[] = [
       'Built-in anti-siphon mechanism prevents soil suction when pressure drops',
       'Silicon diaphragm ensures durable flow accuracy for over 5 seasons',
       'Standard 4mm barb connection plugs directly into 16mm LDPE mains'
+    ],
+    image: '/products/AiGROW%20Smart%20Dripper%20Pack%20(50-Pack)/_00036_.png',
+    gallery: [
+      '/products/AiGROW%20Smart%20Dripper%20Pack%20(50-Pack)/_00036_.png'
     ],
     specs: [
       { label: 'Flow Rate', value: '2.0 Liters / Hour' },

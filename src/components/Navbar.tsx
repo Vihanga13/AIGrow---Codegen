@@ -134,16 +134,57 @@ export default function Navbar({ currentPage, onNavigate }: NavbarProps) {
     { id: 'services-fresh-produce' as PageId, label: 'Premium Fresh Produce', desc: 'Pesticide-free export-grade crops', icon: <Sparkles className="w-4 h-4 text-emerald-600 shrink-0" /> },
   ];
 
-  const productsDropdown = [
-    { id: 'products-environmental' as PageId, label: 'Environmental Control', desc: 'Climate controllers & mist systems', icon: <Cpu className="w-4 h-4 text-emerald-600 shrink-0" /> },
-    { id: 'products-resource' as PageId, label: 'Resource Monitoring', desc: 'EC, soil moisture & flow sensor hubs', icon: <Activity className="w-4 h-4 text-emerald-600 shrink-0" /> },
-    { id: 'products-irrigation' as PageId, label: 'Irrigation Optimisation', desc: 'Dosing units & micro drip systems', icon: <Droplet className="w-4 h-4 text-emerald-600 shrink-0" /> },
-  ];
-
   const aboutDropdown = [
     { id: 'about-story' as PageId, label: 'Our Story & Identity', desc: 'Sustainable agritech subsidiary since 2018', icon: <BookOpen className="w-4 h-4 text-emerald-600 shrink-0" /> },
     { id: 'about-commitment' as PageId, label: 'Sovereign Commitment', desc: 'Trace Expert City Colombo manufacturing', icon: <ShieldCheck className="w-4 h-4 text-emerald-600 shrink-0" /> },
     { id: 'about-news' as PageId, label: 'Latest News Room', desc: 'Announcements & innovation awards', icon: <Newspaper className="w-4 h-4 text-emerald-600 shrink-0" /> },
+  ];
+
+  // Products mega-menu (Netafim-style multi-column). Leaf items route to the closest
+  // existing catalog route until each sub-category gets its own dedicated page.
+  const productsMega: {
+    title: string;
+    target: PageId;
+    icon: ReactElement;
+    items?: string[];
+    groups?: { title: string; items: string[] }[];
+  }[] = [
+    {
+      title: 'Fertigation & Irrigation Equipment',
+      target: 'products-irrigation',
+      icon: <Droplet className="w-4 h-4 text-emerald-600 shrink-0" />,
+      items: ['Smart Fertigators', 'Water Meters', 'Drippers', 'Sprinklers', 'Filters', 'Connectors & Accessories']
+    },
+    {
+      title: 'Greenhouse Equipment',
+      target: 'products',
+      icon: <Building2 className="w-4 h-4 text-emerald-600 shrink-0" />,
+      groups: [
+        { title: 'Greenhouse Coverings', items: ['Greenhouse Polythene', 'Insect Proof Nets'] },
+        { title: 'Ground Covers', items: ['Mulch Film', 'Weed Mats', 'White Weed Mats'] },
+        { title: 'Shade & Thermal Screens', items: ['Shade Nets', 'Aluminet Thermal Screens'] },
+        { title: 'Ventilation & Cooling', items: ['Exhaust Fans', 'Circulation Fans', 'Cooling Pad Systems'] },
+        { title: 'Roll-Up Systems', items: ['Manual Roll-Up Systems', 'Motorized Roll-Up Systems'] },
+        { title: 'Installation Hardware', items: ['Film Lock Channels', 'Wriggle Wires', 'Film Clips', 'Wind Belts', 'Repair Tapes'] },
+        { title: 'Crop Support', items: ['Trellis Clips', 'Trellis Hooks', 'Roller Hooks'] },
+        { title: 'Pest Management', items: ['Sticky Traps', 'Sticky Rolls', 'Pheromone Traps', 'Pheromone Lures'] }
+      ]
+    },
+    {
+      title: 'Climate Controller Solutions',
+      target: 'products-environmental',
+      icon: <Cpu className="w-4 h-4 text-emerald-600 shrink-0" />,
+      groups: [
+        { title: 'Ventilation & Cooling', items: ['Exhaust Fans', 'Circulation Fans', 'Cooling Pad Systems'] },
+        { title: 'Climate Controller', items: ['Smart Climate Controller', 'Mini Climate Controller', 'Weather Station'] }
+      ]
+    },
+    {
+      title: 'Software Solutions',
+      target: 'contact',
+      icon: <Activity className="w-4 h-4 text-emerald-600 shrink-0" />,
+      items: ['Mobile App', 'Web Portal']
+    }
   ];
 
   const handleNavClick = (id: PageId) => {
@@ -174,6 +215,7 @@ export default function Navbar({ currentPage, onNavigate }: NavbarProps) {
     currentPage === 'home' ? 'home'
     : isServicesActive ? 'services'
     : isProductsActive ? 'products'
+    : currentPage === 'fresh-products' ? 'fresh-products'
     : isAboutActive ? 'about'
     : currentPage === 'projects' ? 'projects'
     : currentPage === 'shop' ? 'shop'
@@ -225,6 +267,82 @@ export default function Navbar({ currentPage, onNavigate }: NavbarProps) {
           className="w-full text-center py-2 text-xs font-bold text-emerald-600 hover:text-emerald-700 bg-emerald-50/30 hover:bg-emerald-50/70 rounded-lg transition-all"
         >
           {overviewLabel}
+        </button>
+      </div>
+    </div>
+  );
+
+  // Wide Netafim-style mega-menu panel for the Products trigger.
+  // Rendered as a DOM child of the trigger so the island's mouseleave doesn't fire while hovered.
+  const renderProductsMegaPanel = () => (
+    <div
+      className={`fixed left-1/2 -translate-x-1/2 z-50 w-[min(1080px,calc(100vw-2rem))] max-h-[calc(100vh-7rem)] overflow-y-auto bg-white border border-gray-100 rounded-3xl shadow-2xl p-6 animate-slide-in ${
+        isScrolled ? 'top-[76px]' : 'top-[104px]'
+      } before:absolute before:-top-4 before:left-0 before:right-0 before:h-4 before:content-['']`}
+    >
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-[0.95fr_1.7fr_1fr_0.75fr] gap-x-6 gap-y-6">
+        {productsMega.map((col) => (
+          <div key={col.title} className="flex flex-col gap-3 min-w-0">
+            {/* Column heading — links to the closest catalog route */}
+            <button
+              onClick={() => handleNavClick(col.target)}
+              className="group flex items-center gap-2 text-left border-b border-gray-100 pb-2"
+            >
+              <span className="p-1 rounded-lg bg-emerald-50 text-emerald-600 group-hover:bg-emerald-100 transition-colors">
+                {col.icon}
+              </span>
+              <span className="font-sans text-[11px] font-extrabold uppercase tracking-wide text-gray-900 group-hover:text-emerald-700 transition-colors leading-tight">
+                {col.title}
+              </span>
+            </button>
+
+            {/* Flat list of leaves */}
+            {col.items && (
+              <div className="flex flex-col gap-0.5">
+                {col.items.map((label) => (
+                  <button
+                    key={label}
+                    onClick={() => handleNavClick(col.target)}
+                    className="text-left font-sans text-[13px] text-gray-600 hover:text-emerald-700 py-1 transition-colors"
+                  >
+                    {label}
+                  </button>
+                ))}
+              </div>
+            )}
+
+            {/* Grouped leaves — Greenhouse column packs into two sub-columns to stay balanced */}
+            {col.groups && (
+              <div className={col.groups.length > 4 ? 'grid grid-cols-2 gap-x-5 gap-y-4' : 'flex flex-col gap-4'}>
+                {col.groups.map((grp) => (
+                  <div key={grp.title} className="flex flex-col gap-1 min-w-0">
+                    <span className="font-sans text-[11px] font-bold text-emerald-800">{grp.title}</span>
+                    {grp.items.map((label) => (
+                      <button
+                        key={label}
+                        onClick={() => handleNavClick(col.target)}
+                        className="text-left font-sans text-[12px] text-gray-500 hover:text-emerald-700 py-0.5 leading-snug transition-colors truncate"
+                      >
+                        {label}
+                      </button>
+                    ))}
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
+
+      {/* Footer overview link */}
+      <div className="border-t border-gray-100 mt-5 pt-3 flex items-center justify-between">
+        <span className="font-sans text-[11px] text-gray-400 font-light">Browse the full AiGROW hardware & parts catalog</span>
+        <button
+          onClick={() => handleNavClick('products')}
+          className="inline-flex items-center gap-1.5 px-4 py-1.5 text-xs font-bold text-emerald-700 bg-emerald-50/50 hover:bg-emerald-100/70 rounded-lg transition-all"
+        >
+          View Products Catalog
+          <ArrowRight className="w-3.5 h-3.5" />
         </button>
       </div>
     </div>
@@ -323,8 +441,21 @@ export default function Navbar({ currentPage, onNavigate }: NavbarProps) {
                 <ChevronDown className={`w-3.5 h-3.5 transition-transform ${openDropdown === 'products' ? 'rotate-180' : ''}`} />
               </span>
             </button>
-            {openDropdown === 'products' && renderDropdownPanel(productsDropdown, 'products', 'View Products Catalog')}
+            {openDropdown === 'products' && renderProductsMegaPanel()}
           </div>
+
+          {/* Fresh Products */}
+          <button
+            id="nav-item-fresh-products"
+            onMouseEnter={() => { setHoveredNav('fresh-products'); setOpenDropdown(null); }}
+            onClick={() => handleNavClick('fresh-products')}
+            className={`relative font-sans text-sm tracking-wide px-2.5 py-2 rounded-xl transition-colors ${getLinkClass(currentPage === 'fresh-products')}`}
+          >
+            {highlight === 'fresh-products' && (
+              <motion.span layoutId="nav-pill" transition={{ type: 'spring', stiffness: 420, damping: 34 }} className={`absolute inset-0 rounded-xl ${isDarkTheme ? 'bg-white/15' : 'bg-emerald-50'}`} />
+            )}
+            <span className="relative z-10">Fresh Products</span>
+          </button>
 
           {/* About Us Dropdown Trigger */}
           <div
@@ -638,19 +769,37 @@ export default function Navbar({ currentPage, onNavigate }: NavbarProps) {
                   >
                     • View Products Catalog
                   </button>
-                  {productsDropdown.map((sub) => (
-                    <button
-                      key={sub.id}
-                      onClick={() => handleNavClick(sub.id)}
-                      className="flex items-center gap-2 text-left font-sans text-xs text-gray-600 hover:text-gray-950 py-2.5 px-3 rounded-lg hover:bg-gray-50"
-                    >
-                      {sub.icon}
-                      <span>{sub.label}</span>
-                    </button>
+                  {productsMega.map((col) => (
+                    <div key={col.title} className="flex flex-col">
+                      <button
+                        onClick={() => handleNavClick(col.target)}
+                        className="flex items-center gap-2 text-left font-sans text-xs font-semibold text-gray-800 hover:text-emerald-700 py-2.5 px-3 rounded-lg hover:bg-gray-50"
+                      >
+                        {col.icon}
+                        <span>{col.title}</span>
+                      </button>
+                      {col.groups && (
+                        <div className="flex flex-wrap gap-x-2 gap-y-0.5 pl-8 pr-3 pb-1.5">
+                          {col.groups.map((grp) => (
+                            <span key={grp.title} className="font-sans text-[10px] text-gray-400">{grp.title}</span>
+                          ))}
+                        </div>
+                      )}
+                    </div>
                   ))}
                 </div>
               )}
             </div>
+
+            {/* Fresh Products */}
+            <button
+              onClick={() => handleNavClick('fresh-products')}
+              className={`flex items-center justify-between py-2.5 px-4 rounded-xl text-left font-sans text-sm ${
+                currentPage === 'fresh-products' ? 'bg-emerald-50 text-emerald-600 font-bold' : 'text-gray-600 hover:bg-gray-50'
+              }`}
+            >
+              Fresh Products
+            </button>
 
             {/* About Us Accordion */}
             <div className="flex flex-col border border-gray-50 rounded-xl overflow-hidden">

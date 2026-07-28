@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import {
   ArrowRight,
   ChevronRight,
@@ -42,6 +43,10 @@ export default function ProductPageLayout({
   const Icon = meta.icon;
   const siblings = PRODUCTS_DATA.filter((p) => p.category === product.category && p.id !== product.id);
 
+  const shots = product.gallery?.length ? product.gallery : product.image ? [product.image] : [];
+  const [activeShot, setActiveShot] = useState(0);
+  const heroSrc = shots[activeShot] ?? shots[0];
+
   const handleEnquire = () => {
     onSelectProductForEnquiry(product.name);
     go('contact');
@@ -62,12 +67,44 @@ export default function ProductPageLayout({
 
         {/* Header */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-stretch mb-14">
-          {/* Visual tile */}
-          <div className="relative rounded-3xl overflow-hidden bg-gradient-to-br from-emerald-400 to-emerald-700 min-h-[240px] flex items-center justify-center">
-            <div className="absolute inset-0 bg-[radial-gradient(120%_100%_at_100%_0%,rgba(255,255,255,0.25),transparent_60%)]" />
-            <Icon className="relative h-20 w-20 text-white/95 drop-shadow" />
-            {product.price && (
-              <span className="absolute top-4 right-4 rounded-lg bg-white/20 backdrop-blur-sm px-3 py-1.5 font-mono text-sm font-bold text-white">{product.price}</span>
+          {/* Visual tile — product photo when we have one, gradient+icon otherwise */}
+          <div className="flex flex-col gap-3">
+            <div className="relative rounded-3xl overflow-hidden min-h-[240px] flex items-center justify-center border border-gray-200/70 bg-gradient-to-br from-emerald-50 to-gray-100">
+              {heroSrc ? (
+                <img
+                  src={heroSrc}
+                  alt={product.name}
+                  referrerPolicy="no-referrer"
+                  className="h-full max-h-[420px] w-full object-contain p-6"
+                />
+              ) : (
+                <>
+                  <div className="absolute inset-0 bg-gradient-to-br from-emerald-400 to-emerald-700" />
+                  <div className="absolute inset-0 bg-[radial-gradient(120%_100%_at_100%_0%,rgba(255,255,255,0.25),transparent_60%)]" />
+                  <Icon className="relative h-20 w-20 text-white/95 drop-shadow" />
+                </>
+              )}
+              {product.price && (
+                <span className="absolute top-4 right-4 rounded-lg bg-white/80 backdrop-blur-sm px-3 py-1.5 font-mono text-sm font-bold text-emerald-700 shadow-sm">{product.price}</span>
+              )}
+            </div>
+
+            {/* Thumbnails */}
+            {shots.length > 1 && (
+              <div className="flex gap-3">
+                {shots.map((src, i) => (
+                  <button
+                    key={src}
+                    onClick={() => setActiveShot(i)}
+                    aria-label={`View image ${i + 1}`}
+                    className={`relative h-16 w-16 shrink-0 overflow-hidden rounded-xl border bg-gradient-to-br from-emerald-50 to-gray-100 transition-all ${
+                      i === activeShot ? 'border-emerald-500 ring-2 ring-emerald-500/30' : 'border-gray-200/70 hover:border-emerald-300'
+                    }`}
+                  >
+                    <img src={src} alt="" referrerPolicy="no-referrer" className="h-full w-full object-contain p-1.5" />
+                  </button>
+                ))}
+              </div>
             )}
           </div>
 
@@ -148,18 +185,28 @@ export default function ProductPageLayout({
                   <button
                     key={p.id}
                     onClick={() => go(`product-${p.id}` as PageId)}
-                    className="group text-left glass rounded-2xl p-5 flex flex-col transition-all duration-300 hover:shadow-lg hover:shadow-emerald-900/5"
+                    className="group text-left glass rounded-2xl overflow-hidden flex flex-col transition-all duration-300 hover:shadow-lg hover:shadow-emerald-900/5"
                   >
-                    <div className="flex items-center justify-between mb-3">
-                      <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-emerald-50 text-emerald-600">
-                        <Icon className="h-4 w-4" />
-                      </span>
-                      {p.price && <span className="font-mono text-xs font-bold text-gray-700">{p.price}</span>}
+                    <div className="relative h-32 flex items-center justify-center border-b border-gray-100 bg-gradient-to-br from-emerald-50 to-gray-100">
+                      {p.image ? (
+                        <img
+                          src={p.image}
+                          alt={p.name}
+                          loading="lazy"
+                          referrerPolicy="no-referrer"
+                          className="h-full w-full object-contain p-4 transition-transform duration-500 group-hover:scale-105"
+                        />
+                      ) : (
+                        <Icon className="h-9 w-9 text-emerald-500/70" />
+                      )}
+                      {p.price && <span className="absolute top-2.5 right-2.5 font-mono text-xs font-bold text-emerald-700 bg-white/80 backdrop-blur-sm px-2 py-0.5 rounded-md shadow-sm">{p.price}</span>}
                     </div>
-                    <h3 className="font-sans text-sm font-bold text-gray-950 leading-snug">{p.name}</h3>
-                    <span className="mt-3 inline-flex items-center gap-1 text-xs font-bold text-emerald-700">
-                      View <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-1" />
-                    </span>
+                    <div className="p-5 flex flex-col flex-1">
+                      <h3 className="font-sans text-sm font-bold text-gray-950 leading-snug">{p.name}</h3>
+                      <span className="mt-3 inline-flex items-center gap-1 text-xs font-bold text-emerald-700">
+                        View <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-1" />
+                      </span>
+                    </div>
                   </button>
                 ))}
               </div>

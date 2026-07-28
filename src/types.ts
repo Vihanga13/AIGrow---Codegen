@@ -9,6 +9,7 @@ export type PageId =
   | 'products-environmental'
   | 'products-resource'
   | 'products-irrigation'
+  | 'fresh-products'
   // Dedicated single-product detail pages (one route per product)
   | 'product-smart-climate'
   | 'product-grow-light'
@@ -66,7 +67,8 @@ export interface Product {
     value: string;
   }[];
   price?: string; // For the Shop page
-  image?: string;
+  image?: string;         // primary product photo (studio render)
+  gallery?: string[];     // full shot set for the detail page, hero first
 }
 
 export interface Project {
