@@ -92,6 +92,21 @@ export default function Navbar({ currentPage, onNavigate }: NavbarProps) {
 
   const dropdownRef = useRef<HTMLDivElement>(null);
 
+  // Hover-intent: delay closing the menus so the pointer can cross the gap
+  // between a trigger and its (fixed-position) mega panel without it snapping shut.
+  const closeTimer = useRef<number | null>(null);
+  const cancelClose = () => {
+    if (closeTimer.current !== null) {
+      clearTimeout(closeTimer.current);
+      closeTimer.current = null;
+    }
+  };
+  const scheduleClose = () => {
+    cancelClose();
+    closeTimer.current = window.setTimeout(() => setOpenDropdown(null), 180);
+  };
+  useEffect(() => cancelClose, []);
+
   // Scroll detection
   useEffect(() => {
     const handleScroll = () => {
@@ -188,6 +203,7 @@ export default function Navbar({ currentPage, onNavigate }: NavbarProps) {
   ];
 
   const handleNavClick = (id: PageId) => {
+    cancelClose();
     onNavigate(id);
     setIsOpen(false);
     setOpenDropdown(null);
@@ -197,6 +213,7 @@ export default function Navbar({ currentPage, onNavigate }: NavbarProps) {
   };
 
   const handleMouseEnter = (type: 'services' | 'products' | 'about') => {
+    cancelClose();
     setOpenDropdown(type);
     setIsTelemetryOpen(false);
   };
@@ -276,9 +293,11 @@ export default function Navbar({ currentPage, onNavigate }: NavbarProps) {
   // Rendered as a DOM child of the trigger so the island's mouseleave doesn't fire while hovered.
   const renderProductsMegaPanel = () => (
     <div
+      onMouseEnter={cancelClose}
+      onMouseLeave={scheduleClose}
       className={`fixed left-1/2 -translate-x-1/2 z-50 w-[min(1080px,calc(100vw-2rem))] max-h-[calc(100vh-7rem)] overflow-y-auto bg-white border border-gray-100 rounded-3xl shadow-2xl p-6 animate-slide-in ${
         isScrolled ? 'top-[76px]' : 'top-[104px]'
-      } before:absolute before:-top-4 before:left-0 before:right-0 before:h-4 before:content-['']`}
+      } before:absolute before:-top-6 before:left-0 before:right-0 before:h-6 before:content-['']`}
     >
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-[0.95fr_1.7fr_1fr_0.75fr] gap-x-6 gap-y-6">
         {productsMega.map((col) => (
@@ -383,7 +402,7 @@ export default function Navbar({ currentPage, onNavigate }: NavbarProps) {
         {/* ISLAND 2 — CENTER NAVIGATION (desktop) with sliding highlight pill */}
         <div
           className={`${islandShell} hidden min-[960px]:flex items-center gap-0.5 px-2 py-2 min-[960px]:ml-auto`}
-          onMouseLeave={() => { setHoveredNav(null); setOpenDropdown(null); }}
+          onMouseLeave={() => { setHoveredNav(null); scheduleClose(); }}
         >
           {/* Home */}
           <button
