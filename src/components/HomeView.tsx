@@ -194,8 +194,6 @@ export default function HomeView({
     { label: 'Uplift Livelihoods', icon: Users, desc: 'Technology and training that grow farmer incomes and strengthen rural communities.' }
   ];
 
-  const keywords = ['IoT-Enabled Systems', 'Climate-Smart', 'Circular Economy', '100% Pesticide-Free', 'Data-Driven', 'Rooted in Sri Lanka', 'Precision Fertigation', 'Built for Tomorrow'];
-
   const awards = [
     { year: '2018', org: 'E-Swabhimani Awards', title: 'Digital Social Impact', desc: 'National recognition for technology creating measurable social good across Sri Lankan agriculture.', icon: Medal },
     { year: '2024', org: 'SLASSCOM National', title: '1st Runner-up · Best Innovative Product in Agritech', desc: 'Among the nation’s most innovative technology products for our precision agritech platform.', icon: Trophy },
@@ -289,22 +287,22 @@ export default function HomeView({
         </div>
       </section>
 
-      {/* 2. INTRODUCTION */}
-      <section className="py-20 px-6">
+      {/* 2. WHO WE ARE (company overview + mission) */}
+      <section className="py-16 px-6">
         <div className="max-w-[96rem] mx-auto grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-center">
           <Reveal className="lg:col-span-7">
             <div className="text-emerald-600 font-mono text-xs uppercase tracking-wider font-semibold mb-4">
-              Corporate Overview
+              Who We Are
             </div>
             <h2 className="font-sans text-3xl md:text-4xl font-bold tracking-tight text-gray-950 leading-[1.15]">
               Where Innovation Meets <span className="text-emerald-600">Sustainability</span>
             </h2>
             <p className="mt-6 font-sans text-base md:text-lg text-gray-600 leading-relaxed font-light">
-              AiGROW is a sustainable agri-tech company dedicated to transforming how Sri Lanka grows its food. Backed by deep technological expertise and a strong commitment to environmental responsibility, we design innovative, scalable, and eco-friendly agricultural solutions that empower farmers, businesses, and communities across the island.
+              AiGROW is a sustainable agri-tech company transforming how Sri Lanka grows its food. We design innovative, scalable, and eco-friendly agricultural solutions that empower farmers, businesses, and communities across the island.
             </p>
-            <p className="mt-4 font-sans text-lg text-gray-900 font-semibold">
-              We don't just grow crops, we grow resilient ecosystems.
-            </p>
+            <blockquote className="mt-6 border-l-4 border-emerald-500 pl-4 font-sans text-base md:text-lg italic text-emerald-800 font-medium">
+              "To strengthen Sri Lanka's food systems through smart, sustainable, and circular agricultural innovations that improve productivity, protect the environment, and uplift local livelihoods."
+            </blockquote>
           </Reveal>
 
           <Reveal delay={0.1} className="lg:col-span-5 grid grid-cols-2 gap-3">
@@ -334,51 +332,25 @@ export default function HomeView({
           </Reveal>
         </div>
 
-        {/* Capability keywords */}
-        <div className="max-w-[96rem] mx-auto mt-12 flex flex-wrap justify-center gap-2.5">
-          {keywords.map((k) => (
-            <span key={k} className="inline-flex items-center gap-2 rounded-full glass px-4 py-2 font-sans text-sm font-semibold text-gray-700">
-              <Leaf className="h-3.5 w-3.5 text-emerald-500" />
-              {k}
-            </span>
-          ))}
-        </div>
-      </section>
-
-      {/* 3. OUR MISSION */}
-      <section className="py-20 px-6 bg-emerald-50/30">
-        <div className="max-w-[96rem] mx-auto">
-          <Reveal className="max-w-3xl mb-12">
-            <div className="text-emerald-600 font-mono text-xs uppercase tracking-wider font-semibold mb-3">
-              Our True North
-            </div>
-            <h2 className="font-sans text-3xl md:text-4xl font-bold tracking-tight text-gray-950 mb-6">
-              Transforming Sri Lankan Food Security
-            </h2>
-            <blockquote className="border-l-4 border-emerald-500 pl-4 font-sans text-lg italic text-emerald-800 font-medium">
-              "To strengthen Sri Lanka's food systems through smart, sustainable, and circular agricultural innovations that improve productivity, protect the environment, and uplift local livelihoods."
-            </blockquote>
-          </Reveal>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-            {missionPillars.map((p, i) => {
-              const Icon = p.icon;
-              return (
-                <Reveal key={p.label} delay={i * 0.08} className="glass rounded-2xl p-6">
-                  <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-emerald-500 text-white mb-4">
-                    <Icon className="h-5 w-5" />
-                  </span>
-                  <h3 className="font-sans text-base font-bold text-gray-900 mb-2">{p.label}</h3>
-                  <p className="font-sans text-sm text-gray-500 font-light leading-relaxed">{p.desc}</p>
-                </Reveal>
-              );
-            })}
-          </div>
+        {/* Mission pillars */}
+        <div className="max-w-[96rem] mx-auto mt-12 grid grid-cols-1 md:grid-cols-3 gap-5">
+          {missionPillars.map((p, i) => {
+            const Icon = p.icon;
+            return (
+              <Reveal key={p.label} delay={i * 0.08} className="glass rounded-2xl p-6">
+                <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-emerald-500 text-white mb-4">
+                  <Icon className="h-5 w-5" />
+                </span>
+                <h3 className="font-sans text-base font-bold text-gray-900 mb-2">{p.label}</h3>
+                <p className="font-sans text-sm text-gray-500 font-light leading-relaxed">{p.desc}</p>
+              </Reveal>
+            );
+          })}
         </div>
       </section>
 
       {/* 4. SERVICES */}
-      <section className="py-20 px-6">
+      <section className="py-16 px-6">
         <div className="max-w-[96rem] mx-auto">
           <Reveal className="max-w-3xl mb-12">
             <div className="text-emerald-600 font-mono text-xs uppercase tracking-wider font-semibold mb-3">
@@ -439,7 +411,7 @@ export default function HomeView({
       </section>
 
       {/* 5. TECHNOLOGY HIGHLIGHTS */}
-      <section className="py-20 px-6 bg-emerald-50/30">
+      <section className="py-16 px-6 bg-emerald-50/30">
         <div className="max-w-[96rem] mx-auto">
           <Reveal className="max-w-3xl mb-12">
             <div className="flex items-center gap-2 text-emerald-600 font-mono text-xs uppercase tracking-wider font-semibold mb-3">
@@ -472,7 +444,7 @@ export default function HomeView({
       </section>
 
       {/* 6. ADVANTAGES */}
-      <section className="py-20 px-6">
+      <section className="py-16 px-6">
         <div className="max-w-[96rem] mx-auto">
           <Reveal className="max-w-3xl mb-12">
             <div className="text-emerald-600 font-mono text-xs uppercase tracking-wider font-semibold mb-3">
@@ -528,7 +500,7 @@ export default function HomeView({
       </section>
 
       {/* 8. PROJECTS */}
-      <section className="py-20 px-6">
+      <section className="py-16 px-6">
         <div className="max-w-[96rem] mx-auto">
           <Reveal className="max-w-3xl mb-12">
             <div className="text-emerald-600 font-mono text-xs uppercase tracking-wider font-semibold mb-3">
@@ -585,7 +557,7 @@ export default function HomeView({
       </section>
 
       {/* 9. PRICE CALCULATOR */}
-      <section className="py-20 px-6 bg-emerald-50/30 border-y border-emerald-100/60">
+      <section className="py-16 px-6 bg-emerald-50/30 border-y border-emerald-100/60">
         <div className="max-w-[96rem] mx-auto">
           <Reveal className="text-center max-w-3xl mx-auto mb-14">
             <span className="font-mono text-xs text-emerald-600 font-bold uppercase tracking-widest block mb-2">
@@ -881,7 +853,7 @@ export default function HomeView({
       )}
 
       {/* 10. AWARDS */}
-      <section className="py-20 px-6">
+      <section className="py-16 px-6">
         <div className="max-w-[96rem] mx-auto">
           <Reveal className="max-w-3xl mb-12">
             <div className="text-emerald-600 font-mono text-xs uppercase tracking-wider font-semibold mb-3">
