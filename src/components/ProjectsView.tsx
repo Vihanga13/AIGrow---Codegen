@@ -210,17 +210,31 @@ export default function ProjectsView({
     <div className="min-h-screen text-[#1F2321] px-6 overflow-x-clip">
       <div className="max-w-[96rem] mx-auto py-12 lg:py-16">
 
-        {/* Header */}
-        <div className="max-w-3xl mb-14">
-          <div className="inline-flex items-center gap-2 font-mono text-xs uppercase tracking-[0.3em] text-emerald-700 font-semibold mb-4">
-            <Sparkles className="w-3.5 h-3.5" /> Our Work
+        {/* Video banner hero */}
+        <div className="relative overflow-hidden rounded-3xl bg-emerald-950 aspect-video md:aspect-[21/9] mb-14">
+          <video
+            autoPlay
+            muted
+            loop
+            playsInline
+            preload="metadata"
+            className="absolute inset-0 w-full h-full object-cover"
+          >
+            <source src="/Video/greenhouse-inside.mp4" type="video/mp4" />
+          </video>
+          <div className="absolute inset-0 bg-gradient-to-t from-emerald-950/90 via-emerald-950/45 to-emerald-950/40" />
+
+          <div className="absolute inset-0 flex flex-col justify-end p-6 md:p-10 max-w-3xl">
+            <div className="inline-flex w-fit items-center gap-2 font-mono text-xs uppercase tracking-[0.3em] text-emerald-300 font-semibold mb-4">
+              <Sparkles className="w-3.5 h-3.5" /> Our Work
+            </div>
+            <h1 className="font-sans text-3xl sm:text-4xl md:text-6xl font-black tracking-tighter text-white leading-[0.95] mb-3 drop-shadow">
+              Projects across <span className="text-emerald-400">Sri Lanka</span>
+            </h1>
+            <p className="font-sans text-gray-100 font-light text-sm sm:text-base md:text-lg leading-relaxed max-w-2xl">
+              Greenhouse installations, indoor mushroom farms and smart coconut estates — grouped by the kind of work we do.
+            </p>
           </div>
-          <h1 className="font-sans text-4xl md:text-6xl font-black tracking-tighter text-gray-950 leading-[0.95] mb-4">
-            Projects across <span className="text-emerald-600">Sri Lanka</span>
-          </h1>
-          <p className="font-sans text-gray-500 font-light text-base md:text-lg leading-relaxed">
-            Greenhouse installations, indoor mushroom farms and smart coconut estates — grouped by the kind of work we do.
-          </p>
         </div>
 
         {/* Category sections */}
