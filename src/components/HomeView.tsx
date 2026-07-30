@@ -52,6 +52,18 @@ const HERO_SLIDES = [
   }
 ];
 
+// AiGROW Facebook video reels embedded on the home page.
+const FB_REELS: { src: string; w: number; h: number }[] = [
+  { src: 'https://www.facebook.com/plugins/video.php?height=314&href=https%3A%2F%2Fwww.facebook.com%2Freel%2F4293070884341530%2F&show_text=false&width=560&t=0', w: 560, h: 314 },
+  { src: 'https://www.facebook.com/plugins/video.php?height=476&href=https%3A%2F%2Fwww.facebook.com%2Freel%2F1340117241027806%2F&show_text=false&width=267&t=0', w: 267, h: 476 },
+  { src: 'https://www.facebook.com/plugins/video.php?height=314&href=https%3A%2F%2Fwww.facebook.com%2Freel%2F1956818468500168%2F&show_text=false&width=560&t=0', w: 560, h: 314 },
+  { src: 'https://www.facebook.com/plugins/video.php?height=314&href=https%3A%2F%2Fwww.facebook.com%2FAiGROW%2Fvideos%2F4300058696905726%2F&show_text=false&width=560&t=0', w: 560, h: 314 },
+  { src: 'https://www.facebook.com/plugins/video.php?height=476&href=https%3A%2F%2Fwww.facebook.com%2Freel%2F653517010549676%2F&show_text=false&width=267&t=0', w: 267, h: 476 },
+  { src: 'https://www.facebook.com/plugins/video.php?height=314&href=https%3A%2F%2Fwww.facebook.com%2FAiGROW%2Fvideos%2F1135915018289381%2F&show_text=false&width=560&t=0', w: 560, h: 314 },
+  { src: 'https://www.facebook.com/plugins/video.php?height=314&href=https%3A%2F%2Fwww.facebook.com%2FAiGROW%2Fvideos%2F2758330244335324%2F&show_text=false&width=560&t=0', w: 560, h: 314 },
+  { src: 'https://www.facebook.com/plugins/video.php?height=314&href=https%3A%2F%2Fwww.facebook.com%2FAiGROW%2Fvideos%2F516790394643980%2F&show_text=false&width=560&t=0', w: 560, h: 314 }
+];
+
 interface HomeViewProps {
   onNavigate: (pageId: PageId) => void;
   onSelectService: (serviceId: string) => void;
@@ -553,6 +565,58 @@ export default function HomeView({
               </Reveal>
             ))}
           </div>
+        </div>
+      </section>
+
+      {/* 8b. FROM OUR FACEBOOK — video reels */}
+      <section className="py-16 px-6 border-t border-gray-100">
+        <div className="max-w-[96rem] mx-auto">
+          <Reveal className="max-w-3xl mb-8">
+            <div className="text-emerald-600 font-mono text-xs uppercase tracking-wider font-semibold mb-3">
+              From Our Facebook
+            </div>
+            <h2 className="font-sans text-3xl md:text-4xl font-bold tracking-tight text-gray-950 mb-4">
+              See AiGROW in action
+            </h2>
+            <p className="font-sans text-gray-500 font-light text-base md:text-lg">
+              Real footage from our farms and installations across Sri Lanka.
+            </p>
+          </Reveal>
+
+          {/* Horizontal reel strip */}
+          <div className="flex items-center gap-5 overflow-x-auto pb-4 -mx-6 px-6 snap-x">
+            {FB_REELS.map((r, i) => (
+              <div
+                key={i}
+                className="shrink-0 snap-start rounded-2xl overflow-hidden border border-gray-100 shadow-md bg-black"
+                style={{ width: r.w, height: r.h }}
+              >
+                <iframe
+                  src={r.src}
+                  width={r.w}
+                  height={r.h}
+                  loading="lazy"
+                  scrolling="no"
+                  frameBorder="0"
+                  allowFullScreen
+                  allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
+                  title={`AiGROW Facebook video ${i + 1}`}
+                  className="block"
+                  style={{ border: 'none', overflow: 'hidden' }}
+                />
+              </div>
+            ))}
+          </div>
+
+          <a
+            href="https://facebook.com/AiGROW"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mt-6 inline-flex items-center gap-2 text-sm font-bold text-emerald-700 hover:text-emerald-800 transition-colors group"
+          >
+            Follow us on Facebook
+            <ArrowUpRight className="w-4 h-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+          </a>
         </div>
       </section>
 

@@ -256,7 +256,13 @@ export default function Navbar({ currentPage, onNavigate, onOpenCatalogItem }: N
   const isDarkTheme = currentPage === 'home' && !isScrolled;
 
   // ---- Floating "island" styling helpers -------------------------------------
-  const islandShell = `rounded-2xl transition-all duration-300`;
+  // Give each island a frosted background so nav text stays readable over any
+  // content that scrolls behind it. Dark-glass over the home hero, white elsewhere.
+  const islandShell = `rounded-2xl transition-all duration-300 backdrop-blur-md ${
+    isDarkTheme
+      ? 'bg-emerald-950/25 border border-white/15 shadow-lg shadow-black/10'
+      : 'bg-white/80 border border-gray-200/70 shadow-md shadow-emerald-900/5'
+  }`;
 
   const getLinkClass = (isActive: boolean) => {
     if (isActive) {
