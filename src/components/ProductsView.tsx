@@ -43,17 +43,33 @@ export default function ProductsView({ onNavigate }: ProductsViewProps) {
     <div className="min-h-screen text-[#1F2321] py-12 px-6">
       <div className="max-w-[96rem] mx-auto">
 
-        {/* Header */}
-        <Reveal className="max-w-3xl mx-auto text-center mb-8">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-50 text-emerald-800 text-xs font-semibold uppercase tracking-wider mb-4">
-            AiGROW Hardware
+        {/* Video banner hero */}
+        <Reveal className="mb-10">
+          <div className="relative overflow-hidden rounded-3xl bg-gray-950 aspect-video md:aspect-[21/9]">
+            <video
+              autoPlay
+              muted
+              loop
+              playsInline
+              preload="metadata"
+              className="absolute inset-0 w-full h-full object-cover"
+            >
+              <source src="/Video/Equipments-Banner.mp4" type="video/mp4" />
+            </video>
+            <div className="absolute inset-0 bg-gradient-to-t from-gray-950/90 via-gray-950/45 to-gray-950/40" />
+
+            <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-6">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/15 backdrop-blur-sm text-white text-xs font-semibold uppercase tracking-wider mb-4 border border-white/20">
+                AiGROW Hardware
+              </div>
+              <h1 className="font-sans text-3xl sm:text-4xl md:text-6xl font-extrabold tracking-tight text-white mb-3 leading-[1.05] drop-shadow">
+                Engineered Agriculture Hardware
+              </h1>
+              <p className="font-sans text-gray-200 font-light text-sm sm:text-base md:text-lg max-w-2xl">
+                Browse our full hardware line-up by category, then open any unit for its full specifications.
+              </p>
+            </div>
           </div>
-          <h1 className="font-sans text-4xl md:text-6xl font-extrabold tracking-tight text-gray-950 mb-4 leading-[1.05]">
-            Engineered Agriculture Hardware
-          </h1>
-          <p className="font-sans text-gray-500 font-light text-base md:text-lg">
-            Browse our full hardware line-up by category, then open any unit for its full specifications.
-          </p>
         </Reveal>
 
         {/* Filter chips */}

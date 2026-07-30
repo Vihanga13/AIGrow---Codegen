@@ -34,21 +34,28 @@ const HERO_SLIDES = [
     titleLeft: 'AiGROW',
     titleRight: 'FARMS',
     desc: 'There is a moment in the growth of every seed when technology meets nature. We design hyper-efficient circular ecosystems to feed Sri Lanka sustainably.',
-    video: 'https://assets.mixkit.co/videos/preview/mixkit-watering-greenhouse-plants-with-a-sprinkler-42336-large.mp4'
+    image: '/Home%20Page%20Slide%20show/306A3697-scaled.jpg'
   },
   {
     subtitle: 'CIRCULAR ECOSYSTEMS',
     titleLeft: 'ZERO',
     titleRight: 'WASTE',
     desc: "Engineering closed-loop agricultural projects where waste becomes nutrients. Our smart systems maximize yield while preserving Sri Lanka's beautiful resources.",
-    video: 'https://assets.mixkit.co/videos/preview/mixkit-organic-vegetables-in-a-greenhouse-42335-large.mp4'
+    image: '/Home%20Page%20Slide%20show/WaterRecycle-1920x1280-1.jpg'
   },
   {
     subtitle: 'IoT & AUTOMATION',
     titleLeft: 'CLOUD',
     titleRight: 'CROPS',
     desc: 'Continuous real-time optimization powered by IoT sensors, precision irrigation, and intelligent crop monitoring algorithms built for climate resilience.',
-    video: 'https://assets.mixkit.co/videos/preview/mixkit-smart-agriculture-technology-and-drone-monitoring-42352-large.mp4'
+    image: '/Home%20Page%20Slide%20show/306A3004-scaled.jpg'
+  },
+  {
+    subtitle: 'PESTICIDE-FREE PRODUCE',
+    titleLeft: 'PURE',
+    titleRight: 'HARVEST',
+    desc: 'Greenhouse-grown, export-grade fruit and vegetables — cultivated clean and fully traceable from seedling to shelf.',
+    image: '/Home%20Page%20Slide%20show/IMG_5777-scaled.jpg'
   }
 ];
 
@@ -217,24 +224,22 @@ export default function HomeView({
   return (
     <div className="min-h-screen overflow-x-hidden">
 
-      {/* 1. HERO — single clean statement over cinematic video */}
+      {/* 1. HERO — single clean statement over rotating farm photography */}
       <section className="relative h-screen min-h-[600px] flex items-center justify-center bg-gray-950 text-white overflow-hidden">
         {HERO_SLIDES.map((s, idx) => (
-          <motion.video
+          <motion.img
             key={idx}
-            autoPlay
-            loop
-            muted
-            playsInline
+            src={s.image}
+            alt=""
+            aria-hidden="true"
+            referrerPolicy="no-referrer"
             initial={false}
-            animate={{ opacity: currentSlideIdx === idx ? 1 : 0 }}
-            transition={{ duration: 1.2, ease: 'easeInOut' }}
+            animate={{ opacity: currentSlideIdx === idx ? 1 : 0, scale: currentSlideIdx === idx ? 1.05 : 1 }}
+            transition={{ opacity: { duration: 1.2, ease: 'easeInOut' }, scale: { duration: 7, ease: 'easeOut' } }}
             className="absolute inset-0 w-full h-full object-cover"
-          >
-            <source src={s.video} type="video/mp4" />
-          </motion.video>
+          />
         ))}
-        <div className="absolute inset-0 bg-gray-950/70" />
+        <div className="absolute inset-0 bg-gray-950/60" />
 
         <div className="relative z-10 w-full max-w-3xl px-6 text-center flex flex-col items-center">
           <motion.div
