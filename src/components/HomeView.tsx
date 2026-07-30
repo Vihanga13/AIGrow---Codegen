@@ -24,9 +24,17 @@ import {
   Star
 } from 'lucide-react';
 import { PageId } from '../types';
-import { SERVICES_DATA, PROJECTS_DATA, FERTIGATION_MODELS, CLIMATE_MODELS, GREENHOUSE_PACKAGES } from '../data';
+import { SERVICES_DATA, PROJECTS_DATA, PRODUCTS_DATA, GREENHOUSE_PARTS, FERTIGATION_MODELS, CLIMATE_MODELS, GREENHOUSE_PACKAGES } from '../data';
 import StatsCounter from './StatsCounter';
 import Reveal from './Reveal';
+import ProductShowcase, { ShowcaseItem } from './ProductShowcase';
+
+/* 10 flagship products for the auto-sliding showcase — the imaged hardware line-up
+   plus one greenhouse part, each with a short description. */
+const SHOWCASE_ITEMS: ShowcaseItem[] = [
+  ...PRODUCTS_DATA.filter((p) => p.image).map((p) => ({ image: p.image as string, title: p.name, desc: p.catchphrase })),
+  ...GREENHOUSE_PARTS.filter((p) => p.id === 'cooling-pad-set').map((p) => ({ image: p.image as string, title: p.name, desc: p.spec ?? '' }))
+];
 
 const HERO_SLIDES = [
   {
@@ -364,6 +372,24 @@ export default function HomeView({
             );
           })}
         </div>
+      </section>
+
+      {/* 3. PRODUCT SHOWCASE — auto-sliding */}
+      <section className="py-16 bg-emerald-50/30 border-y border-emerald-100/60 overflow-hidden">
+        <div className="max-w-[96rem] mx-auto px-6">
+          <Reveal className="max-w-3xl mb-10">
+            <div className="text-emerald-600 font-mono text-xs uppercase tracking-wider font-semibold mb-3">
+              Our Hardware
+            </div>
+            <h2 className="font-sans text-3xl md:text-4xl font-bold tracking-tight text-gray-950 mb-4">
+              Smart equipment, engineered in Sri Lanka
+            </h2>
+            <p className="font-sans text-gray-500 font-light text-base md:text-lg">
+              A glimpse of the precision hardware powering AiGROW farms across the island.
+            </p>
+          </Reveal>
+        </div>
+        <ProductShowcase items={SHOWCASE_ITEMS} />
       </section>
 
       {/* 4. SERVICES */}
