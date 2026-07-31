@@ -302,17 +302,19 @@ export default function HomeView({
             </button>
           </div>
 
-          {/* Slide dots */}
-          <div className="mt-10 flex items-center gap-2.5">
-            {HERO_SLIDES.map((_, idx) => (
-              <button
-                key={idx}
-                onClick={() => setCurrentSlideIdx(idx)}
-                aria-label={`Go to slide ${idx + 1}`}
-                className={`h-1.5 rounded-full transition-all duration-300 ${currentSlideIdx === idx ? 'w-7 bg-emerald-400' : 'w-1.5 bg-white/40 hover:bg-white/70'}`}
-              />
-            ))}
-          </div>
+          {/* Slide dots — only when there's more than one slide */}
+          {HERO_SLIDES.length > 1 && (
+            <div className="mt-10 flex items-center gap-2.5">
+              {HERO_SLIDES.map((_, idx) => (
+                <button
+                  key={idx}
+                  onClick={() => setCurrentSlideIdx(idx)}
+                  aria-label={`Go to slide ${idx + 1}`}
+                  className={`h-1.5 rounded-full transition-all duration-300 ${currentSlideIdx === idx ? 'w-7 bg-emerald-400' : 'w-1.5 bg-white/40 hover:bg-white/70'}`}
+                />
+              ))}
+            </div>
+          )}
         </div>
       </section>
 
