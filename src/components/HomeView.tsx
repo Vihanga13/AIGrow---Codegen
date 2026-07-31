@@ -21,7 +21,9 @@ import {
   Users,
   Medal,
   Trophy,
-  Star
+  Star,
+  FileText,
+  Download
 } from 'lucide-react';
 import { PageId } from '../types';
 import { SERVICES_DATA, PROJECTS_DATA, PRODUCTS_DATA, GREENHOUSE_PARTS, FERTIGATION_MODELS, CLIMATE_MODELS, GREENHOUSE_PACKAGES } from '../data';
@@ -51,6 +53,13 @@ const HERO_SLIDES: {
     desc: 'Smart, sustainable agriculture engineered from seed to shelf — technology and nature, growing together.',
     video: '/Video/aigrow-animation.mp4'
   }
+];
+
+// Downloadable brochures & leaflets.
+const DOWNLOADS = [
+  { title: 'AiGROW Brochure 2025', desc: 'Our full company and product brochure.', file: '/PDF/aigrow-brochure-2025.pdf' },
+  { title: 'AiGROW Systems Leaflet', desc: 'Smart farming systems and hardware overview.', file: '/PDF/aigrow-systems-leaflet.pdf' },
+  { title: 'AiGROW Store Leaflet', desc: 'Fresh produce and retail offerings.', file: '/PDF/aigrow-store-leaflet.pdf' }
 ];
 
 // AiGROW Facebook video reels embedded on the home page.
@@ -988,6 +997,47 @@ export default function HomeView({
                 </Reveal>
               );
             })}
+          </div>
+        </div>
+      </section>
+
+      {/* 10b. DOWNLOADS — brochures & leaflets */}
+      <section className="py-16 px-6 bg-emerald-50/30 border-y border-emerald-100/60">
+        <div className="max-w-[96rem] mx-auto">
+          <Reveal className="max-w-3xl mb-10">
+            <div className="text-emerald-600 font-mono text-xs uppercase tracking-wider font-semibold mb-3">
+              Resources
+            </div>
+            <h2 className="font-sans text-3xl md:text-4xl font-bold tracking-tight text-gray-950 mb-4">
+              Brochures &amp; Leaflets
+            </h2>
+            <p className="font-sans text-gray-500 font-light text-base md:text-lg">
+              Download our latest company brochure and product leaflets.
+            </p>
+          </Reveal>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+            {DOWNLOADS.map((d, i) => (
+              <Reveal key={d.file} delay={(i % 3) * 0.08}>
+                <a
+                  href={d.file}
+                  download
+                  className="group glass rounded-3xl p-6 flex flex-col gap-4 h-full transition-all duration-300 hover:shadow-xl hover:shadow-emerald-900/5"
+                >
+                  <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-emerald-500 text-white">
+                    <FileText className="h-6 w-6" />
+                  </span>
+                  <div>
+                    <h3 className="font-sans text-lg font-bold text-gray-900">{d.title}</h3>
+                    <p className="font-sans text-sm text-gray-500 font-light leading-relaxed mt-1">{d.desc}</p>
+                  </div>
+                  <span className="mt-auto inline-flex items-center gap-2 text-sm font-bold text-emerald-700 group-hover:text-emerald-800">
+                    <Download className="h-4 w-4 transition-transform group-hover:translate-y-0.5" />
+                    Download PDF
+                  </span>
+                </a>
+              </Reveal>
+            ))}
           </div>
         </div>
       </section>
