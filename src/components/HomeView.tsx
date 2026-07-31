@@ -23,7 +23,9 @@ import {
   Trophy,
   Star,
   FileText,
-  Download
+  Download,
+  Monitor,
+  Smartphone
 } from 'lucide-react';
 import { PageId } from '../types';
 import { SERVICES_DATA, PROJECTS_DATA, PRODUCTS_DATA, GREENHOUSE_PARTS, FERTIGATION_MODELS, CLIMATE_MODELS, GREENHOUSE_PACKAGES } from '../data';
@@ -53,6 +55,20 @@ const HERO_SLIDES: {
     desc: 'Smart, sustainable agriculture engineered from seed to shelf — technology and nature, growing together.',
     video: '/Video/aigrow-animation.mp4'
   }
+];
+
+// AiGROW web portal (landscape dashboards) and mobile app (portrait) screenshots.
+const PORTAL_UI = [
+  '/platform/portal-crop-cycles.png',
+  '/platform/portal-dashboard-1.png',
+  '/platform/portal-dashboard-2.png',
+  '/platform/portal-marketplace.png'
+];
+const APP_UI = [
+  '/platform/app-greenhouse-monitoring.png',
+  '/platform/app-live-monitoring.png',
+  '/platform/app-crop-cycle.png',
+  '/platform/app-harvest-record.png'
 ];
 
 // Downloadable brochures & leaflets.
@@ -539,6 +555,65 @@ export default function HomeView({
               );
             })}
           </div>
+        </div>
+      </section>
+
+      {/* 5b. SOFTWARE SOLUTIONS — web portal & mobile app */}
+      <section className="py-16 px-6 overflow-hidden">
+        <div className="max-w-[96rem] mx-auto">
+          <Reveal className="max-w-3xl mb-10">
+            <div className="text-emerald-600 font-mono text-xs uppercase tracking-wider font-semibold mb-3">
+              Software Solutions
+            </div>
+            <h2 className="font-sans text-3xl md:text-4xl font-bold tracking-tight text-gray-950 mb-4">
+              Manage your farm from anywhere
+            </h2>
+            <p className="font-sans text-gray-500 font-light text-base md:text-lg">
+              Every AiGROW deployment is backed by a powerful web portal and a mobile app — real-time monitoring,
+              crop cycles, harvest records and device control, wherever you are.
+            </p>
+          </Reveal>
+
+          {/* Web Portal */}
+          <Reveal className="mb-14">
+            <div className="flex items-center gap-2 mb-5">
+              <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-emerald-50 text-emerald-600">
+                <Monitor className="h-4 w-4" />
+              </span>
+              <h3 className="font-sans text-lg font-bold text-gray-900">Web Portal</h3>
+              <span className="font-sans text-sm text-gray-400 font-light">Full control from your browser</span>
+            </div>
+            <div className="flex gap-5 overflow-x-auto pb-4 snap-x">
+              {PORTAL_UI.map((src, i) => (
+                <div key={i} className="shrink-0 snap-start w-[85vw] sm:w-[34rem] rounded-2xl overflow-hidden border border-gray-200 shadow-lg bg-white">
+                  <div className="flex items-center gap-1.5 px-4 py-2.5 border-b border-gray-100 bg-gray-50">
+                    <span className="h-2.5 w-2.5 rounded-full bg-red-300" />
+                    <span className="h-2.5 w-2.5 rounded-full bg-amber-300" />
+                    <span className="h-2.5 w-2.5 rounded-full bg-emerald-300" />
+                  </div>
+                  <img src={src} alt="AiGROW web portal screenshot" loading="lazy" referrerPolicy="no-referrer" className="block w-full" />
+                </div>
+              ))}
+            </div>
+          </Reveal>
+
+          {/* Mobile App */}
+          <Reveal>
+            <div className="flex items-center gap-2 mb-5">
+              <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-emerald-50 text-emerald-600">
+                <Smartphone className="h-4 w-4" />
+              </span>
+              <h3 className="font-sans text-lg font-bold text-gray-900">Mobile App</h3>
+              <span className="font-sans text-sm text-gray-400 font-light">Your greenhouse in your pocket</span>
+            </div>
+            <div className="flex gap-5 overflow-x-auto pb-4 snap-x">
+              {APP_UI.map((src, i) => (
+                <div key={i} className="shrink-0 snap-start w-52 rounded-[2rem] overflow-hidden border-[6px] border-gray-900 shadow-xl bg-gray-900">
+                  <img src={src} alt="AiGROW mobile app screenshot" loading="lazy" referrerPolicy="no-referrer" className="block w-full" />
+                </div>
+              ))}
+            </div>
+          </Reveal>
         </div>
       </section>
 
